@@ -19,7 +19,7 @@ export default function CourseList() {
   // custom Hook fetch + cache
   const {
     data: courses,
-    isPending: courses_loading,
+    isFetching: courses_loading,
     error: courses_error,
   } = useCourses(college_id);
 
@@ -33,6 +33,8 @@ export default function CourseList() {
         />
       </div>
     );
+
+  console.log(courses);
 
   return (
     <main className="h-full flex flex-col p-5 bg-gray-200 font-sans">

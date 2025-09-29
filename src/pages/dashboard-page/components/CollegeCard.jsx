@@ -3,10 +3,10 @@ import { Button } from "@mui/material";
 
 export default function CollegeCard({ college }) {
   return (
-    <div className="relative flex flex-col justify-between group rounded-2xl bg-gray-100 shadow-lg hover:shadow-xl transition transform hover:-translate-y-1 border border-gray-400">
+    <div className="relative flex flex-col justify-between group rounded-2xl bg-gray-100 shadow-lg transition transform hover:-translate-y-1 border border-gray-400">
       {/* Header */}
       <div className="p-6 flex-2 flex flex-col">
-        <h3 className="text-3xl font-bold text-gray-800 group-hover:text-red-800 transition">
+        <h3 className="text-lg 2xl:text-3xl font-bold text-gray-800 group-hover:text-red-800 transition">
           {college.college_name}
         </h3>
         <p className="text-sm text-gray-500 mt-1">
@@ -23,16 +23,7 @@ export default function CollegeCard({ college }) {
           component={Link}
           to={`/schedules/${college.college_id}`}
         >
-          Schedules
-        </Button>
-        <Button
-          variant="contained"
-          color="inherit"
-          sx={{ fontWeight: 600, borderRadius: "30px" }}
-          component={Link}
-          to={`/teachers/${college.college_id}`}
-        >
-          Teachers
+          <span className="md:text-sm">Schedules</span>
         </Button>
         <Button
           variant="contained"
@@ -41,7 +32,16 @@ export default function CollegeCard({ college }) {
           component={Link}
           to={`/course-list/${college.college_id}`}
         >
-          Courses
+          <span className="md:text-sm">Courses</span>
+        </Button>
+        <Button
+          variant="contained"
+          color="inherit"
+          sx={{ fontWeight: 600, borderRadius: "30px" }}
+          component={Link}
+          to={`/teachers/${college.college_id}`}
+        >
+          <span className="md:text-sm">Teachers</span>
         </Button>
       </div>
     </div>

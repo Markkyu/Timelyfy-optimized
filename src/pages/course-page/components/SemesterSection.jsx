@@ -9,6 +9,7 @@ import AssignmentAddIcon from "@mui/icons-material/AssignmentAdd";
 // Components
 import CourseCard from "./CourseCard";
 import CourseSkeletonLoader from "./CourseSkeletonLoader";
+import AddCourseForm from "./AddCourseForm";
 
 export default function SemesterSection({
   sem,
@@ -17,7 +18,7 @@ export default function SemesterSection({
   college_id,
   loading,
 }) {
-  const [openPopup, setOpenPopup] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   // filter function to organize course's year and sem
   const filteredCourses = courses?.filter(
@@ -37,7 +38,7 @@ export default function SemesterSection({
         <Fab
           variant="extended"
           size="small"
-          onClick={() => setOpenPopup(true)}
+          onClick={() => setAddOpen(true)}
           sx={{
             fontWeight: 600,
             bgcolor: "#800000",
@@ -64,6 +65,14 @@ export default function SemesterSection({
           ) => <CourseCard key={course.course_id} course={course} />
         )
       )}
+
+      <AddCourseForm
+        open={addOpen}
+        onClose={() => setAddOpen(false)}
+        sem={sem}
+        college_id={college_id}
+        year={year}
+      />
     </section>
   );
 }

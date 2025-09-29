@@ -29,16 +29,14 @@ export default function TeacherCard({ teacher }) {
   return (
     <div
       key={teacher.teacher_id}
-      className="group bg-white border border-gray-400 rounded-xl p-6 hover:shadow-md hover:border-blue-200 transition-all duration-200"
+      className="group bg-white border border-gray-400 rounded-xl py-1 px-4 2xl:p-6 hover:shadow-md hover:border-red-600 hover:bg-red-100 transition-all duration-200"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar
             sx={{
-              bgcolor: "#950000",
+              backgroundImage: "linear-gradient(to bottom right,red, maroon)",
               fontWeight: 600,
-              width: 56,
-              height: 56,
             }}
           >
             {/* Creates avatar with Initials */}
@@ -61,34 +59,11 @@ export default function TeacherCard({ teacher }) {
         </div>
 
         <div className="flex items-center gap-2">
-          {/* <Tooltip title="Edit Teacher">
-            <IconButton
-              sx={{
-                bgcolor: "#3b82f6",
-                color: "white",
-                ":hover": { bgcolor: "#2563eb" },
-              }}
-              onClick={() => setEditOpen(true)}
-            >
-              <EditIcon sx={{ fontSize: 20 }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Delete Teacher">
-            <IconButton
-              onClick={() => setDeleteOpen(true)}
-              sx={{
-                bgcolor: "#ef4444",
-                color: "white",
-                ":hover": { bgcolor: "#dc2626" },
-              }}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip> */}
           <Button
             variant="contained"
             onClick={() => setEditOpen(true)}
             sx={{ bgcolor: "#335c67", borderRadius: "20px", fontWeight: 600 }}
+            startIcon={<EditIcon />}
           >
             Edit
           </Button>
@@ -96,6 +71,7 @@ export default function TeacherCard({ teacher }) {
             variant="contained"
             onClick={() => setDeleteOpen(true)}
             sx={{ bgcolor: "#9e2a2b", borderRadius: "20px", fontWeight: 600 }}
+            startIcon={<DeleteIcon />}
           >
             Delete
           </Button>
@@ -111,6 +87,7 @@ export default function TeacherCard({ teacher }) {
         handleDelete={handleDelete}
       />
 
+      {/* Edit form */}
       <EditTeacherForm
         open={editOpen}
         onClose={() => setEditOpen(false)}

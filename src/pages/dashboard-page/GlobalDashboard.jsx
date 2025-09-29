@@ -61,7 +61,7 @@ export default function GlobalDashboard() {
       </div>
 
       {/* Main content */}
-      <main className="flex-1 bg-white border-12 border-white rounded-2xl shadow-md overflow-auto">
+      <main className="flex-1 bg-white border-12 border-white rounded-2xl shadow-md">
         {colleges_loading ? ( // Data Loading
           <section className="h-full flex flex-col items-center justify-center">
             <LoadingContent
@@ -80,7 +80,7 @@ export default function GlobalDashboard() {
             />
           </section>
         ) : (
-          <div className="p-8 flex flex-col h-full">
+          <div className="2xl:p-8 flex flex-col h-full">
             {/* Header */}
             <header className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
@@ -106,7 +106,7 @@ export default function GlobalDashboard() {
                 <Pagination
                   count={Math.ceil(colleges.length / itemsPerPage)}
                   page={page}
-                  onChange={handleChange}
+                  onChange={(e, value) => setPage(value)}
                   color="error"
                   shape="rounded"
                   size="large"
