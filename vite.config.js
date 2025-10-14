@@ -24,6 +24,8 @@ export default defineConfig({
       "@stores": path.resolve(__dirname, "./src/stores"),
       "@context": path.resolve(__dirname, "./src/context"),
       "@config": path.resolve(__dirname, "./src/config"),
+      "@routes": path.resolve(__dirname, "./src/routes"),
+      "@api": path.resolve(__dirname, "./src/api"),
     },
   },
 });

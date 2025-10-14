@@ -1,91 +1,87 @@
 import { create } from "zustand";
+import axios from "axios";
 
 const useAuthStore = create((set) => ({
-  user: null,
-  profile: null,
-  loading: true,
+  user: JSON.parse(localStorage.getItem("user")) || null,
+  token: localStorage.getItem("token") || null,
+
+  login: async (username, password) => {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/login`,
+        {
+          username,
+          password,
+        }
+      );
+
+      // Expect backend returns: { message: "Login successful", user, token }
+      if (res.data.message === "Login successful") {
+        set({
+          user: res.data.user,
+          token: res.data.token,
+        });
+
+        // persist user and token
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        localStorage.setItem("token", res.data.token);
+
+        // attach token to axios for future requests
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${res.data.token}`;
+
+        return res.data.user;
+      } else {
+        throw new Error(res.data.message);
+      }
+    } catch (err) {
+      throw err;
+    }
+  },
+
+  logout: () => {
+    set({ user: null, token: null });
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    delete axios.defaults.headers.common["Authorization"];
+  },
 }));
 
 export default useAuthStore;
 
 // import { create } from "zustand";
-// import { persist, createJSONStorage } from "zustand/middleware";
-// import supabase from "@config/supabase";
+// import axios from "axios";
 
-// const useAuthStore = create(
-//   persist(
-//     (set) => ({
-//       user: null, // auth user from supabase
-//       profile: null, // extra data from the `profiles` table
-//       loading: true,
+// const useAuthStore = create((set) => ({
+//   user: JSON.parse(localStorage.getItem("user")) || null,
 
-//       // Fetch current session and profile
-//       fetchUser: async () => {
-//         const {
-//           data: { user },
-//           error,
-//         } = await supabase.auth.getUser();
-
-//         if (error || !user) {
-//           set({ user: null, profile: null, loading: false });
-//           return;
-//         }
-
-//         // fetch role and other data from profiles
-//         const { data: profile } = await supabase
-//           .from("profiles")
-//           .select(`*, colleges(college_name)`)
-//           .eq("id", user.id)
-//           .single();
-
-//         set({
-//           user,
-//           profile,
-//           loading: false,
-//         });
-//       },
-
-//       // Login with Supabase Auth
-//       login: async (email, password) => {
-//         const { data, error } = await supabase.auth.signInWithPassword({
-//           email,
+//   login: async (username, password) => {
+//     try {
+//       const res = await axios.post(
+//         `${import.meta.env.VITE_API_URL}/api/login`,
+//         {
+//           username,
 //           password,
-//         });
-
-//         if (error) {
-//           // console.error("Error signing in:", error.message);
-//           // return null;
-//           throw new Error(error.message);
 //         }
+//       );
 
-//         const user = data.user;
-
-//         // fetch profile after login
-//         const { data: profile } = await supabase
-//           .from("profiles")
-//           .select(`*, colleges(college_name)`)
-//           .eq("id", user.id)
-//           .single();
-
-//         set({ user, profile });
-//         return { user, profile };
-//       },
-
-//       // Logout
-//       logout: async () => {
-//         await supabase.auth.signOut();
-//         set({ user: null, profile: null });
-//       },
-//     }),
-//     {
-//       name: "auth-storage",
-//       storage: createJSONStorage(() => sessionStorage),
-//       partialize: (state) => ({
-//         user: state.user,
-//         profile: state.profile,
-//       }),
+//       if (res.data.message === "Login successful") {
+//         set({ user: res.data.user });
+//         localStorage.setItem("user", JSON.stringify(res.data.user)); // persist user
+//         return res.data.user;
+//       } else {
+//         throw new Error(res.data.message);
+//       }
+//     } catch (err) {
+//       throw err;
 //     }
-//   )
-// );
+//   },
+
+//   logout: () => {
+//     set({ user: null });
+//     localStorage.removeItem("user");
+//   },
+// }));
 
 // export default useAuthStore;

@@ -1,23 +1,34 @@
 // components/PageHeader.jsx
 import { Link } from "react-router-dom";
-import { Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { Typography, Button } from "@mui/material";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 
-export default function PageHeader() {
+export default function PageHeader({ description }) {
   return (
     <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-      <Link
-        to="/"
-        className="py-2 px-4 bg-red-800 rounded-full font-bold text-white shadow-md flex items-center justify-center sm:justify-start w-full sm:w-auto"
+      <Button
+        component={Link}
+        variant="extended"
+        size="small"
+        to={"/"}
+        sx={{
+          borderRadius: "30px",
+          fontWeight: 600,
+          bgcolor: "maroon",
+          color: "white",
+        }}
       >
-        <ArrowBackIcon className="mr-2" />
+        <ChevronLeftRoundedIcon />
         Go Back
-      </Link>
+      </Button>
 
       <div className="flex items-center justify-center sm:justify-end">
         <div className="bg-amber-50 px-3 py-2 rounded-lg border border-amber-200">
-          <Typography variant="body2" className="text-amber-700 font-medium text-sm sm:text-base">
-            ⚠️ Changes require manual refresh for now.
+          <Typography
+            variant="body2"
+            className="text-amber-700 font-medium text-sm sm:text-base"
+          >
+            💡 {description || "Insert description."}
           </Typography>
         </div>
       </div>

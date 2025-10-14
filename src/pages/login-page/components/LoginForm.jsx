@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
-import useAuthStore from "../../../stores/useAuthStore";
+import useAuthStore from "@stores/useAuthStore";
 
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
@@ -24,21 +24,35 @@ export default function LoginForm({ showLogin, setShowLogin }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
 
   const { login } = useAuthStore();
   const navigate = useNavigate();
 
+  // Ref for the username input
+  const usernameRef = useRef(null);
+
+  // Focus username when dialog opens
+  useEffect(() => {
+    setError("");
+    if (showLogin && usernameRef.current) {
+      usernameRef.current.focus();
+    }
+  }, [showLogin]);
+
   const handleLoginSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
+    setLoading(true);
     try {
-      // const loggedInUser = await login(username, password);
+      await login(username, password);
       setShowLogin(false);
       navigate("/");
     } catch (err) {
-      alert("Login failed");
+      setError(err.message || "Login failed");
     } finally {
       setLoading(false);
+      setUsername("");
+      setPassword("");
     }
   };
 
@@ -62,7 +76,6 @@ export default function LoginForm({ showLogin, setShowLogin }) {
       >
         <CloseIcon />
       </IconButton>
-
       <DialogTitle sx={{ pb: 1 }}>
         <Typography
           variant="h5"
@@ -75,12 +88,17 @@ export default function LoginForm({ showLogin, setShowLogin }) {
       </DialogTitle>
 
       <DialogContent>
+        {error && (
+          <div className="flex justify-center bg-red-100 rounded-lg py-1 text-red-500 text-xl">
+            {error}
+          </div>
+        )}
         <form onSubmit={handleLoginSubmit} className="space-y-2 mt-2">
           {/* Username */}
           <label htmlFor="email">Username</label>
           <input
             id="email"
-            label="Email"
+            ref={usernameRef}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
@@ -91,11 +109,11 @@ export default function LoginForm({ showLogin, setShowLogin }) {
           <label htmlFor="password">Password</label>
           <input
             id="password"
-            label="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={showPassword ? "text" : "password"}
             className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            autoComplete="off"
             required
           />
 
@@ -110,6 +128,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             }
             label={<Typography variant="body2">Show Password</Typography>}
           />
+
           <Button
             type="submit"
             variant="contained"
@@ -122,7 +141,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             loading={loading}
             loadingPosition="end"
           >
-            Log In
+            Log in
           </Button>
         </form>
       </DialogContent>

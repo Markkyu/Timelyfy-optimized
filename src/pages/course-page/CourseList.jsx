@@ -1,13 +1,16 @@
 // React Dom Hooks
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useEffect } from "react";
 
 // Custom Hooks
 import ErrorContent from "@components/ErrorContent";
 import useCourses from "@hooks/useCourses";
 
-// Components
+// Material Components
 import SemesterSection from "./components/SemesterSection";
+import { Button, Fab } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -34,11 +37,29 @@ export default function CourseList() {
       </div>
     );
 
-  console.log(courses);
-
   return (
-    <main className="h-full flex flex-col p-5 bg-gray-200 font-sans">
-      <h1 className="text-4xl text-center font-bold mb-3">Course list</h1>
+    <main className="h-full flex flex-col p-5 font-sans">
+      <h1 className="relative text-4xl text-center font-bold mb-3">
+        <Fab
+          variant="extended"
+          size="small"
+          component={Link}
+          to="/"
+          sx={{
+            bgcolor: "#335c67",
+            fontWeight: 600,
+            borderRadius: "30px",
+            position: "absolute",
+            left: 0,
+            color: "white",
+            "&:hover": { backgroundColor: "#335c67" },
+          }}
+        >
+          <ChevronLeftRoundedIcon />
+          Go Back
+        </Fab>
+        Course list
+      </h1>
       {uniqueYears.map(
         (
           year // Chop up by year leve

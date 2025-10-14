@@ -1,11 +1,16 @@
 {
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": "src",
     "paths": {
       "@hooks/*": ["hooks/*"],
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
       "@stores/*": ["stores/*"],
+      "@context/*": ["context/*"],
+      "@layout/*": ["layout/*"],
+      "@routes/*": ["routes/*"],
+      "@api/*": ["api/*"],
     }
   },
   "include": ["src"]

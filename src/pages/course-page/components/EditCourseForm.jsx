@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useEditTeachersDepartment } from "@hooks/useTeachersDepartment";
+import { useEditCourse } from "@hooks/useCourses";
 
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
@@ -18,31 +18,36 @@ const Transition = forwardRef(function Transition(props, ref) {
 });
 
 export default function EditCourseForm({ open, onClose, course }) {
+  const [courseCode, setCourseCode] = useState(course?.course_code);
   const [courseName, setCourseName] = useState(course?.course_name);
   const [hoursWeek, setHoursWeek] = useState(course?.hours_week);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const editTeacherMutation = useEditTeachersDepartment(); // pass the function to the variable to allow mutation
+  const editCourseMutation = useEditCourse();
 
-  // Handle function add teacher in department
+  // Handle function edit course
   const handleEdit = (e) => {
-    // e.preventDefault();
-    // try {
-    //   setLoading(true);
-    //   editTeacherMutation.mutate({
-    //     teacherId: teacher.teacher_id,
-    //     updates: {
-    //       first_name: firstName,
-    //       last_name: lastName,
-    //     },
-    //   });
-    // } catch (err) {
-    //   setError({ message: `Error: ${err.message}` });
-    // } finally {
-    //   setLoading(false);
-    //   onClose();
-    // }
+    e.preventDefault();
+    try {
+      setLoading(true);
+      editCourseMutation.mutate({
+        updates: {
+          course_id: course?.course_id,
+          course_code: courseCode,
+          course_name: courseName,
+          hours_week: hoursWeek,
+          course_year: course?.course_year,
+          semester: course?.semester,
+          course_college: course?.course_college,
+        },
+      });
+    } catch (err) {
+      setError({ message: `Error: ${err.message}` });
+    } finally {
+      setLoading(false);
+      onClose();
+    }
   };
 
   return (
@@ -79,6 +84,15 @@ export default function EditCourseForm({ open, onClose, course }) {
 
       <DialogContent>
         <form onSubmit={handleEdit}>
+          <TextField
+            label="Course Code"
+            value={courseCode}
+            onChange={(e) => setCourseCode(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          />
+
           <TextField
             label="Course Name"
             value={courseName}

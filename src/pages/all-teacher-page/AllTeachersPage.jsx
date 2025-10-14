@@ -58,12 +58,14 @@ export default function AllTeachersPage() {
     );
 
   return (
-    <div className="h-full flex flex-col p-4 sm:p-6 space-y-4 sm:space-y-6 bg-red-200 border-5">
+    <div className="h-full flex flex-col p-6 space-y-4 ">
       {/* Header — Back Button, Info/ Warning */}
 
       {/* <main className="bg-amber-300 flex flex-col h-full p-6 space-y-4"> */}
       <header>
-        <PageHeader />
+        <PageHeader
+          description={"See all teacher's teaching assignment in this page."}
+        />
       </header>
 
       {/* Main content */}

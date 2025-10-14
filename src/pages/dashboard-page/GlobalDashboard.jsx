@@ -1,13 +1,13 @@
+// React imports and hooks
 import { useState } from "react";
 import useColleges from "@hooks/useColleges";
-
+import { useQuery } from "@tanstack/react-query";
 // Components
 import CollegeCard from "./components/CollegeCard";
 import StatCard from "./StatCard";
 import EmptyContent from "@components/EmptyContent";
 import LoadingContent from "@components/LoadingContent";
 import ErrorContent from "@components/ErrorContent";
-
 // MUI
 import { Pagination, Stack } from "@mui/material";
 import SchoolIcon from "@mui/icons-material/School";
@@ -15,18 +15,20 @@ import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import PeopleAltIcon from "@mui/icons-material/People";
 import CircularProgress from "@mui/material/CircularProgress";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import LibraryAddIcon from "@mui/icons-material/LibraryAdd";
+// State store
+import useAuthStore from "@stores/useAuthStore";
+import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
+import AddCollegeForm from "./components/AddCollegeForm";
 
-export default function GlobalDashboard() {
+export default function GlobalDashboard({ role }) {
+  const [openCollege, setOpenCollege] = useState(false);
+
   const {
     data: colleges,
     isPending: colleges_loading,
     error: colleges_error,
-  } = useColleges();
-
-  // Mock data for testing
-  // const colleges = [];
-  // const colleges_loading = true;
-  // const colleges_error = { message: "error" };
+  } = useQuery(createCollegeQueryOptions());
 
   const [page, setPage] = useState(1);
   const itemsPerPage = 6; // Show 6 per page
@@ -51,17 +53,9 @@ export default function GlobalDashboard() {
     );
 
   return (
-    <div className="space-y-6 p-6 h-full flex flex-col justify-center ">
-      {/* Stat Cards */}
-      <div className="grid grid-cols-4 gap-4">
-        <StatCard title="Courses" count={0} icon={SchoolIcon} />
-        <StatCard title="Teachers" count={0} icon={PeopleAltIcon} />
-        <StatCard title="Scheduled Slots" count={0} icon={EventAvailableIcon} />
-        <StatCard title="Conflicts" count={0} icon={WarningAmberIcon} />
-      </div>
-
+    <div className="p-6 h-full gap-6 flex flex-col ">
       {/* Main content */}
-      <main className="flex-1 bg-white border-12 border-white rounded-2xl shadow-md">
+      <main className="flex-1 h-full bg-white border-12 border-white rounded-4xl shadow-md">
         {colleges_loading ? ( // Data Loading
           <section className="h-full flex flex-col items-center justify-center">
             <LoadingContent
@@ -80,10 +74,10 @@ export default function GlobalDashboard() {
             />
           </section>
         ) : (
-          <div className="2xl:p-8 flex flex-col h-full">
+          <div className="p-8 flex flex-col h-full">
             {/* Header */}
             <header className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 ">
                 <div className="bg-red-200 p-2 rounded-lg">
                   <SchoolIcon className="text-red-800" />
                 </div>
@@ -91,10 +85,23 @@ export default function GlobalDashboard() {
                   Academic Programs
                 </h2>
               </div>
+
+              {
+                /* Add College Program Button - Only for Admin and Super Admin */
+                role === "admin" || role === "master_scheduler" ? (
+                  <button
+                    onClick={() => setOpenCollege(true)}
+                    className="bg-red-800 rounded-full font-semibold cursor-pointer text-white shadow-md py-2 px-3"
+                  >
+                    <LibraryAddIcon className="mr-2" />
+                    Add College Program
+                  </button>
+                ) : null
+              }
             </header>
 
             {/* Grid of Cards */}
-            <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 flex-1">
+            <section className="grid grid-cols-3 grid-rows-2 gap-6 flex-1">
               {paginatedColleges?.map((college) => (
                 <CollegeCard key={college.college_id} college={college} />
               ))}
@@ -104,7 +111,7 @@ export default function GlobalDashboard() {
             <footer className="flex justify-center mt-6">
               <Stack spacing={2}>
                 <Pagination
-                  count={Math.ceil(colleges.length / itemsPerPage)}
+                  count={Math.ceil(colleges?.length / itemsPerPage)}
                   page={page}
                   onChange={(e, value) => setPage(value)}
                   color="error"
@@ -116,6 +123,12 @@ export default function GlobalDashboard() {
           </div>
         )}
       </main>
+
+      {/* Add College Form Dialog */}
+      <AddCollegeForm
+        open={openCollege}
+        onClose={() => setOpenCollege(false)}
+      />
     </div>
   );
 }

@@ -5,26 +5,32 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 // Custom Hooks Query
-import { useDeleteTeachersDepartment } from "@hooks/useTeachersDepartment";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDeleteTeachersDepartment } from "@hooks/useTeachersDepartment";
 
 // Components
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 import EditTeacherForm from "./EditTeacherForm";
+import EditSchedule from "./EditSchedule";
 
 export default function TeacherCard({ teacher }) {
   const deleteTeacherMutation = useDeleteTeachersDepartment();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
 
   const handleDelete = () => {
     deleteTeacherMutation.mutate(teacher.teacher_id);
+    setDeleteOpen(false);
   };
 
   // Function to get initials from first and last name
   const getInitials = (firstName, lastName) => {
     return `${firstName?.charAt(0)}${lastName?.charAt(0)}`.toUpperCase();
   };
+
+  const navigate = useNavigate();
 
   return (
     <div
@@ -36,7 +42,6 @@ export default function TeacherCard({ teacher }) {
           <Avatar
             sx={{
               backgroundImage: "linear-gradient(to bottom right,red, maroon)",
-              fontWeight: 600,
             }}
           >
             {/* Creates avatar with Initials */}
@@ -61,11 +66,12 @@ export default function TeacherCard({ teacher }) {
         <div className="flex items-center gap-2">
           <Button
             variant="contained"
-            onClick={() => setEditOpen(true)}
+            onClick={() => navigate(`/teacher/schedule/${teacher.teacher_id}`)}
+            // onClick={() => setScheduleOpen(true)}
             sx={{ bgcolor: "#335c67", borderRadius: "20px", fontWeight: 600 }}
             startIcon={<EditIcon />}
           >
-            Edit
+            Edit Availability
           </Button>
           <Button
             variant="contained"
@@ -87,12 +93,10 @@ export default function TeacherCard({ teacher }) {
         handleDelete={handleDelete}
       />
 
-      {/* Edit form */}
-      <EditTeacherForm
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        teacher={teacher}
-      />
+      {/* <EditSchedule
+        open={scheduleOpen}
+        onClose={() => setScheduleOpen(false)}
+      /> */}
     </div>
   );
 }

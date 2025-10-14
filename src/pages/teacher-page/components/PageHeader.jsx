@@ -35,7 +35,6 @@ export default function PageHeader({ onClick }) {
           endIcon={<PersonAddAlt1Icon />}
           onClick={onClick}
           sx={{
-            py: 1.5,
             fontWeight: 600,
             borderRadius: "30px",
             bgcolor: "#950000",

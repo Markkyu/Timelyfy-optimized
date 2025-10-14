@@ -9,7 +9,9 @@ export default function TeacherListHeader({ count }) {
         <PersonIcon className="text-gray-600" />
       </div>
       <div className="min-w-0">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Teaching Staff</h2>
+        <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+          All Teaching Staff
+        </h2>
         <Chip
           label={`${count} Teacher${count !== 1 ? "s" : ""}`}
           size="small"
@@ -17,7 +19,7 @@ export default function TeacherListHeader({ count }) {
             bgcolor: "#800000",
             color: "white",
             fontWeight: 600,
-            fontSize: '0.75rem'
+            fontSize: "0.75rem",
           }}
         />
       </div>

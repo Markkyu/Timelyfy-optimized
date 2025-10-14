@@ -13,9 +13,9 @@ export default function useCourses(college_id) {
   return useQuery({
     queryKey: ["courses", college_id],
     queryFn: () => getCourses(college_id),
-    // refetchInterval: 1000,
     staleTime: 1000 * 60 * 5, // 5 minutes
     cacheTime: 1000 * 60 * 10, // 10 minutes
+    retry: 1,
   });
 }
 
@@ -25,7 +25,7 @@ const addCourse = async (courseData) => {
     `${import.meta.env.VITE_API_URL}/api/courses/`,
     courseData
   );
-  return { data };
+  return data;
 };
 
 export function useAddCourse() {
@@ -36,6 +36,27 @@ export function useAddCourse() {
     onSuccess: (_, variables) =>
       queryClient.invalidateQueries(["courses", variables.course_college]),
     onError: (error) => console.error("Error adding course: ", error),
+  });
+}
+
+// Edit a teacher in department + invalidate query
+const editCourse = async ({ updates }) => {
+  const { data } = await axios.put(
+    `${import.meta.env.VITE_API_URL}/api/courses`,
+    updates
+  );
+  return data;
+};
+
+// Edit Use Query
+export function useEditCourse() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: editCourse,
+    onSuccess: (_, variables) =>
+      queryClient.invalidateQueries(["courses", variables.course_college]),
+    onError: (error) => console.error("Error editing course:", error),
   });
 }
 

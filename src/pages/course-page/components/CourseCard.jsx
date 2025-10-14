@@ -1,19 +1,25 @@
+// React
 import { useState } from "react";
-
 // Material Icons and Components
 import { IconButton, Tooltip, Stack } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
+// components
 import EditCourseForm from "./EditCourseForm";
+import AssignTeacherForm from "./AssignTeacherForm";
+// hooks
 import { useDeleteCourse } from "@hooks/useCourses";
 
 export default function CourseCard({ course }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [teacherAssign, setTeacherAssign] = useState(false);
 
   const deleteCourseMutation = useDeleteCourse();
+
+  const assignedTeacher = `${course?.first_name} ${course?.last_name}`;
 
   const handleDelete = () => {
     console.log("first");
@@ -21,14 +27,10 @@ export default function CourseCard({ course }) {
     console.log("first");
   };
 
-  const handleTeacher = () => {
-    alert("Editing assigned teacher (🚧 working on it 🚧)");
-  };
-
   if (!course) {
     return (
       <div className="mb-3 p-4 border border-dashed border-gray-300 rounded-md text-center text-gray-400">
-        No courses available
+        No subjects available
       </div>
     );
   }
@@ -37,9 +39,16 @@ export default function CourseCard({ course }) {
     <div className="p-2 border-b border-gray-200 flex justify-between items-center">
       {/* Course Details */}
       <div>
-        <p className="m-1 font-semibold">{course.course_name}</p>
+        <p className="m-1 font-semibold">
+          {course.course_code}: {course.course_name}
+        </p>
         <p className="m-1">
-          <span>Hrs/week:</span> {course.hours_week}
+          <b>{course.hours_week}</b> Hrs/wk
+          <span
+            className={`ml-2 rounded-full border px-2 ${course?.first_name ? `text-blue-600` : `text-red-600`}`}
+          >
+            {course?.first_name ? assignedTeacher : "Unassigned"}
+          </span>
         </p>
       </div>
 
@@ -51,7 +60,7 @@ export default function CourseCard({ course }) {
           </IconButton>
         </Tooltip>
         <Tooltip title="Assign Teacher">
-          <IconButton onClick={handleTeacher}>
+          <IconButton onClick={() => setTeacherAssign(true)}>
             <AssignmentIndIcon color="success" />
           </IconButton>
         </Tooltip>
@@ -75,6 +84,12 @@ export default function CourseCard({ course }) {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         course={course}
+      />
+
+      <AssignTeacherForm
+        open={teacherAssign}
+        onClose={() => setTeacherAssign(false)}
+        courseId={course.course_id}
       />
     </div>
   );

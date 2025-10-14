@@ -24,36 +24,34 @@ export default function AddCourseForm({
   college_id,
   year,
 }) {
+  const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
   const [hoursWeek, setHoursWeek] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // const addTeacherMutation = useAddTeachersDepartment();
   const addCourseMutation = useAddCourse();
 
   // Handle function add teacher in department
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    console.log(sem, college_id, year);
-
     try {
+      setLoading(true);
       addCourseMutation.mutate({
-        // courseData: {
+        course_code: courseCode,
         course_name: courseName,
         hours_week: hoursWeek,
         course_year: year,
         course_college: college_id,
         semester: sem,
-        assigned_teacher: 1,
-        // },
       });
     } catch (err) {
       setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
+      setCourseName("");
+      setCourseCode("");
+      setHoursWeek(0);
       onClose();
     }
   };
@@ -86,14 +84,23 @@ export default function AddCourseForm({
           align="center"
           display="block"
         >
-          Add Teacher
+          Add Subject
         </Typography>
       </DialogTitle>
 
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <TextField
-            label="Course Name"
+            label="Subject Code"
+            value={courseCode}
+            onChange={(e) => setCourseCode(e.target.value)}
+            fullWidth
+            margin="normal"
+            required
+          />
+
+          <TextField
+            label="Subject Name"
             value={courseName}
             onChange={(e) => setCourseName(e.target.value)}
             fullWidth

@@ -17,7 +17,7 @@ export default function useTeachersDepartment(department) {
     queryFn: () => getTeachersDepartment(department),
     staleTime: 1000 * 60 * 5, // 5 minutes
     cacheTime: 1000 * 60 * 10, // 10 minutes
-    retry: 0, // no fetch retries, default: 3 times
+    retry: 1, // 1 fetch retry, default: 3 times
   });
 }
 

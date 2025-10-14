@@ -49,14 +49,12 @@ export default function Login() {
           </div>
 
           {/* Right: Illustration */}
-          <div className="flex justify-center relative">
-            <img
-              // src="https://cdni.iconscout.com/illustration/premium/thumb/scheduling-timetable-illustration-download-in-svg-png-gif-file-formats--task-management-time-business-planning-schedule-effective-artistry-pack-people-illustrations-5295176.png?f=webp"
-              src="/5295176.webp"
-              alt="Scheduling Illustration"
-              className="w-full max-w-md drop-shadow-2xl animate-float"
-            />
-          </div>
+
+          <img
+            src="/5295176.webp"
+            alt="Scheduling Illustration"
+            className="w-full max-w-md drop-shadow-2xl animate-float"
+          />
         </div>
       </div>
 

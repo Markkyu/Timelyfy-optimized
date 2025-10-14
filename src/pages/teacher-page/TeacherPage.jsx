@@ -84,7 +84,26 @@ export default function TeacherPage() {
             <div>
               <div className="flex justify-between mb-6">
                 {/* Teacher List Header + Chip */}
-                <TeacherListHeader count={teachers?.length} />
+                <section className="flex items-center gap-3">
+                  <div className="bg-blue-100 p-2 rounded-lg flex-shrink-0">
+                    <PersonIcon className="text-gray-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <h2 className="text-lg sm:text-xl font-semibold text-gray-800">
+                      Teaching Staff ({teachers[0]?.college_name})
+                    </h2>
+                    <Chip
+                      label={`${teachers.length} teacher${teachers.length !== 1 ? "s" : ""}`}
+                      size="small"
+                      sx={{
+                        bgcolor: "#800000",
+                        color: "white",
+                        fontWeight: 600,
+                        fontSize: "0.75rem",
+                      }}
+                    />
+                  </div>
+                </section>
                 {/* Search Bar */}
                 <div className="w-auto">
                   <SearchBar

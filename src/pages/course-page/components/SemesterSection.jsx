@@ -45,10 +45,11 @@ export default function SemesterSection({
             position: "absolute",
             color: "white",
             right: 0,
+            "&:hover": { backgroundColor: "#700000" },
           }}
         >
           <AssignmentAddIcon sx={{ mr: 0.8 }} />
-          Add Course
+          Add Subject
         </Fab>
       </div>
 
