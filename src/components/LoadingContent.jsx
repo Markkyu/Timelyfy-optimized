@@ -15,7 +15,7 @@ export default function LoadingContent({ loadingTitle, loadingDesc }) {
         />
       </section>
       <h3 className="text-xl font-semibold text-gray-700 mb-2">
-        Loading {loadingTitle}
+        {loadingTitle}
       </h3>
       <p className="text-gray-500">{loadingDesc}</p>
     </>

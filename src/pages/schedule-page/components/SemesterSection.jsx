@@ -1,6 +1,5 @@
 // Hooks import
 import { useState } from "react";
-
 // Material Components and Icons
 import { Button, Box, Fab, Tooltip } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -47,7 +46,7 @@ export default function SemesterSection({
           }}
         >
           <AutoAwesomeIcon sx={{ mr: 0.8 }} />
-          Auto-schedule
+          Schedule
         </Fab>
       </div>
 

@@ -4,7 +4,7 @@ import axios from "axios";
 export const registerUser = async (newUser) => {
   try {
     const { data } = await axios.post(
-      `${import.meta.env.VITE_API_URL}/api/login/register`,
+      `${import.meta.env.VITE_API_URL}/api/register`,
       newUser
     );
     return data;

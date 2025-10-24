@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { KeyRound } from "lucide-react";
 import Button from "@mui/material/Button";
-import LockIcon from "@mui/icons-material/Lock";
 import LoginForm from "./components/LoginForm";
 
 export default function Login() {
@@ -8,11 +8,10 @@ export default function Login() {
 
   return (
     <>
-      {/* Fullscreen Landing */}
       <div className="relative min-h-screen flex justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {/* Background gradients */}
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-800 opacity-20 blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -right-40 w-130 h-130 bg-red-800 opacity-20 blur-3xl animate-pulse delay-300" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-800 opacity-20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-40 -right-40 w-130 h-130 bg-red-800 opacity-20 blur-3xl rounded-full animate-pulse delay-300" />
 
         {/* Wrapper */}
         <div className="max-w-6xl w-full grid grid-cols-2 items-center px-12">
@@ -43,7 +42,8 @@ export default function Login() {
               </Button>
 
               <span className="text-gray-500 text-md">
-                <LockIcon /> Secure access for department heads and admins
+                <KeyRound className="inline" /> Secure access for department
+                heads
               </span>
             </div>
           </div>

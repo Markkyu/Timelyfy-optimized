@@ -26,10 +26,13 @@ export default function UserAssignmentPage() {
 
   console.log(users);
 
+  // console.log(users?.filter((user) => user.role === "user"));
+
   // Apply search filter
-  const filteredUsers = users?.filter((user) =>
-    user.username.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredUsers = users?.filter((user) =>
+  //   user.username.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+  const filteredUsers = users?.filter((user) => user.role === "user");
 
   // Pagination Slice
   const startIndex = (page - 1) * rowsPerPage;

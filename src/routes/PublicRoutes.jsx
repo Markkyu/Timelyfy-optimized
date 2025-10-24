@@ -9,12 +9,19 @@ import UserAssignmentPage from "@pages/user-assignment/UserAssignmentPage";
 import AllTeachersPage from "@pages/all-teacher-page/AllTeachersPage";
 import TeacherTable from "@pages/all-teacher-page/TeacherTable";
 import EditSchedule from "@pages/teacher-page/components/EditSchedule";
+import UserPage from "@pages/user-page/UserPage";
+import UserDetails from "@pages/user-page/UserDetails";
+import CollegePage from "@pages/dashboard-page/components/CollegePage";
+import RoomPage from "@pages/room-page/RoomPage";
+import PageNotFound from "@pages/page-not-found/PageNotFound";
+// import AccountPage from "@pages/account-page/AccountPage";
 
 const UserDashboard = lazy(() => import("@pages/dashboard-page/UserDashboard"));
 const TeacherPage = lazy(() => import("@pages/teacher-page/TeacherPage"));
 const CourseList = lazy(() => import("@pages/course-page/CourseList"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));
 const ScheduleList = lazy(() => import("@pages/schedule-page/ScheduleList"));
+const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
 
 // public routes no auth - login
 // routes with auth - dashboard, all teachers, not found, schedule list, course list, teacher page, about, tutorial
@@ -26,18 +33,24 @@ export default function PublicRoutes() {
   return (
     <Routes>
       <Route path="/" element={<Dashboard />} />
+      <Route path="/college/:college_id" element={<CollegePage />} />
       <Route path="/course-list/:college_id" element={<CourseList />} />
+      <Route path="/account" element={<AccountPage />} />
       <Route path="/teachers/:department" element={<TeacherPage />} />
       <Route path="/teacher/schedule/:department" element={<EditSchedule />} />
       <Route path="/schedules/:college_id" element={<ScheduleList />} />
+      <Route path="/rooms" element={<RoomPage />} />
       <Route path="/teacher-schedule/:teacher_id" element={<TeacherTable />} />
       <Route path="/teachers" element={<AllTeachersPage />} />
+      <Route path="/user-page" element={<UserPage />} />
+      <Route path="/user-page/:userId" element={<UserDetails />} />
       <Route path="/phase-control" element={<PhaseControl />} />
       <Route path="/assign-user" element={<UserAssignmentPage />} />
       <Route path="/role-management" element={<RoleManagement />} />
       <Route path="/user-management" element={<UserManagement />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/tutorial" element={<Tutorial />} />
+      <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 }

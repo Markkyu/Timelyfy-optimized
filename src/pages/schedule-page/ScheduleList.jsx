@@ -1,5 +1,5 @@
 // React Dom imports
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 // Custom Hooks
 import ErrorContent from "@components/ErrorContent";
@@ -16,6 +16,8 @@ const uniqueSemesters = [1, 2];
 
 export default function ScheduleList() {
   const { college_id } = useParams();
+
+  const navigate = useNavigate();
 
   // custom Hook fetch + caching
   const {
@@ -42,8 +44,7 @@ export default function ScheduleList() {
         <Fab
           variant="extended"
           size="small"
-          component={Link}
-          to="/"
+          onClick={() => navigate(-1)}
           sx={{
             bgcolor: "#335c67",
             fontWeight: 600,

@@ -1,30 +1,51 @@
 // React
 import { useState } from "react";
 // Material Icons and Components
-import { IconButton, Tooltip, Stack } from "@mui/material";
+import { IconButton, Tooltip, Stack, Chip, Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
+import PersonIcon from "@mui/icons-material/Person";
 // components
 import EditCourseForm from "./EditCourseForm";
 import AssignTeacherForm from "./AssignTeacherForm";
 // hooks
 import { useDeleteCourse } from "@hooks/useCourses";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCourse } from "@api/coursesAPI";
+import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 
 export default function CourseCard({ course }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [teacherAssign, setTeacherAssign] = useState(false);
 
-  const deleteCourseMutation = useDeleteCourse();
+  // const deleteCourseMutation = useDeleteCourse();
 
   const assignedTeacher = `${course?.first_name} ${course?.last_name}`;
 
+  const queryClient = useQueryClient();
+
+  const { mutate, isPending: loading } = useMutation({
+    mutationFn: (courseId) => deleteCourse(courseId),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: createCourseQueryOptions().queryKey,
+      });
+      onClose();
+    },
+
+    onError: (error) => {
+      console.error(error.message);
+      setError(error.message);
+    },
+  });
+
   const handleDelete = () => {
-    console.log("first");
-    deleteCourseMutation.mutate(course.course_id);
-    console.log("first");
+    // deleteCourseMutation.mutate(course.course_id);
+    mutate(course.course_id);
   };
 
   if (!course) {
@@ -42,14 +63,16 @@ export default function CourseCard({ course }) {
         <p className="m-1 font-semibold">
           {course.course_code}: {course.course_name}
         </p>
-        <p className="m-1">
+        <span className="m-1">
           <b>{course.hours_week}</b> Hrs/wk
-          <span
-            className={`ml-2 rounded-full border px-2 ${course?.first_name ? `text-blue-600` : `text-red-600`}`}
-          >
-            {course?.first_name ? assignedTeacher : "Unassigned"}
+          <span className="ml-2">
+            <Chip
+              size="small"
+              color={course?.first_name ? "primary" : "error"}
+              label={course?.first_name ? assignedTeacher : "TBA"}
+            />
           </span>
-        </p>
+        </span>
       </div>
 
       {/* Course Actions */}

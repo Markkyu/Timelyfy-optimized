@@ -13,8 +13,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
-import { createCollege } from "@api/getCollegesAPI";
-import { useQueryClient } from "@tanstack/react-query";
+import { createCollege } from "@api/collegesAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
@@ -23,28 +23,41 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function AddCollegeForm({ open, onClose }) {
   const [collegeName, setCollegeName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [collegeMajor, setCollegeMajor] = useState("");
+  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const queryClient = useQueryClient();
+
+  // Mutation function
+  const { mutate, isPending: loading } = useMutation({
+    mutationFn: (collegeData) => createCollege(collegeData),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: createCollegeQueryOptions().queryKey,
+      });
+      setCollegeName("");
+      setCollegeMajor("");
+      onClose();
+    },
+
+    onError: (error) => {
+      console.error(error.message);
+      setError("Error");
+    },
+  });
 
   // handle function add college
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      setLoading(true);
-      await createCollege({ college_name: collegeName });
-      queryClient.invalidateQueries({
-        queryKey: createCollegeQueryOptions().queryKey,
-      });
-    } catch (err) {
-      setError({ message: `Error: ${err.message}` });
-    } finally {
-      setLoading(false);
-      setCollegeName("");
-      onClose();
-    }
+    const collegeData = {
+      college_name: collegeName,
+      college_major: collegeMajor,
+    };
+
+    mutate(collegeData);
   };
 
   return (
@@ -68,7 +81,6 @@ export default function AddCollegeForm({ open, onClose }) {
         >
           <CloseIcon />
         </IconButton>
-
         <DialogTitle>
           <Typography
             variant="h5"
@@ -80,8 +92,16 @@ export default function AddCollegeForm({ open, onClose }) {
           </Typography>
         </DialogTitle>
 
+        {error && (
+          <div className="flex">
+            <span className="p-2 bg-red-100 border-2 border-red-300 text-red-500 text-center w-full mx-2">
+              {error}
+            </span>
+          </div>
+        )}
+
         <DialogContent>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-2 mt-2">
             <TextField
               label="College Program Name"
               value={collegeName}
@@ -90,6 +110,17 @@ export default function AddCollegeForm({ open, onClose }) {
               margin="normal"
               required
               autoComplete="off"
+              placeholder="ex. Secondary Education"
+            />
+
+            <TextField
+              label="Major (optional)"
+              value={collegeMajor}
+              onChange={(e) => setCollegeMajor(e.target.value)}
+              fullWidth
+              margin="normal"
+              autoComplete="off"
+              placeholder="ex. Major in Mathematics"
             />
 
             <Button

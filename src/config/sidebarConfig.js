@@ -8,6 +8,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import HubIcon from "@mui/icons-material/Hub";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
 export const sidebarItems = [
   {
@@ -29,28 +30,42 @@ export const sidebarItems = [
     text: "Phase Control",
     path: "phase-control",
     icon: HubIcon,
-    roles: ["admin", "master_scheduler"],
+    roles: ["*"],
+  },
+  // {
+  //   // assign regular users their college programs
+  //   text: "College Assignment",
+  //   path: "assign-user",
+  //   icon: AssignmentReturnedOutlinedIcon,
+  //   roles: ["admin", "master_scheduler"], // admin and master scheduler only
+  // },
+  // {
+  //   // manage accounts
+  //   text: "User Management",
+  //   path: "user-management",
+  //   icon: ManageAccountsIcon,
+  //   roles: ["admin"],
+  // },
+  // {
+  //   // promote or demote regular users
+  //   text: "Manage Roles",
+  //   path: "role-management",
+  //   icon: KeyOutlinedIcon,
+  //   roles: ["admin"],
+  // },
+  {
+    // User management in one page
+    text: "Room List",
+    path: "room-page",
+    icon: MeetingRoomIcon,
+    roles: ["*"],
   },
   {
-    // assign regular users their college programs
-    text: "College Assignment",
-    path: "assign-user",
-    icon: AssignmentReturnedOutlinedIcon,
-    roles: ["admin", "master_scheduler"], // admin and master scheduler only
-  },
-  {
-    // manage accounts
-    text: "User Management",
-    path: "user-management",
+    // User management in one page
+    text: "Manage Users",
+    path: "user-page",
     icon: ManageAccountsIcon,
-    roles: ["admin"],
-  },
-  {
-    // promote or demote regular users
-    text: "Manage Roles",
-    path: "role-management",
-    icon: KeyOutlinedIcon,
-    roles: ["admin"],
+    roles: ["admin", "master_scheduler"],
   },
   {
     divider: true, // special marker for <hr/>

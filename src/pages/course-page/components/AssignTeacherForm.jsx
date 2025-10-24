@@ -12,9 +12,10 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import Select from "react-select";
 import useTeachers from "@hooks/useTeachers";
-import { assignTeacherCourse } from "@api/getCoursesAPI";
-import { useQueryClient } from "@tanstack/react-query";
+import { assignTeacherCourse } from "@api/coursesAPI";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
+import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,7 +28,12 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
   const [error, setError] = useState("");
 
   // Fetch all teachers using TanStack Query
-  const { data: teachers, isLoading, isError } = useTeachers();
+  // const { data: teachers, isLoading, isError } = useTeachers();
+  const {
+    data: teachers,
+    isLoading,
+    isError,
+  } = useQuery(createTeacherQueryOptions());
 
   const queryClient = useQueryClient();
 
@@ -64,7 +70,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       label: `${t.first_name} ${t.last_name}`,
     })) || [];
 
-  teacherOptions.unshift({ value: null, label: "None / Unassign" });
+  teacherOptions.unshift({ value: null, label: "TBA" });
 
   return (
     <Dialog
@@ -94,7 +100,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       </DialogTitle>
 
       <DialogContent>
-        <form onSubmit={handleSubmit} className="h-95">
+        <form onSubmit={handleSubmit}>
           {error && (
             <span className="flex py-1.5 rounded-xl text-red-500 text-lg justify-center bg-red-100">
               {error}
@@ -111,6 +117,10 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
               onChange={(option) => setSelectedTeacher(option)}
               placeholder="Choose a teacher..."
               isClearable
+              menuPortalTarget={document.body}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              }}
             />
           </div>
           <Button

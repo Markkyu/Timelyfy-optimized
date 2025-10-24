@@ -1,8 +1,9 @@
 // React hooks
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // MUI Icons and Components
-import { Pagination } from "@mui/material";
+import { Pagination, Button } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
 
 // Custom Hooks
@@ -16,11 +17,18 @@ import LoadingContent from "@components/LoadingContent";
 import EmptyContent from "@components/EmptyContent";
 import ErrorContent from "@components/ErrorContent";
 import SearchBar from "@components/SearchBar";
+import { ChevronLeft, CirclePlus } from "lucide-react";
+import RenderWhenRole from "@components/RenderWhenRole";
+
+import AddTeacherForm from "./components/AddTeacherForm";
 
 export default function AllTeachersPage() {
+  const [open, setOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const rowsPerPage = 4; // show 4 teachers per page
+
+  const navigate = useNavigate();
 
   const {
     data: teachers,
@@ -28,15 +36,16 @@ export default function AllTeachersPage() {
     error: teachers_error,
   } = useTeachers();
 
-  // const teachers = [];
-  // const teachers_loading = true;
-  // const teachers_error = { message: "true" };
+  console.log(teachers);
 
   // Search Function
-  const filteredData = teachers?.filter((item) => {
-    const fullName = `${item.first_name} ${item.last_name}`;
-    return fullName.toLowerCase().includes(searchTerm.toLowerCase());
-  });
+  const filteredData = useMemo(() => {
+    const lower = searchTerm.toLowerCase();
+    return teachers?.filter((item) => {
+      const fullName = `${item.first_name} ${item.last_name}`;
+      return fullName.toLowerCase().includes(lower);
+    });
+  }, [teachers, searchTerm]);
 
   // Pagination Slice
   const startIndex = (page - 1) * rowsPerPage;
@@ -62,10 +71,41 @@ export default function AllTeachersPage() {
       {/* Header — Back Button, Info/ Warning */}
 
       {/* <main className="bg-amber-300 flex flex-col h-full p-6 space-y-4"> */}
-      <header>
-        <PageHeader
+      <header className="flex justify-between">
+        {/* <PageHeader
           description={"See all teacher's teaching assignment in this page."}
-        />
+        /> */}
+
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: "40px",
+            fontWeight: 600,
+            bgcolor: "maroon",
+            color: "white",
+          }}
+          onClick={() => navigate(-1)}
+          startIcon={<ChevronLeft />}
+        >
+          Go Back
+        </Button>
+
+        <RenderWhenRole role={["master_scheduler", "admin"]}>
+          <Button
+            variant="contained"
+            // size="small"
+            sx={{
+              borderRadius: "30px",
+              fontWeight: 600,
+              bgcolor: "maroon",
+              color: "white",
+            }}
+            onClick={() => setOpen(true)}
+            endIcon={<CirclePlus />}
+          >
+            Add Teacher
+          </Button>
+        </RenderWhenRole>
       </header>
 
       {/* Main content */}
@@ -74,7 +114,7 @@ export default function AllTeachersPage() {
           // Loading State
           <div className="flex flex-col items-center justify-center h-full">
             <LoadingContent
-              loadingTitle={"Teachers"}
+              loadingTitle={"Loading Teachers"}
               loadingDesc={"Getting teachers information..."}
             />
           </div>
@@ -134,6 +174,8 @@ export default function AllTeachersPage() {
           </div>
         )}
       </main>
+
+      <AddTeacherForm open={open} onClose={() => setOpen(false)} />
       {/* </main> */}
     </div>
   );

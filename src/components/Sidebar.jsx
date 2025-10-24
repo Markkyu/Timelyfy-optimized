@@ -58,7 +58,7 @@ export const SidebarItem = ({ icon, text, path, onClick }) => {
       </span>
 
       {!expanded && (
-        <div className="absolute bg-gray-800 left-full rounded-md px-2 py-1 ml-6 text-white text-sm invisible -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
+        <div className="w-20 text-center absolute bg-gray-800 left-full rounded-md px-2 py-1 ml-6 text-white text-sm invisible -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
           {text}
         </div>
       )}

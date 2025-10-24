@@ -8,3 +8,7 @@
 
     --font-custom-font: "SUSE Mono", sans-serif;
 }
+/* 
+body {
+    @apply font-custom-font
+} */

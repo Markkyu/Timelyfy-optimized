@@ -48,7 +48,10 @@ export default function LoginForm({ showLogin, setShowLogin }) {
       setShowLogin(false);
       navigate("/");
     } catch (err) {
-      setError(err.message || "Login failed");
+      setError(err.response?.data?.message || err.message);
+      setTimeout(() => {
+        setError("");
+      }, 3000);
     } finally {
       setLoading(false);
       setUsername("");
@@ -82,14 +85,14 @@ export default function LoginForm({ showLogin, setShowLogin }) {
           component="span"
           align="center"
           display="block"
+          fontWeight="600"
         >
           Login to Timelyfy
         </Typography>
       </DialogTitle>
-
       <DialogContent>
         {error && (
-          <div className="flex justify-center bg-red-100 rounded-lg py-1 text-red-500 text-xl">
+          <div className="flex justify-center bg-red-100 py-2 text-red-500 text-xl">
             {error}
           </div>
         )}
@@ -101,7 +104,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             ref={usernameRef}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            className="w-full px-4 py-2 border border-gray-300 rounded-sm"
             required
           />
 
@@ -112,22 +115,23 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={showPassword ? "text" : "password"}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md"
+            className="w-full px-4 py-2 border border-gray-300 rounded-sm"
             autoComplete="off"
             required
           />
 
-          {/* Show password checkbox */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={showPassword}
-                onChange={() => setShowPassword(!showPassword)}
-                size="small"
-              />
-            }
-            label={<Typography variant="body2">Show Password</Typography>}
-          />
+          <div>
+            <input
+              id="showPassword"
+              type="checkbox"
+              className="mr-2"
+              checked={showPassword}
+              onChange={() => setShowPassword(!showPassword)}
+            />
+            <label className="text-gray-600" htmlFor="showPassword">
+              Show Password
+            </label>
+          </div>
 
           <Button
             type="submit"

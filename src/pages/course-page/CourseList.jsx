@@ -1,5 +1,5 @@
 // React Dom Hooks
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
 // Custom Hooks
@@ -43,8 +43,7 @@ export default function CourseList() {
         <Fab
           variant="extended"
           size="small"
-          component={Link}
-          to="/"
+          onClick={() => navigate(-1)}
           sx={{
             bgcolor: "#335c67",
             fontWeight: 600,

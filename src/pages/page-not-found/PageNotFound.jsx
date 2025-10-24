@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 export default function PageNotFound() {
   return (
     <div className="h-full flex items-center justify-center">
-      <div className="bg-gray-100 text-center space-y-6 p-8 rounded-2xl shadow-md">
+      <div className=" text-center space-y-6">
         <h1 className="text-7xl font-bold text-gray-800 animate-pulse">
           Oops! Page not found
         </h1>

@@ -11,11 +11,13 @@ import PublicRoutes from "./routes/publicRoutes";
 import LoadingComponent from "@components/LoadingComponent";
 import ProtectedRoute from "@context/ProtectedRoute";
 import MasterSchedulerRoutes from "@routes/MasterScheduler";
+import SessionExpiredDialog from "@components/SessionExpiredDialog";
 
 export default function App() {
   return (
     <>
       <BrowserRouter>
+        <SessionExpiredDialog />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route element={<Layout />}>

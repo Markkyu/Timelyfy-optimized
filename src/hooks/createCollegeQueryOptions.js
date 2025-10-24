@@ -1,5 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getColleges } from "@api/getCollegesAPI";
+import { getColleges } from "@api/collegesAPI";
 
 export default function createCollegeQueryOptions() {
   return queryOptions({
@@ -9,4 +9,3 @@ export default function createCollegeQueryOptions() {
     cacheTime: Infinity,
   });
 }
-

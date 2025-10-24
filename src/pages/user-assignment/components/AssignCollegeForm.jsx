@@ -45,20 +45,24 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
   const options =
     colleges?.map((c) => ({
       value: c.college_id,
-      label: c.college_name,
+      label: `${c.college_name} ${c.college_major}`,
     })) || [];
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
       <DialogTitle>Assign College Programs</DialogTitle>
       <DialogContent>
-        <form onSubmit={handleSubmit} className="h-85">
+        <form onSubmit={handleSubmit}>
           <Select
             isMulti
             options={options}
             isLoading={isLoading}
             onChange={(val) => setSelectedPrograms(val)}
             placeholder="Select college programs..."
+            menuPortalTarget={document.body}
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            }}
           />
 
           <Button

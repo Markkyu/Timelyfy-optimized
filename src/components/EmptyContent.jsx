@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function EmptyContent({ icon: Icon, emptyTitle, emptyDesc }) {
   return (
     <>

@@ -1,11 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getCourses } from "@api/getCoursesAPI";
+import { getCourses } from "@api/coursesAPI";
 
-export default function createCollegeQueryOptions() {
+export default function createCourseQueryOptions() {
   return queryOptions({
-    queryKey: ["course"],
+    queryKey: ["courses"],
     queryFn: () => getCourses(),
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: 1000 * 60 * 10, // 10 minutes
+    staleTime: 1000 * 60 * 10, // 10 minutes
+    cacheTime: 1000 * 60 * 20, // 20 minutes
   });
 }
