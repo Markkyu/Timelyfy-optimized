@@ -11,7 +11,7 @@ export default function AccountPage() {
   const { user } = useAuthStore();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen max-w-7xl 2xl:max-w-[1600px] mx-auto bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="mx-auto">
         {/* Page Title */}
         <div className="mb-6">
@@ -35,16 +35,13 @@ export default function AccountPage() {
           {/* Left Column */}
           <div className="space-y-6">
             {/* Change Password Card */}
-            <ChangePasswordCard />
+            <ChangePasswordCard
+              changePasswordStatus={user?.change_password}
+              userId={user?.id}
+            />
 
             {/* Account Info Card */}
             <AccountInfoCard user={user} />
-          </div>
-
-          {/* Right Column */}
-          <div className="space-y-6">
-            {/* Delete Account Card */}
-            <DeleteAccountCard />
           </div>
         </div>
 

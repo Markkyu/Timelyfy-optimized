@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Select from "react-select";
@@ -17,15 +18,15 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import createRoomQueryOptions from "@hooks/createRoomQueryOptions";
+import createCourseQueryById from "@hooks/createCourseQueryById";
 
 export default function AssignTeacherForm({ open, onClose, courseId }) {
   const [courseCode, setCourseCode] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [selectedRoom, setSelectedRoom] = useState(null);
 
   // Fetch all teachers using TanStack Query
   // const { data: teachers, isLoading, isError } = useTeachers();
@@ -36,6 +37,15 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
   } = useQuery(createTeacherQueryOptions());
 
   const queryClient = useQueryClient();
+
+  // Fetch rooms when teacher selected
+  const teacherId = selectedTeacher?.value;
+
+  const {
+    data: rooms,
+    isLoading: roomsLoading,
+    isError: roomsError,
+  } = useQuery(createRoomQueryOptions(teacherId));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,9 +59,10 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       await assignTeacherCourse({
         course_id: courseId,
         teacher_id: selectedTeacher.value,
+        room_id: selectedRoom.value,
       });
       queryClient.invalidateQueries({
-        queryKey: createCourseQueryOptions.queryKey,
+        queryKey: createCourseQueryById.queryKey,
       });
     } catch (err) {
       setError(`Error: ${err.message}`);
@@ -70,16 +81,25 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       label: `${t.first_name} ${t.last_name}`,
     })) || [];
 
-  teacherOptions.unshift({ value: null, label: "TBA" });
+  teacherOptions.unshift({ value: 0, label: "TBA" });
+
+  // Convert rooms to select options
+  const roomOptions =
+    rooms?.map((r) => ({
+      value: r.room_id,
+      label: r.room_name,
+    })) || [];
+
+  roomOptions.unshift({ value: 0, label: "TBA" });
 
   return (
     <Dialog
       open={open}
-      TransitionComponent={Transition}
+      TransitionComponent={Grow}
       keepMounted
       onClose={onClose}
       fullWidth
-      maxWidth="xs"
+      maxWidth="sm"
     >
       <IconButton
         onClick={onClose}
@@ -95,7 +115,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
           align="center"
           display="block"
         >
-          Assign Teacher
+          Assign Teacher + Room
         </Typography>
       </DialogTitle>
 
@@ -106,23 +126,52 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
               {error}
             </span>
           )}
-          <div style={{ marginTop: "16px", marginBottom: "8px" }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>
-              Select Teacher
-            </Typography>
-            <Select
-              options={teacherOptions}
-              isLoading={isLoading}
-              value={selectedTeacher}
-              onChange={(option) => setSelectedTeacher(option)}
-              placeholder="Choose a teacher..."
-              isClearable
-              menuPortalTarget={document.body}
-              styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-              }}
-            />
-          </div>
+          <section className="flex gap-6 w-full">
+            <div className="mt-6 flex-1">
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Select Teacher
+              </Typography>
+              <Select
+                options={teacherOptions}
+                isLoading={isLoading}
+                value={selectedTeacher}
+                onChange={(option) => setSelectedTeacher(option)}
+                placeholder="Choose a teacher..."
+                isClearable
+                menuPosition="fixed"
+                menuShouldScrollIntoView={false}
+                styles={{
+                  control: (base) => ({ ...base, zIndex: 100, height: "60px" }),
+                }}
+              />
+            </div>
+
+            <div className="mt-6 flex-1">
+              <Typography variant="h6" sx={{ mb: 1 }}>
+                Select Room
+              </Typography>
+
+              <Select
+                options={roomOptions}
+                isLoading={roomsLoading}
+                value={selectedRoom}
+                onChange={(option) => setSelectedRoom(option)}
+                placeholder={
+                  !selectedTeacher
+                    ? "Select teacher first..."
+                    : "Choose a room..."
+                }
+                isDisabled={!selectedTeacher}
+                isClearable
+                menuPosition="fixed"
+                menuShouldScrollIntoView={false}
+                styles={{
+                  control: (base) => ({ ...base, zIndex: 1, height: "60px" }),
+                }}
+              />
+            </div>
+          </section>
+
           <Button
             type="submit"
             variant="contained"

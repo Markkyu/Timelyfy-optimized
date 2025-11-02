@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddCourse } from "@hooks/useCourses";
@@ -16,11 +17,7 @@ import { addCourse } from "@api/coursesAPI";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import recentCourseQuery from "@hooks/recentCourseQuery";
 
 export default function AddCourseForm({
   open,
@@ -31,7 +28,7 @@ export default function AddCourseForm({
 }) {
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
-  const [hoursWeek, setHoursWeek] = useState(0);
+  const [hoursWeek, setHoursWeek] = useState(3);
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -43,13 +40,22 @@ export default function AddCourseForm({
   const { mutate, isPending: loading } = useMutation({
     mutationFn: (courseData) => addCourse(courseData),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: createCourseQueryOptions().queryKey,
+    onSuccess: (data, newCourse) => {
+      // queryClient.invalidateQueries({
+      //   queryKey: ["course", college_id],
+      // });
+
+      queryClient.setQueryData(["course", college_id], (old) => {
+        console.log(old);
+        console.log(newCourse);
+
+        if (!old) return [newCourse];
+        return [...old, newCourse];
       });
+
       setCourseCode("");
       setCourseName("");
-      setHoursWeek(0);
+      setHoursWeek(3);
       onClose();
     },
 
@@ -59,8 +65,12 @@ export default function AddCourseForm({
     },
   });
 
-  const { data: currSubjects } = useQuery(createCourseQueryOptions());
-  const recentCourses = currSubjects?.slice(-5).reverse();
+  const { data: currSubjects } = useQuery(recentCourseQuery());
+
+  // console.log(currSubjects);
+
+  // const { data: currSubjects } = useQuery(createCourseQueryOptions());
+  const recentCourses = currSubjects?.reverse();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -73,6 +83,7 @@ export default function AddCourseForm({
       course_college: college_id,
       semester: sem,
       created_by: user.id,
+      assigned_teacher: null,
     };
 
     mutate(courseData);
@@ -87,7 +98,7 @@ export default function AddCourseForm({
   return (
     <Dialog
       open={open}
-      TransitionComponent={Transition}
+      TransitionComponent={Grow}
       keepMounted
       onClose={onClose}
       fullWidth

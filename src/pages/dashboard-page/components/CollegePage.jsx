@@ -12,12 +12,14 @@ import CollegeDetailsHeader from "./college-page-components/CollegeDetailsHeader
 import NavigationCards from "./college-page-components/NavigationCards";
 import CollegeStatsGrid from "./college-page-components/CollegeStatsGrid";
 import CollegeInfoPanel from "./college-page-components/CollegeInfoPanel";
+import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
 
 export default function CollegePage() {
   const { college_id } = useParams();
   const navigate = useNavigate();
 
-  const { data: college, isLoading, error } = useCollegeById(college_id);
+  // const { data: college, isLoading, error } = useCollegeById(college_id);
+  const { data: college, isLoading, error } = useCollegeQueryById(college_id);
 
   // Loading state
   if (isLoading) {
@@ -35,16 +37,13 @@ export default function CollegePage() {
   if (error) {
     return (
       <div className="h-full flex items-center justify-center">
-        <ErrorContent
-          errorTitle="Error"
-          error="Failed to load college details"
-        />
+        <ErrorContent errorTitle="College Error" error={error} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 py-8">
       <Container maxWidth="xl">
         {/* Back Button */}
         <Button
@@ -54,6 +53,7 @@ export default function CollegePage() {
             mb: 3,
             fontWeight: 600,
             color: "#7f1d1d",
+            borderRadius: "12px",
             "&:hover": {
               backgroundColor: "rgba(127, 29, 29, 0.04)",
             },

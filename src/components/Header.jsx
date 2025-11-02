@@ -19,12 +19,18 @@ const Header = ({ user_name, user_role }) => {
         {/* Left: Logo + Title */}
         <Link
           to="/"
-          className="flex items-center text-white hover:text-gray-200"
+          className="flex gap-2 items-center text-white hover:text-gray-200"
         >
-          <img className="pr-2 h-8 inline" src="/timelyfy.svg" alt="Logo" />
+          <img
+            className="h-8 inline bg-white p-0.5 rounded-full"
+            src="/timelyfy.svg"
+            alt="Logo"
+          />
           <div>
-            <span className="font-bold text-xl">Timelyfy: Scheduler</span>
-            <span> for MSEUF-CI</span>
+            <span className="font-semibold text-xl">Timelyfy Scheduler: </span>
+            <span className="font-semibold text-xl text-gray-100">
+              MSEUF-CI
+            </span>
           </div>
         </Link>
 

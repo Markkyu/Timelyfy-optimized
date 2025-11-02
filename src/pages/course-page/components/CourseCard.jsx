@@ -1,5 +1,6 @@
 // React
 import { useState } from "react";
+
 // Material Icons and Components
 import { IconButton, Tooltip, Stack, Chip, Avatar } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,14 +8,17 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 import PersonIcon from "@mui/icons-material/Person";
+
 // components
 import EditCourseForm from "./EditCourseForm";
 import AssignTeacherForm from "./AssignTeacherForm";
+
 // hooks
 import { useDeleteCourse } from "@hooks/useCourses";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCourse } from "@api/coursesAPI";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
+import createCourseQueryById from "@hooks/createCourseQueryById";
 
 export default function CourseCard({ course }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -30,16 +34,24 @@ export default function CourseCard({ course }) {
   const { mutate, isPending: loading } = useMutation({
     mutationFn: (courseId) => deleteCourse(courseId),
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: createCourseQueryOptions().queryKey,
+    onSuccess: (_, courseId) => {
+      // queryClient.invalidateQueries({
+      //   queryKey: ["course", course.course_college],
+      // });
+
+      console.log(courseId);
+
+      queryClient.setQueryData(["course", course.course_college], (old) => {
+        if (!old) return [];
+        return old.filter((c) => c.course_id !== courseId);
       });
-      onClose();
+
+      setDeleteOpen(false);
     },
 
     onError: (error) => {
       console.error(error.message);
-      setError(error.message);
+      // setError(error.message);
     },
   });
 
@@ -65,11 +77,17 @@ export default function CourseCard({ course }) {
         </p>
         <span className="m-1">
           <b>{course.hours_week}</b> Hrs/wk
-          <span className="ml-2">
+          <span className="ml-2 space-x-2">
             <Chip
               size="small"
               color={course?.first_name ? "primary" : "error"}
               label={course?.first_name ? assignedTeacher : "TBA"}
+            />
+            <span>➜</span>
+            <Chip
+              size="small"
+              color={course?.room_name ? "secondary" : "error"}
+              label={course?.room_name ? course?.room_name : "TBA"}
             />
           </span>
         </span>

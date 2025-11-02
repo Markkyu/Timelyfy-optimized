@@ -74,19 +74,25 @@ export default function UserDetails() {
 
   return (
     <div className="min-h-screen bg-gray-200 p-4 md:p-6 lg:p-8">
-      <div className="mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <Button
+          variant="outlined"
           startIcon={<ArrowBackIcon />}
           onClick={handleBack}
-          sx={{ mb: 3, fontWeight: 600 }}
-          color="error"
+          sx={{
+            mb: 3,
+            fontWeight: 600,
+            border: 2,
+            borderRadius: "12px",
+            color: "#6B0909",
+          }}
         >
           Back to Users
         </Button>
 
         {/* Main Content Card */}
-        <Card className="shadow-lg">
+        <Card className="shadow-lg p-6" sx={{ borderRadius: "12px" }}>
           <CardContent className="p-6">
             {/* User Header Section */}
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-6">

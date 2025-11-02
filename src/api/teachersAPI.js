@@ -66,7 +66,7 @@ export const updateTeacher = async (teacherId, updates) => {
 
 export const deleteTeacher = async (teacherId) => {
   try {
-    const { data } = await API.delete(`${API_URL}/api/teachers/${teacherId}`);
+    const { data } = await axios.delete(`${API_URL}/api/teachers/${teacherId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

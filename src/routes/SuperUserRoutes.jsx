@@ -1,14 +1,21 @@
 import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
+import { lazy } from "react";
+import ProtectedRoute from "@context/ProtectedRoute";
+import { ROLES } from "./roles";
 
-const GlobalDashboard = lazy(
-  () => import("@pages/dashboard-page/GlobalDashboard")
-);
+const UserDashboard = lazy(() => import("@pages/dashboard-page/UserDashboard"));
 
 export default function SuperUserRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<GlobalDashboard />} />
+      <Route
+        path="/user-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={[ROLES.SUPER]}>
+            <UserDashboard />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   );
 }

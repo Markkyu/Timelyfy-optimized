@@ -7,6 +7,7 @@ import {
   DialogContent,
   DialogActions,
   Alert,
+  Grow,
 } from "@mui/material";
 import {
   ArrowRight,
@@ -143,25 +144,16 @@ export default function PhaseActionButtons({
             onClick={handleBackClick}
             disabled={isPending || isAtStart}
             variant="outlined"
-            size="large"
             startIcon={<ArrowLeft size={20} />}
             sx={{
               borderColor: "#7f1d1d",
               color: "#7f1d1d",
               fontWeight: 600,
-              borderRadius: "40px",
               px: 4,
               py: 1.5,
               fontSize: "1.1rem",
-              "&:hover": {
-                borderColor: "#991b1b",
-                bgcolor: "rgba(127, 29, 29, 0.04)",
-              },
-              "&:disabled": {
-                borderColor: "#d1d5db",
-                color: "#9ca3af",
-              },
               textTransform: "none",
+              borderRadius: "12px",
             }}
           >
             Go Back
@@ -172,18 +164,14 @@ export default function PhaseActionButtons({
             onClick={handleNextClick}
             disabled={isPending}
             variant="contained"
-            size="large"
             endIcon={getNextButtonIcon()}
             sx={{
               bgcolor: isCompletionPhase ? "#059669" : "#7f1d1d",
+              borderRadius: "12px",
               fontWeight: 600,
-              borderRadius: "40px",
               px: 4,
               py: 1.5,
               fontSize: "1.1rem",
-              "&:hover": {
-                bgcolor: isCompletionPhase ? "#047857" : "#991b1b",
-              },
               textTransform: "none",
             }}
           >
@@ -195,6 +183,7 @@ export default function PhaseActionButtons({
       {/* Confirmation Dialog */}
       <Dialog
         open={confirmDialog.open}
+        TransitionComponent={Grow}
         onClose={handleCancel}
         maxWidth="sm"
         fullWidth
@@ -213,7 +202,7 @@ export default function PhaseActionButtons({
             <AlertTriangle className="text-orange-600" size={28} />
           )}
           {confirmDialog.type === "completion"
-            ? "🎉 Congratulations!"
+            ? "Congratulations!"
             : confirmDialog.action === "back"
               ? "Confirm Go Back"
               : "Confirm Phase Transition"}
@@ -277,15 +266,17 @@ export default function PhaseActionButtons({
             </div>
           )}
         </DialogContent>
-        <DialogActions sx={{ p: 3, gap: 1 }}>
+        <DialogActions sx={{ p: 3, gap: 0.4 }}>
           <Button
             onClick={handleCancel}
             variant="outlined"
-            sx={{ borderRadius: "20px", fontWeight: 600 }}
+            disableElevation
+            sx={{ fontWeight: 600, borderColor: "#7f1d1d", color: "#7f1d1d" }}
           >
             Cancel
           </Button>
           <Button
+            disableElevation
             onClick={() => handleConfirm(confirmDialog.action)}
             variant="contained"
             color={
@@ -296,7 +287,12 @@ export default function PhaseActionButtons({
                   : "error"
             }
             disabled={isPending}
-            sx={{ borderRadius: "20px", fontWeight: 600 }}
+            sx={{
+              fontWeight: 600,
+              borderColor: "#7f1d1d",
+              bgcolor: "#7f1d1d",
+              color: "white",
+            }}
           >
             {confirmDialog.type === "completion"
               ? "Reset System"

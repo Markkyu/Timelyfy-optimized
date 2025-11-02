@@ -1,6 +1,9 @@
+import { Suspense, lazy } from "react";
 import useAuthStore from "@stores/useAuthStore";
-import GlobalDashboard from "./GlobalDashboard";
+// import GlobalDashboard from "./GlobalDashboard";
 import UserDashboard from "./UserDashboard";
+
+const GlobalDashboard = lazy(() => import("./GlobalDashboard"));
 
 export default function Dashboard() {
   const { user } = useAuthStore();

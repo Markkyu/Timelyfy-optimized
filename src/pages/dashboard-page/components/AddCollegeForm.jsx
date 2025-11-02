@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -44,7 +45,7 @@ export default function AddCollegeForm({ open, onClose }) {
 
     onError: (error) => {
       console.error(error.message);
-      setError("Error");
+      setError(error.message);
     },
   });
 
@@ -64,7 +65,7 @@ export default function AddCollegeForm({ open, onClose }) {
     <>
       <Dialog
         open={open}
-        TransitionComponent={Transition}
+        TransitionComponent={Grow}
         keepMounted
         onClose={onClose}
         fullWidth
@@ -87,6 +88,7 @@ export default function AddCollegeForm({ open, onClose }) {
             component="span"
             align="center"
             display="block"
+            fontWeight={600}
           >
             Add College Program
           </Typography>
@@ -122,6 +124,26 @@ export default function AddCollegeForm({ open, onClose }) {
               autoComplete="off"
               placeholder="ex. Major in Mathematics"
             />
+
+            {/* <label htmlFor="">College Program Name</label>
+            <input
+              type="text"
+              value={collegeName}
+              onChange={(e) => setCollegeName(e.target.value)}
+              className="border border-gray-400 p-3 w-full rounded "
+              autoFocus
+              placeholder="Secondary Education"
+            />
+
+            <label htmlFor="">College Program Name</label>
+            <input
+              type="text"
+              className="border border-gray-400 p-3 w-full rounded"
+              value={collegeMajor}
+              onChange={(e) => setCollegeMajor(e.target.value)}
+              autoFocus
+              placeholder="Major in Mathematics"
+            /> */}
 
             <Button
               type="submit"

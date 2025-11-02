@@ -16,7 +16,7 @@ export default function DeleteUserDialog({
 }) {
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ color: "error.main", fontWeight: 600 }}>
+      <DialogTitle color="error" sx={{ fontWeight: 600 }}>
         Confirm Account Deletion
       </DialogTitle>
       <DialogContent>
@@ -31,20 +31,19 @@ export default function DeleteUserDialog({
           <li>Associated records</li>
         </ul>
       </DialogContent>
-      <DialogActions sx={{ p: 3, gap: 1 }}>
+      <DialogActions sx={{ p: 2, gap: 0.5 }}>
         <Button
           onClick={onClose}
           variant="outlined"
-          sx={{ borderRadius: "20px", fontWeight: 600 }}
+          sx={{ fontWeight: 600, color: "#7D1414", border: 2 }}
         >
           Cancel
         </Button>
         <Button
           onClick={onConfirm}
           variant="contained"
-          color="error"
           disabled={isDeletingUser}
-          sx={{ borderRadius: "20px", fontWeight: 600 }}
+          sx={{ fontWeight: 600, bgcolor: "#7D1414" }}
           startIcon={<DeleteIcon />}
         >
           {isDeletingUser ? "Deleting..." : "Delete User"}

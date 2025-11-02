@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const getUsers = async () => {
   try {
-    const { data } = await axios.get(
-      `${import.meta.env.VITE_API_URL}/api/users`
-    );
+    const { data } = await axios.get(`${API_URL}/api/users`);
     return data;
   } catch (error) {
-    throw new Error(error);
+    throw new Error(error.response?.data?.message || error.message);
   }
 };
 
@@ -18,7 +18,7 @@ export default function useUsers() {
     queryFn: getUsers,
     staleTime: Infinity,
     cacheTime: Infinity,
-    retry: 1,
+    retry: 0,
   });
 }
 

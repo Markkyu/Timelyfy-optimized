@@ -9,8 +9,10 @@ import useCourses from "@hooks/useCourses";
 // Material Components
 import SemesterSection from "./components/SemesterSection";
 import { Button, Fab } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { ArrowLeft } from "lucide-react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import createCourseQueryById from "@hooks/createCourseQueryById";
+import { useQuery } from "@tanstack/react-query";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -20,11 +22,19 @@ export default function CourseList() {
   const { college_id } = useParams();
 
   // custom Hook fetch + cache
+  // const {
+  //   data: courses,
+  //   isFetching: courses_loading,
+  //   error: courses_error,
+  // } = useCourses(college_id);
+
   const {
     data: courses,
     isFetching: courses_loading,
     error: courses_error,
-  } = useCourses(college_id);
+  } = useQuery(createCourseQueryById(college_id));
+
+  console.log(courses);
 
   // Error Content Display
   if (courses_error)
@@ -38,30 +48,30 @@ export default function CourseList() {
     );
 
   return (
-    <main className="h-full flex flex-col p-5 font-sans">
+    <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px] mx-auto">
       <h1 className="relative text-4xl text-center font-bold mb-3">
-        <Fab
-          variant="extended"
-          size="small"
+        <Button
+          startIcon={<ArrowLeft />}
           onClick={() => navigate(-1)}
           sx={{
-            bgcolor: "#335c67",
+            mb: 3,
             fontWeight: 600,
-            borderRadius: "30px",
+            color: "#7f1d1d",
+            borderRadius: "12px",
             position: "absolute",
             left: 0,
-            color: "white",
-            "&:hover": { backgroundColor: "#335c67" },
+            "&:hover": {
+              backgroundColor: "rgba(127, 29, 29, 0.04)",
+            },
           }}
         >
-          <ChevronLeftRoundedIcon />
-          Go Back
-        </Fab>
+          Back to College Info
+        </Button>
         Course list
       </h1>
       {uniqueYears.map(
         (
-          year // Chop up by year leve
+          year // Chop up by year level
         ) => (
           <div
             key={year}

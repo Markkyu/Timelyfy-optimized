@@ -13,7 +13,7 @@ export function createUserQueryOptions() {
 export default function createUserQueryOptionsById(userId) {
   return queryOptions({
     queryKey: ["users", userId],
-    queryFn: ({ queryKey }) => getUserById(queryKey[1]), // ✅ FIXED
+    queryFn: ({ queryKey }) => getUserById(queryKey[1]), // FIXED
     staleTime: 1000 * 60 * 30,
     cacheTime: 1000 * 60 * 30,
   });

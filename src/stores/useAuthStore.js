@@ -32,6 +32,18 @@ const useAuthStore = create((set) => ({
     localStorage.removeItem("user");
     localStorage.removeItem("token");
   },
+
+  refreshUser: async () => {
+    try {
+      const res = await API.get("/api/me"); // endpoint that returns current user
+      const { user } = res.data;
+
+      set({ user });
+      localStorage.setItem("user", JSON.stringify(user));
+    } catch (err) {
+      throw new Error(err.response?.data?.message || err.message);
+    }
+  },
 }));
 
 export default useAuthStore;

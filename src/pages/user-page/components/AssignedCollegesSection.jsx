@@ -27,13 +27,14 @@ export default function AssignedCollegesSection({
           <RenderWhenRole role={["admin", "master_scheduler"]}>
             <Button
               variant="outlined"
-              startIcon={<EditIcon />}
+              endIcon={<EditIcon />}
               onClick={() => setAssignCollegeOpen(true)}
               sx={{
                 borderColor: "maroon",
                 color: "maroon",
                 fontWeight: 600,
-                borderRadius: "20px",
+                borderRadius: "12px",
+                textTransform: "none",
               }}
             >
               Manage Programs
@@ -56,7 +57,7 @@ export default function AssignedCollegesSection({
                 key={college.college_id}
                 className="bg-gray-50 border border-gray-200 rounded-lg p-4 hover:border-red-800 transition-colors"
               >
-                <h3 className="font-semibold text-gray-800">
+                <h3 className="font-semibold text-gray-800 select-none">
                   {college.college_name}
                 </h3>
                 {college.college_code && (

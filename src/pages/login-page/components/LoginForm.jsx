@@ -9,13 +9,20 @@ import {
   FormControlLabel,
   Slide,
   Typography,
+  Zoom,
+  Grow,
+  TextField,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import useAuthStore from "@stores/useAuthStore";
 
+// import Zoom from "@mui/material/Zoom";
+
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
+  // return <Slide direction="up" ref={ref} {...props} />;
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
@@ -24,7 +31,8 @@ export default function LoginForm({ showLogin, setShowLogin }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertType, setAlertType] = useState("error");
 
   const { login } = useAuthStore();
   const navigate = useNavigate();
@@ -34,37 +42,50 @@ export default function LoginForm({ showLogin, setShowLogin }) {
 
   // Focus username when dialog opens
   useEffect(() => {
-    setError("");
-    if (showLogin && usernameRef.current) {
-      usernameRef.current.focus();
+    setAlertMessage("");
+    if (showLogin) {
+      console.log("Username Ref:", usernameRef.current);
+      if (usernameRef.current) {
+        setTimeout(() => {
+          usernameRef.current.focus();
+        }, 100);
+      }
     }
   }, [showLogin]);
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+
     try {
+      setLoading(true);
       await login(username, password);
-      setShowLogin(false);
-      navigate("/");
-    } catch (err) {
-      setError(err.response?.data?.message || err.message);
+
+      setAlertType("success");
+      setAlertMessage("Login Successful");
+
       setTimeout(() => {
-        setError("");
-      }, 3000);
-    } finally {
+        setShowLogin(false);
+        setUsername("");
+        setPassword("");
+        navigate("/");
+        setLoading(false);
+      }, 500);
+    } catch (err) {
+      setAlertMessage(err.response?.data?.message || err.message);
       setLoading(false);
-      setUsername("");
-      setPassword("");
     }
   };
 
   return (
     <Dialog
       open={showLogin}
-      TransitionComponent={Transition}
+      TransitionComponent={Grow}
       keepMounted
-      onClose={() => setShowLogin(false)}
+      onClose={() => {
+        setShowLogin(false);
+        setPassword("");
+        setUsername("");
+      }}
       fullWidth
       maxWidth="xs"
     >
@@ -80,43 +101,56 @@ export default function LoginForm({ showLogin, setShowLogin }) {
         <CloseIcon />
       </IconButton>
       <DialogTitle sx={{ pb: 1 }}>
-        <Typography
-          variant="h5"
-          component="span"
-          align="center"
-          display="block"
-          fontWeight="600"
-        >
-          Login to Timelyfy
-        </Typography>
+        <p className="text-2xl font-semibold text-center">Login to Timelyfy</p>
       </DialogTitle>
       <DialogContent>
-        {error && (
-          <div className="flex justify-center bg-red-100 py-2 text-red-500 text-xl">
-            {error}
-          </div>
+        {alertMessage && (
+          <Alert severity={`${alertType}`} sx={{ mb: 2 }}>
+            {alertMessage}
+          </Alert>
         )}
-        <form onSubmit={handleLoginSubmit} className="space-y-2 mt-2">
+        <form onSubmit={handleLoginSubmit} className="space-y-4 mt-2">
           {/* Username */}
-          <label htmlFor="email">Username</label>
+          {/* <label htmlFor="usernameInput">Username</label>
           <input
-            id="email"
+            id="usernameInput"
             ref={usernameRef}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-sm"
+            className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-800"
+            required
+          /> */}
+          <TextField
+            label="Username"
+            fullWidth
+            margin="normal"
+            autoComplete="off"
+            inputRef={usernameRef}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
 
           {/* Password */}
-          <label htmlFor="password">Password</label>
+          {/* <label htmlFor="passwordInput">Password</label>
           <input
-            id="password"
+            id="passwordInput"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type={showPassword ? "text" : "password"}
-            className="w-full px-4 py-2 border border-gray-300 rounded-sm"
+            className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-800"
             autoComplete="off"
+            required
+          /> */}
+
+          <TextField
+            label="Password"
+            fullWidth
+            margin="normal"
+            autoComplete="off"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type={showPassword ? "text" : "password"}
             required
           />
 

@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const SidebarContext = createContext();
 
-const Sidebar = ({ children }) => {
+export default function Sidebar({ children }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -27,12 +27,11 @@ const Sidebar = ({ children }) => {
       </SidebarContext.Provider>
     </nav>
   );
-};
-
-export default Sidebar;
+}
 
 export const SidebarItem = ({ icon, text, path, onClick }) => {
   const { expanded } = useContext(SidebarContext);
+
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -58,7 +57,7 @@ export const SidebarItem = ({ icon, text, path, onClick }) => {
       </span>
 
       {!expanded && (
-        <div className="w-20 text-center absolute bg-gray-800 left-full rounded-md px-2 py-1 ml-6 text-white text-sm invisible -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
+        <div className="text-center absolute bg-gray-800 left-full rounded-md px-2 py-1 ml-6 text-white text-sm invisible -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0">
           {text}
         </div>
       )}

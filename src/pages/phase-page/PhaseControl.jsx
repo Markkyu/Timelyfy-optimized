@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Container, Alert } from "@mui/material";
+import { Container, Alert, Button } from "@mui/material";
 
 // Components
 import PhaseHeader from "./components/PhaseHeader";
@@ -55,6 +55,8 @@ export default function PhaseControl() {
   // Handle Next Phase
   const handleNext = async () => {
     if (!phaseData) return;
+
+    console.log(phaseData);
 
     let nextPhase = currentPhase;
     let nextStep = currentStep;
@@ -144,9 +146,12 @@ export default function PhaseControl() {
 
   const { year, sem } = STEPS[currentStep];
 
+  console.log(STEPS);
+  console.log(currentStep);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-      <Container maxWidth="xl">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
         {/* Success Alert */}
         {mutation.isSuccess && (
           <Alert severity="success" sx={{ mb: 3 }}>
@@ -199,15 +204,8 @@ export default function PhaseControl() {
             isPending={mutation.isPending}
           />
         </div>
-
-        {/* Footer Info */}
-        <div className="mt-6 text-center text-sm text-gray-600">
-          <p>
-            System Status: {mutation.isPending ? "Updating..." : "Ready"} • Last
-            Updated: {new Date().toLocaleString()}
-          </p>
-        </div>
-      </Container>
+        {/* </Container> */}
+      </div>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import useSessionStore from "../stores/useSessionStore";
+import useSessionStore from "@stores/useSessionStore";
 import { useNavigate } from "react-router-dom";
 
 export default function SessionExpiredDialog() {
@@ -24,7 +24,14 @@ export default function SessionExpiredDialog() {
         Your session has expired. Please log in again to continue.
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="error" variant="contained">
+        <Button
+          sx={{ borderRadius: "10px", fontWeight: 600 }}
+          disableElevation
+          fullWidth
+          onClick={handleClose}
+          color="error"
+          variant="contained"
+        >
           Go to Login
         </Button>
       </DialogActions>

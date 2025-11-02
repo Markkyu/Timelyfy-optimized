@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -84,7 +85,7 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
     <>
       <Dialog
         open={open}
-        TransitionComponent={Transition}
+        TransitionComponent={Grow}
         keepMounted
         onClose={onClose}
         fullWidth

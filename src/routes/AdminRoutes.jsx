@@ -1,13 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import { Suspense, lazy } from "react";
-
-const UserManagement = lazy(
-  () => import("@pages/user-management/UserManagement")
-);
+import UserManagement from "@pages/user-management/UserManagement";
+import AccountPage from "@pages/account-page/AccountPage";
 
 export default function AdminRoutes() {
   return (
     <Routes>
+      <Route path="/account" element={<AccountPage />} />
       <Route path="/user-management" element={<UserManagement />} />
     </Routes>
   );

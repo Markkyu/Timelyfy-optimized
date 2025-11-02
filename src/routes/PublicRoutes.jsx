@@ -14,6 +14,9 @@ import UserDetails from "@pages/user-page/UserDetails";
 import CollegePage from "@pages/dashboard-page/components/CollegePage";
 import RoomPage from "@pages/room-page/RoomPage";
 import PageNotFound from "@pages/page-not-found/PageNotFound";
+import UnauthorizedPage from "@pages/unauthorized/UnauthorizedPage";
+import ProtectedRoute from "@context/ProtectedRoute";
+import GlobalDashboard from "@pages/dashboard-page/GlobalDashboard";
 // import AccountPage from "@pages/account-page/AccountPage";
 
 const UserDashboard = lazy(() => import("@pages/dashboard-page/UserDashboard"));
@@ -32,14 +35,14 @@ const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
 export default function PublicRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/" element={<GlobalDashboard />} />
       <Route path="/college/:college_id" element={<CollegePage />} />
       <Route path="/course-list/:college_id" element={<CourseList />} />
       <Route path="/account" element={<AccountPage />} />
       <Route path="/teachers/:department" element={<TeacherPage />} />
       <Route path="/teacher/schedule/:department" element={<EditSchedule />} />
       <Route path="/schedules/:college_id" element={<ScheduleList />} />
-      <Route path="/rooms" element={<RoomPage />} />
+      <Route path="/room-page" element={<RoomPage />} />
       <Route path="/teacher-schedule/:teacher_id" element={<TeacherTable />} />
       <Route path="/teachers" element={<AllTeachersPage />} />
       <Route path="/user-page" element={<UserPage />} />
@@ -50,6 +53,7 @@ export default function PublicRoutes() {
       <Route path="/user-management" element={<UserManagement />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="/tutorial" element={<Tutorial />} />
+      <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

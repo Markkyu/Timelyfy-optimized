@@ -31,7 +31,19 @@ export const getCourses = async () => {
   }
 };
 
-// GET COURSE BY ID
+export const getRecentCourses = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/courses/recent`);
+
+    console.log(data);
+
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+// GET COURSE BY ID => college group
 export const getCourseById = async (courseId) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/courses/${courseId}`);
@@ -53,6 +65,8 @@ export const getCourseById = async (courseId) => {
 
 // ASSIGN TEACHER TO COURSE
 export const assignTeacherCourse = async (courseData) => {
+  console.log(courseData);
+
   try {
     const { data } = await axios.put(
       `${API_URL}/api/courses/assign/${courseData.course_id}`,

@@ -8,6 +8,8 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -17,11 +19,6 @@ import { createCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerUser } from "@api/registerUser";
 import useUsers from "@hooks/useUsers";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function RegisterUser({ open, onClose }) {
   const [username, setUsername] = useState("");
@@ -45,14 +42,10 @@ export default function RegisterUser({ open, onClose }) {
     },
 
     onError: (error, variables, context) => {
-      console.error(error);
+      console.error(error.message);
       console.log(error);
       console.log(variables);
-      console.log(context);
-      //   setError(error?.message);
-      //   setTimeout(() => {
-      //     setError(null);
-      //   }, 3000);
+      setError(error?.message);
     },
   });
 
@@ -72,9 +65,14 @@ export default function RegisterUser({ open, onClose }) {
     <>
       <Dialog
         open={open}
-        TransitionComponent={Transition}
+        TransitionComponent={Grow}
         keepMounted
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setUsername("");
+          setPassword("");
+          setError("");
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -95,21 +93,24 @@ export default function RegisterUser({ open, onClose }) {
             component="span"
             align="center"
             display="block"
+            fontWeight={600}
           >
             Register a User
           </Typography>
         </DialogTitle>
 
         <DialogContent>
+          <Typography variant="p" component="span" color="gray">
+            Note: This is for initial login only. We suggest the user requests
+            for a password change after their credentials are given.
+          </Typography>
           {error && (
-            <div className="flex">
-              <span className="p-2 bg-red-100 border-2 border-red-300 text-red-500 text-center w-full mx-2">
-                {error}
-              </span>
-            </div>
+            <Alert severity="error">
+              {/* <span className="p-2 bg-red-100 border-2 border-red-300 text-red-500 text-center w-full mx-2"> */}
+              {error}
+              {/* </span> */}
+            </Alert>
           )}
-          Note: We would suggest a user request for a password change after
-          their credentials are given
           <form onSubmit={handleSubmit} className="space-y-2 mt-2">
             <TextField
               label="Username"

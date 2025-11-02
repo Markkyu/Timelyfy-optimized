@@ -1,39 +1,41 @@
 import { useState } from "react";
-import { KeyRound } from "lucide-react";
-import Button from "@mui/material/Button";
 import LoginForm from "./components/LoginForm";
+import Button from "@mui/material/Button";
+import LockIcon from "@mui/icons-material/Lock";
 
 export default function Login() {
   const [showLogin, setShowLogin] = useState(false);
 
   return (
     <>
-      <div className="relative min-h-screen flex justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+      <div className="relative min-h-screen flex justify-center items-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
         {/* Background gradients */}
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-800 opacity-20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -right-40 w-130 h-130 bg-red-800 opacity-20 blur-3xl rounded-full animate-pulse delay-300" />
+        <div className="absolute -top-40 -left-40 w-96 h-96 bg-red-800 opacity-40 rounded-full blur-3xl" />
+        <div className="absolute -top-20 right-10 w-40 h-40 bg-red-800 opacity-40 rounded-full blur-3xl" />
+        <div className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] bg-red-800 opacity-40 rounded-full blur-3xl" />
 
         {/* Wrapper */}
-        <div className="max-w-6xl w-full grid grid-cols-2 items-center px-12">
-          {/* Left: Text*/}
-          <div className="space-y-6">
-            <h1 className="text-6xl font-extrabold text-gray-800 leading-tight tracking-tight">
+        <div className="max-w-6xl w-full grid lg:grid-cols-2 grid-cols-1 items-center gap-12 px-6 sm:px-10 lg:px-16 ">
+          {/* Left: Text */}
+          <div className="space-y-6 text-center lg:text-left">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-800 leading-tight tracking-tight">
               Automate Scheduling with{" "}
               <span className="text-red-800">Timelyfy</span> for MSEUF-CI
             </h1>
-            <p className="text-xl text-gray-700 font-medium">
-              Save time and reduce conflicts. Add your courses, assign teachers,
-              and let Timelyfy generate the schedules — effortlessly.
+
+            <p className="text-lg sm:text-xl text-gray-700 max-w-lg mx-auto lg:mx-0">
+              Save time and reduce conflicts. Add your courses, assign teachers
+              and rooms, and let Timelyfy generate the schedules.
             </p>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
               <Button
                 onClick={() => setShowLogin(true)}
                 size="large"
                 variant="contained"
                 sx={{
                   fontWeight: 600,
-                  borderRadius: 10,
+                  borderRadius: "6px",
                   backgroundColor: "#800000",
                   paddingX: 4,
                 }}
@@ -41,43 +43,26 @@ export default function Login() {
                 Log In
               </Button>
 
-              <span className="text-gray-500 text-md">
-                <KeyRound className="inline" /> Secure access for department
+              <span className="text-gray-500 text-md flex items-center gap-2">
+                <LockIcon className="size-5" /> Secure access for department
                 heads
               </span>
             </div>
           </div>
 
           {/* Right: Illustration */}
-
-          <img
-            src="/5295176.webp"
-            alt="Scheduling Illustration"
-            className="w-full max-w-md drop-shadow-2xl animate-float"
-          />
+          <div className="hidden lg:block">
+            <img
+              src="/5295176.webp"
+              alt="Scheduling Illustration"
+              className="w-full max-w-md drop-shadow-md"
+            />
+          </div>
         </div>
       </div>
 
       {/* Login Form */}
       <LoginForm showLogin={showLogin} setShowLogin={setShowLogin} />
-
-      {/* Small animation for the image */}
-      <style jsx="true" global="true">{`
-        @keyframes float {
-          0% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-          100% {
-            transform: translateY(0px);
-          }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
-      `}</style>
     </>
   );
 }

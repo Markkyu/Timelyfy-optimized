@@ -68,7 +68,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
           <Button
             type="submit"
             variant="contained"
-            sx={{ mt: 3, bgcolor: "maroon", fontWeight: 600 }}
+            sx={{ mt: 3, paddingY: 1.5, bgcolor: "maroon", fontWeight: 600 }}
             fullWidth
           >
             Save Assignments
@@ -76,7 +76,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
           <Button
             type="button"
             variant="contained"
-            sx={{ mt: 3, bgcolor: "gray", fontWeight: 600 }}
+            sx={{ mt: 1.5, paddingY: 1.5, bgcolor: "gray", fontWeight: 600 }}
             fullWidth
             onClick={handleClearAssign}
           >

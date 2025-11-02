@@ -11,6 +11,18 @@ export const getRooms = async () => {
   }
 };
 
+// GET ROOMS FOR SELECTED TEACHER
+export const getRoomsByTeacher = async (teacherId) => {
+  try {
+    const { data } = await axios.get(
+      `${API_URL}/api/rooms/teacher/${teacherId}`
+    );
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
 export const getRoomById = async (roomId) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/rooms${roomId}`);

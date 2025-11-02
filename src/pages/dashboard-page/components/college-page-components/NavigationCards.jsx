@@ -55,7 +55,7 @@ export default function NavigationCards({ collegeId }) {
         return (
           <Card
             key={card.id}
-            className="shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 cursor-pointer group "
+            className="shadow-lg hover:shadow-2xl cursor-pointer group "
             onClick={() => handleNavigate(card.route(collegeId))}
           >
             <CardContent className="p-6">

@@ -1,4 +1,5 @@
 import axios from "axios";
+import API from "./axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -14,6 +15,28 @@ export const getUsers = async () => {
 export const getUserById = async (userId) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/users/${userId}`);
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const requestChangePassword = async (userId) => {
+  try {
+    const { data } = await axios.put(
+      `${API_URL}/api/users/${userId}/request-change-password`
+    );
+
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const changePassword = async (newPassword) => {
+  try {
+    const { data } = API.post("/api/change-password", newPassword);
+
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

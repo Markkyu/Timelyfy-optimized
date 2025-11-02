@@ -5,7 +5,7 @@ export default function PhaseInfoPanel({ phases, currentPhase }) {
   const phase = phases[currentPhase];
 
   return (
-    <Card className="shadow-md">
+    <Card className="shadow-md " sx={{ borderRadius: "12px" }}>
       <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <Info className="text-red-800" size={24} />

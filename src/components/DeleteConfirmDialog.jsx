@@ -7,14 +7,10 @@ import {
   DialogActions,
   Button,
   Slide,
+  Grow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-
-// Slide Transition
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function DeleteConfirmDialog({
   open,
@@ -27,7 +23,7 @@ export default function DeleteConfirmDialog({
     <Dialog
       open={open}
       onClose={onClose}
-      TransitionComponent={Transition}
+      TransitionComponent={Grow}
       keepMounted
     >
       <DialogTitle>{title}</DialogTitle>
@@ -42,16 +38,18 @@ export default function DeleteConfirmDialog({
           onClick={onClose}
           sx={{ fontWeight: 600 }}
           fullWidth
+          disableElevation
         >
           Cancel
         </Button>
         <Button
           color="error"
-          startIcon={<DeleteIcon />}
+          endIcon={<DeleteIcon />}
           onClick={handleDelete}
           variant="contained"
           sx={{ fontWeight: 600 }}
           fullWidth
+          disableElevation
         >
           Delete
         </Button>

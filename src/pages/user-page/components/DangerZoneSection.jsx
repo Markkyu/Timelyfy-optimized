@@ -38,7 +38,7 @@ export default function DangerZoneSection({ user, isUpdatingRole }) {
           disabled={isDeletingUser || isUpdatingRole}
           sx={{
             fontWeight: 600,
-            borderRadius: "20px",
+            borderRadius: "12px",
           }}
         >
           Delete User Account

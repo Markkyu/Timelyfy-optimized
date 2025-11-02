@@ -8,14 +8,10 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEditCourse } from "@hooks/useCourses";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function EditCourseForm({ open, onClose, course }) {
   const [courseCode, setCourseCode] = useState(course?.course_code);
@@ -53,7 +49,7 @@ export default function EditCourseForm({ open, onClose, course }) {
   return (
     <Dialog
       open={open}
-      TransitionComponent={Transition}
+      TransitionComponent={Grow}
       keepMounted
       onClose={onClose}
       fullWidth

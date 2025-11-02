@@ -8,6 +8,7 @@ import {
   IconButton,
   Slide,
   Typography,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -15,11 +16,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import { updateCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function EditCollegeForm({ open, onClose, college }) {
   const [collegeName, setCollegeName] = useState("");
@@ -63,7 +59,7 @@ export default function EditCollegeForm({ open, onClose, college }) {
     <>
       <Dialog
         open={open}
-        TransitionComponent={Transition}
+        TransitionComponent={Grow}
         keepMounted
         onClose={onClose}
         fullWidth

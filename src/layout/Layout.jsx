@@ -25,9 +25,9 @@ export default function Layout() {
             if (item.divider) return <hr key={i} className="my-3 text-white" />;
 
             // role-based filtering
-            const canAccess =
+            const hasAccess =
               item.roles.includes("*") || item.roles.includes(user?.role);
-            if (!canAccess) return null;
+            if (!hasAccess) return null;
 
             const Icon = item.icon;
             return (
