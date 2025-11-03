@@ -9,6 +9,7 @@ import {
   Slide,
   Typography,
   Grow,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -44,14 +45,14 @@ export default function EditCollegeForm({ open, onClose, college }) {
     try {
       setLoading(true);
       await updateCollege(collegeId, updates);
-    } catch (err) {
-      setError({ message: `Error: ${err.message}` });
-    } finally {
-      queryClient.invalidateQueries({
+      await queryClient.invalidateQueries({
         queryKey: createCollegeQueryOptions().queryKey,
       });
-      setLoading(false);
       onClose();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,6 +90,7 @@ export default function EditCollegeForm({ open, onClose, college }) {
         </DialogTitle>
 
         <DialogContent>
+          {error && <Alert severity="error">{error}</Alert>}
           <form onSubmit={handleSubmit}>
             <TextField
               label="College Program Name"

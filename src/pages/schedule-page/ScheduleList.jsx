@@ -7,9 +7,9 @@ import useCourses from "@hooks/useCourses";
 // Components
 import SemesterSection from "./components/SemesterSection";
 // Material Icons
-import Fab from "@mui/material/Fab";
+import Button from "@mui/material/Button";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import { ArrowLeft } from "lucide-react";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -39,27 +39,27 @@ export default function ScheduleList() {
   }
 
   return (
-    <main className="h-full flex flex-col p-5 mb-40 font-sans">
-      <h1 className="relative text-4xl text-center font-bold mb-3">
-        <Fab
-          variant="extended"
-          size="small"
+    <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px] mx-auto">
+      <header className="relative text-4xl text-center font-bold mb-6">
+        <Button
+          variant="outlined"
           onClick={() => navigate(-1)}
+          startIcon={<ArrowLeft size={18} />}
           sx={{
-            bgcolor: "#335c67",
+            mb: 2,
+            borderRadius: "12px",
             fontWeight: 600,
-            borderRadius: "30px",
+            borderColor: "maroon",
+            color: "maroon",
+            borderWidth: 2,
             position: "absolute",
             left: 0,
-            color: "white",
-            "&:hover": { backgroundColor: "#335c67" },
           }}
         >
-          <ChevronLeftRoundedIcon />
-          Go Back
-        </Fab>
-        Scheduling Subjects list
-      </h1>
+          back to home
+        </Button>
+        <h1>Scheduling Subjects list</h1>
+      </header>
       {uniqueYears.map(
         (
           year // Chop up by year leve

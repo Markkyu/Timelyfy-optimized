@@ -34,17 +34,27 @@ export default function CourseCard({ course }) {
   const { mutate, isPending: loading } = useMutation({
     mutationFn: (courseId) => deleteCourse(courseId),
 
-    onSuccess: (_, courseId) => {
-      // queryClient.invalidateQueries({
-      //   queryKey: ["course", course.course_college],
+    onSuccess: (data, courseId) => {
+      // queryClient.setQueryData(["course", course.course_college], (old) => {
+      //   if (!old) return [];
+      //   return old.filter((c) => c.course_id !== courseId);
       // });
 
-      console.log(courseId);
-
-      queryClient.setQueryData(["course", course.course_college], (old) => {
-        if (!old) return [];
-        return old.filter((c) => c.course_id !== courseId);
+      queryClient.invalidateQueries({
+        queryKey: ["course"],
       });
+
+      // console.log(course);
+      // console.log(courseId);
+
+      console.log(course);
+
+      // queryClient.setQueryData(["course", course.course_college], (old) => {
+      //   console.log(old);
+
+      //   if (!old) return [];
+      //   return old.filter((c) => data.id != course.course_id);
+      // });
 
       setDeleteOpen(false);
     },
@@ -69,7 +79,10 @@ export default function CourseCard({ course }) {
   }
 
   return (
-    <div className="p-2 border-b border-gray-200 flex justify-between items-center">
+    <div
+      key={course.course_id}
+      className="p-2 border-b border-gray-200 flex justify-between items-center"
+    >
       {/* Course Details */}
       <div>
         <p className="m-1 font-semibold">

@@ -26,20 +26,31 @@ import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
 
 import { PHASES, STEPS } from "@pages/phase-page/components/phaseConstants";
+import StatCard from "./StatCard";
 
 export default function GlobalDashboard({ role }) {
   const [openCollege, setOpenCollege] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
-  const [viewMode, setViewMode] = useState("grid"); // grid, list
+
+  const viewModeFromUrl = searchParams.get("view-mode") || "grid";
+  const [viewMode, setViewMode] = useState(viewModeFromUrl);
+
+  const itemsPerPage = viewMode === "grid" ? 6 : 5;
+
   const pageFromUrl = Number(searchParams.get("page")) || 1;
   const [page, setPage] = useState(pageFromUrl);
-  const itemsPerPage = viewMode === "grid" ? 6 : 5;
+
+  const listType = searchParams.get("view-mode");
+  const [mode, setMode] = useState(listType);
 
   // Sync page with URL
   useEffect(() => {
     const urlPage = Number(searchParams.get("page")) || 1;
+    const view = searchParams.get("view-mode") || "grid";
+
     setPage(urlPage);
+    setViewMode(view);
   }, [searchParams]);
 
   // College API query
@@ -48,6 +59,11 @@ export default function GlobalDashboard({ role }) {
     isPending: colleges_loading,
     error: colleges_error,
   } = useQuery(createCollegeQueryOptions());
+
+  // const colleges_error = null;
+  // const colleges_error = { message: "Error" };
+  // const colleges_loading = false;
+  // const colleges = [];
 
   const {
     data: phases,
@@ -84,8 +100,8 @@ export default function GlobalDashboard({ role }) {
 
   const handlePageChange = (event, value) => {
     setPage(value);
-    setSearchParams({ page: value });
-    window.scrollTo({ top: 100, behavior: "smooth" });
+    setSearchParams({ page: value, "view-mode": viewMode });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   // Stats calculation
@@ -187,7 +203,7 @@ export default function GlobalDashboard({ role }) {
               <Button
                 variant="contained"
                 onClick={() => setOpenCollege(true)}
-                endIcon={<Plus size={20} />}
+                startIcon={<Plus size={20} />}
                 sx={{
                   bgcolor: "maroon",
                   fontWeight: 600,
@@ -208,7 +224,7 @@ export default function GlobalDashboard({ role }) {
               color="blue"
               Icon={School}
               stats={stats.total}
-              description="Total Description"
+              description="College Departments"
             />
 
             <StatCard
@@ -224,6 +240,8 @@ export default function GlobalDashboard({ role }) {
               Icon={PHASES[myIndex]?.icon}
               description={PHASES[myIndex]?.desc}
               colSpan={2}
+              year={phase?.phase_year}
+              sem={phase?.phase_sem}
             />
           </div>
 
@@ -255,12 +273,12 @@ export default function GlobalDashboard({ role }) {
                   onClick={() => {
                     setViewMode("grid");
                     setPage(1);
-                    setSearchParams({ page: 1 });
+                    setSearchParams({ page: 1, "view-mode": "grid" });
                   }}
-                  className={`p-2 transition-colors ${
+                  className={`p-2 transition-colors  ${
                     viewMode === "grid"
                       ? "bg-maroon text-white"
-                      : "bg-white text-gray-600 hover:bg-gray-50"
+                      : "bg-white text-gray-600 hover:bg-gray-50 cursor-pointer"
                   }`}
                 >
                   <Grid size={20} />
@@ -269,12 +287,12 @@ export default function GlobalDashboard({ role }) {
                   onClick={() => {
                     setViewMode("list");
                     setPage(1);
-                    setSearchParams({ page: 1 });
+                    setSearchParams({ page: 1, "view-mode": "list" });
                   }}
                   className={`p-2 transition-colors border-l-2 border-gray-200 ${
                     viewMode === "list"
                       ? "bg-maroon text-white"
-                      : "bg-white text-gray-600 hover:bg-gray-50"
+                      : "bg-white text-gray-600 hover:bg-gray-50 cursor-pointer"
                   }`}
                 >
                   <List size={20} />
@@ -359,32 +377,6 @@ export default function GlobalDashboard({ role }) {
     </div>
   );
 }
-
-const StatCard = ({ label, Icon, color, colSpan = 1, stats, description }) => {
-  return (
-    <div
-      className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow col-span-${colSpan}`}
-    >
-      <div className="flex items-center justify-between mb-3">
-        <div
-          className={`flex bg-gradient-to-br from-${color}-50 to-${color}-100 p-3 rounded-xl`}
-        >
-          <Icon size={24} className={`text-${color}-600`} />
-
-          {label && ( // Show Label if there is label
-            <h1 className={`font-semibold ml-2 text-${color}-800`}>{label}</h1>
-          )}
-        </div>
-        {/* <span className="text-gray-600 font-semibold p-2 bg-blue-100 rounded-md">
-          Year 1 | Sem 1
-        </span> */}
-      </div>
-
-      <h3 className="text-2xl font-bold text-gray-900 mb-1">{stats}</h3>
-      <p className="text-sm text-gray-600 font-medium">{description}</p>
-    </div>
-  );
-};
 
 // // React imports and hooks
 // import { useState, useEffect } from "react";

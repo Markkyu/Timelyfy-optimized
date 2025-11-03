@@ -78,11 +78,13 @@
 // }
 
 import { useState, useMemo } from "react";
-import { Fab } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Button, Fab } from "@mui/material";
 import AssignmentAddIcon from "@mui/icons-material/AssignmentAdd";
 import CourseCard from "./CourseCard";
 import CourseSkeletonLoader from "./CourseSkeletonLoader";
 import AddCourseForm from "./AddCourseForm";
+import { CalendarIcon } from "lucide-react";
 
 export default function SemesterSection({
   sem,
@@ -92,6 +94,8 @@ export default function SemesterSection({
   loading,
 }) {
   const [addOpen, setAddOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   // Memoize filtered courses to avoid re-filtering every render
   const filteredCourses = useMemo(() => {
@@ -119,26 +123,39 @@ export default function SemesterSection({
   return (
     <section className="flex-1 bg-white border border-gray-300 rounded-md p-3 shadow-sm">
       <div className="relative flex items-center justify-between mb-2">
-        <h3 className="font-semibold text-2xl text-center flex-1 m-0">
+        <h3 className="font-bold text-2xl ml-4">
           {sem === 1 ? "First" : "Second"} Semester
         </h3>
 
-        <Fab
-          variant="extended"
-          size="small"
-          onClick={() => setAddOpen(true)}
-          sx={{
-            fontWeight: 600,
-            bgcolor: "#800000",
-            position: "absolute",
-            color: "white",
-            right: 0,
-            "&:hover": { backgroundColor: "#700000" },
-          }}
-        >
-          <AssignmentAddIcon sx={{ mr: 0.8 }} />
-          Add Subject
-        </Fab>
+        <div className="flex justify-end gap-2 mb-4">
+          <Button
+            variant="contained"
+            sx={{
+              background: "#7f1d1d",
+              borderRadius: "12px",
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+            startIcon={<CalendarIcon />}
+            onClick={() => navigate(`/schedule/${college_id}`)}
+          >
+            Schedule
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              background: "#800000",
+              borderRadius: "12px",
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+            startIcon={<AssignmentAddIcon />}
+            onClick={() => setAddOpen(true)}
+          >
+            Add Subject
+          </Button>
+        </div>
       </div>
 
       {renderContent()}

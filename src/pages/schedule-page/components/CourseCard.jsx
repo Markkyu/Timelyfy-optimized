@@ -7,6 +7,7 @@ import { useDeleteCourse } from "@hooks/useCourses";
 export default function CourseCard({ course }) {
   const teacherAvailable = course?.first_name;
   const fullName = `${course?.first_name} ${course?.last_name}`;
+  const roomAvailable = course?.room_name;
 
   if (!course) {
     return (
@@ -24,19 +25,20 @@ export default function CourseCard({ course }) {
         <span className="m-1">
           <b>{course.hours_week}</b>
           <span>Hrs/week:</span>
-
-          {/* <span
-            className={`ml-2 rounded-full border px-2 ${course?.first_name ? `text-blue-600` : `text-red-600`}`}
-          >
-            {course?.first_name ? fullName : "Unassigned"}
-          </span> */}
         </span>
-        <Chip
-          className="ml-2"
-          label={teacherAvailable ? fullName : "Unassigned / TBA"}
-          size="small"
-          color={teacherAvailable ? "info" : "error"}
-        />
+        <span className="ml-2 space-x-2">
+          <Chip
+            label={teacherAvailable ? fullName : "Unassigned / TBA"}
+            size="small"
+            color={teacherAvailable ? "info" : "error"}
+          />
+          <span>➜</span>
+          <Chip
+            label={roomAvailable ? course.room_name : "Unassigned / TBA"}
+            size="small"
+            color={teacherAvailable ? "info" : "error"}
+          />
+        </span>
       </div>
     </div>
   );

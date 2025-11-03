@@ -35,8 +35,19 @@ export const requestChangePassword = async (userId) => {
 
 export const changePassword = async (newPassword) => {
   try {
-    const { data } = API.post("/api/change-password", newPassword);
+    const { data } = await API.post("/api/change-password", { newPassword });
 
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+
+export const approvePasswordRequest = async (userId) => {
+  try {
+    const { data } = await API.put(
+      `api/users/${userId}/approve-password-request`
+    );
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

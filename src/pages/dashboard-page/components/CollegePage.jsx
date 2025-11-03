@@ -47,19 +47,19 @@ export default function CollegePage() {
       <Container maxWidth="xl">
         {/* Back Button */}
         <Button
-          startIcon={<ArrowLeft />}
+          variant="outlined"
           onClick={() => navigate(-1)}
+          startIcon={<ArrowLeft size={18} />}
           sx={{
-            mb: 3,
-            fontWeight: 600,
-            color: "#7f1d1d",
+            mb: 2,
             borderRadius: "12px",
-            "&:hover": {
-              backgroundColor: "rgba(127, 29, 29, 0.04)",
-            },
+            fontWeight: 600,
+            borderColor: "maroon",
+            color: "maroon",
+            borderWidth: 2,
           }}
         >
-          Back to Dashboard
+          back to home
         </Button>
 
         {/* College Header */}

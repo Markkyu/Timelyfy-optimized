@@ -50,7 +50,9 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
-      <DialogTitle>Assign College Programs</DialogTitle>
+      <DialogTitle style={{ fontWeight: 600 }}>
+        Assign College Programs
+      </DialogTitle>
       <DialogContent>
         <form onSubmit={handleSubmit}>
           <Select
@@ -68,7 +70,14 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
           <Button
             type="submit"
             variant="contained"
-            sx={{ mt: 3, paddingY: 1.5, bgcolor: "maroon", fontWeight: 600 }}
+            sx={{
+              mt: 3,
+              paddingY: 1.5,
+              bgcolor: "maroon",
+              fontWeight: 600,
+              borderRadius: "12px",
+            }}
+            disableElevation
             fullWidth
           >
             Save Assignments
@@ -76,7 +85,14 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
           <Button
             type="button"
             variant="contained"
-            sx={{ mt: 1.5, paddingY: 1.5, bgcolor: "gray", fontWeight: 600 }}
+            sx={{
+              mt: 1.5,
+              paddingY: 1.5,
+              bgcolor: "gray",
+              fontWeight: 600,
+              borderRadius: "12px",
+            }}
+            disableElevation
             fullWidth
             onClick={handleClearAssign}
           >

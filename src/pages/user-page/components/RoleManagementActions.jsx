@@ -88,7 +88,6 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
             bgcolor: "#335c67",
             fontWeight: 600,
             borderRadius: "12px",
-            "&:hover": { bgcolor: "#264653" },
           }}
           endIcon={<KeyboardDoubleArrowUpIcon />}
         >
@@ -103,7 +102,6 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
             bgcolor: "maroon",
             fontWeight: 600,
             borderRadius: "12px",
-            "&:hover": { bgcolor: "#8b0000" },
           }}
           endIcon={<KeyboardDoubleArrowDownIcon />}
         >

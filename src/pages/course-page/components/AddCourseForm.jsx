@@ -41,10 +41,6 @@ export default function AddCourseForm({
     mutationFn: (courseData) => addCourse(courseData),
 
     onSuccess: (data, newCourse) => {
-      // queryClient.invalidateQueries({
-      //   queryKey: ["course", college_id],
-      // });
-
       queryClient.setQueryData(["course", college_id], (old) => {
         console.log(old);
         console.log(newCourse);
@@ -57,6 +53,10 @@ export default function AddCourseForm({
       setCourseName("");
       setHoursWeek(3);
       onClose();
+
+      queryClient.invalidateQueries({
+        queryKey: ["course", college_id],
+      });
     },
 
     onError: (error) => {

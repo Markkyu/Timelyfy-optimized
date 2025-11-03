@@ -68,6 +68,7 @@ import SuperUserRoutes from "@routes/SuperUserRoutes";
 import ProtectedRoute from "@context/ProtectedRoute";
 import { ROLES } from "@routes/roles";
 import PublicRoutes from "@routes/PublicRoutes";
+import SkeletonGlobalDashboard from "@components/loader/SkeletonGlobalDashboard";
 
 // export const ROLES = {
 //   ADMIN: "admin",

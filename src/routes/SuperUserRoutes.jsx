@@ -3,7 +3,7 @@ import { lazy } from "react";
 import ProtectedRoute from "@context/ProtectedRoute";
 import { ROLES } from "./roles";
 
-const UserDashboard = lazy(() => import("@pages/dashboard-page/UserDashboard"));
+// const UserDashboard = lazy(() => import("@pages/dashboard-page/UserDashboard"));
 
 export default function SuperUserRoutes() {
   return (
@@ -12,7 +12,7 @@ export default function SuperUserRoutes() {
         path="/user-dashboard"
         element={
           <ProtectedRoute allowedRoles={[ROLES.SUPER]}>
-            <UserDashboard />
+            {/* <UserDashboard /> */}
           </ProtectedRoute>
         }
       />

@@ -93,15 +93,6 @@ export default function CollegeListView({ college }) {
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <Users size={16} className="text-gray-400" />
-              <span>
-                <span className="font-semibold text-gray-900">
-                  {college?.students_count || 0}
-                </span>{" "}
-                Students
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
               <Calendar size={16} className="text-gray-400" />
               <span>
                 <span className="font-semibold text-gray-900">

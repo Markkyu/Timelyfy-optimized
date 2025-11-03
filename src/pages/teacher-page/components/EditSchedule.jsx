@@ -11,7 +11,7 @@ export default function EditSchedule() {
 
   return (
     <>
-      <div className="flex flex-col 2xl:flex-row w-full h-full justify-center items-center overflow-auto bg-red-200 p-6">
+      <div className="flex flex-col 2xl:flex-row w-full h-full justify-center items-center overflow-auto p-6">
         <div className="bg-white p-4 rounded-2xl my-4">
           <ScheduleTable
             headers={mwfTime}

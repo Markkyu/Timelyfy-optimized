@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useMemo, useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Pagination, Button } from "@mui/material";
 import { Search, ArrowLeft } from "lucide-react";
 import PersonIcon from "@mui/icons-material/Person";
@@ -16,10 +16,15 @@ import StatCard from "@pages/dashboard-page/StatCard";
 
 export default function AllTeachersPage() {
   const [open, setOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const rowsPerPage = 8; // Only grid view
+  const pageFromUrl = Number(searchParams.get("page")) || 1;
+  const searchFromUrl = searchParams.get("search") || "";
+
+  const [searchTerm, setSearchTerm] = useState(searchFromUrl);
+  const [page, setPage] = useState(pageFromUrl);
+
+  const rowsPerPage = 8;
   const navigate = useNavigate();
 
   const {
@@ -27,6 +32,14 @@ export default function AllTeachersPage() {
     isLoading,
     error,
   } = useQuery(createTeacherQueryOptions());
+
+  useEffect(() => {
+    const urlPage = Number(searchParams.get("page")) || 1;
+    const urlSearch = searchParams.get("search") || "";
+
+    setPage(urlPage);
+    setSearchTerm(urlSearch);
+  }, [searchParams]);
 
   // Search
   const filteredData = useMemo(() => {
@@ -73,7 +86,7 @@ export default function AllTeachersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-8 sm:p-6 lg:p-8">
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -101,7 +114,6 @@ export default function AllTeachersPage() {
                 borderRadius: "12px",
                 fontWeight: 600,
                 bgcolor: "maroon",
-                px: 3,
               }}
             >
               Add Teacher
@@ -140,8 +152,11 @@ export default function AllTeachersPage() {
               placeholder="Search teachers..."
               value={searchTerm}
               onChange={(e) => {
-                setSearchTerm(e.target.value);
+                const newValue = e.target.value;
+                setSearchTerm(newValue);
                 setPage(1);
+
+                setSearchParams({ page: 1, search: newValue });
               }}
               className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-maroon focus:outline-none"
             />
@@ -182,7 +197,11 @@ export default function AllTeachersPage() {
                   <Pagination
                     count={pageCount}
                     page={page}
-                    onChange={(e, value) => setPage(value)}
+                    onChange={(e, value) => {
+                      setPage(value);
+                      setSearchParams({ page: value, search: searchTerm });
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
                     color="error"
                     shape="rounded"
                     size="large"

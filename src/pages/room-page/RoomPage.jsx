@@ -27,8 +27,8 @@ export default function RoomPage() {
   const [openAddRoom, setOpenAddRoom] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
-  const [viewMode, setViewMode] = useState("grid"); // grid, list
-  const rowsPerPage = viewMode === "grid" ? 12 : 8;
+  const [viewMode, setViewMode] = useState("list"); // grid, list
+  const rowsPerPage = viewMode === "list" ? 12 : 8;
 
   const navigate = useNavigate();
 
@@ -180,30 +180,6 @@ export default function RoomPage() {
                   className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:border-maroon focus:outline-none transition-colors"
                 />
               </div>
-
-              {/* View Toggle */}
-              <div className="flex border-2 border-gray-200 rounded-lg overflow-hidden">
-                <button
-                  onClick={() => setViewMode("grid")}
-                  className={`p-2 transition-colors ${
-                    viewMode === "grid"
-                      ? "bg-maroon text-white"
-                      : "bg-white text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <Grid size={20} />
-                </button>
-                <button
-                  onClick={() => setViewMode("list")}
-                  className={`p-2 transition-colors border-l-2 border-gray-200 ${
-                    viewMode === "list"
-                      ? "bg-maroon text-white"
-                      : "bg-white text-gray-600 hover:bg-gray-50"
-                  }`}
-                >
-                  <List size={20} />
-                </button>
-              </div>
             </div>
           </div>
         </header>
@@ -252,14 +228,6 @@ export default function RoomPage() {
               {/* Content Based on View Mode */}
               {paginatedData?.length > 0 ? (
                 <>
-                  {viewMode === "grid" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-                      {paginatedData.map((room) => (
-                        <RoomCard key={room.room_id} room={room} />
-                      ))}
-                    </div>
-                  )}
-
                   {viewMode === "list" && (
                     <div className="space-y-4">
                       {paginatedData.map((room) => (

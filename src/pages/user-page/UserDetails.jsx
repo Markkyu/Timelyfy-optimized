@@ -20,12 +20,12 @@ import AccountInfoCard from "./components/AccountInfoCard";
 import createUserQueryOptionsById from "@hooks/createUserQueryOptionsById";
 import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "@api/usersAPI";
+import ApprovePasswordRequest from "./components/ApprovePasswordRequest";
 
 export default function UserDetails() {
   const { userId } = useParams();
   const navigate = useNavigate();
 
-  // Hooks
   const {
     data: assignedColleges,
     isLoading: isLoadingColleges,
@@ -121,6 +121,11 @@ export default function UserDetails() {
               {/* Danger Zone - Now handles its own dialog and deletion */}
               <Divider sx={{ my: 2 }} />
               <DangerZoneSection user={user} />
+
+              <ApprovePasswordRequest
+                userId={userId}
+                passwordRequestStatus={user.change_password}
+              />
             </RenderWhenRole>
           </CardContent>
         </Card>

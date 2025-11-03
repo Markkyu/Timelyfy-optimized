@@ -68,7 +68,7 @@ export default function CollegeCard({ college }) {
         className="h-32 relative"
         style={{ background: getGradient(college?.college_name) }}
       >
-        <div className="absolute inset-0 bg-red-800 bg-opacity-10"></div>
+        {/* <div className="absolute inset-0 bg-red-800 bg-opacity-10"></div> */}
 
         {/* Menu Button */}
         <RenderWhenRole role={["master_scheduler", "admin"]}>
@@ -125,8 +125,8 @@ export default function CollegeCard({ college }) {
 
         {/* College Icon */}
         <div className="absolute -bottom-8 left-6">
-          <div className="bg-white p-4 rounded-2xl shadow-lg border-4 border-red-900">
-            <GraduationCap size={32} className="text-maroon" />
+          <div className="bg-gradient-to-br from-red-600 to-red-800 p-4 rounded-2xl shadow-md">
+            <GraduationCap size={32} className="text-white" />
           </div>
         </div>
       </div>

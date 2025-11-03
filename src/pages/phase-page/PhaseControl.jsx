@@ -26,6 +26,8 @@ export default function PhaseControl() {
     queryKey: ["phase_control"],
     queryFn: getPhase,
     retry: 0,
+    staleTime: 1000 * 60 * 10,
+    cacheTime: 1000 * 60 * 10,
   });
 
   const mutation = useMutation({
@@ -146,12 +148,9 @@ export default function PhaseControl() {
 
   const { year, sem } = STEPS[currentStep];
 
-  console.log(STEPS);
-  console.log(currentStep);
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
-      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto p-8">
         {/* Success Alert */}
         {mutation.isSuccess && (
           <Alert severity="success" sx={{ mb: 3 }}>

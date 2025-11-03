@@ -9,6 +9,7 @@ import {
   Slide,
   Typography,
   Grow,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import Select from "react-select";
@@ -64,13 +65,14 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       queryClient.invalidateQueries({
         queryKey: createCourseQueryById.queryKey,
       });
+      onClose();
+      setError("");
     } catch (err) {
       setError(`Error: ${err.message}`);
     } finally {
       setLoading(false);
-      setError("");
-      onClose();
       setSelectedTeacher(null);
+      setSelectedRoom(null);
     }
   };
 
@@ -97,7 +99,12 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       open={open}
       TransitionComponent={Grow}
       keepMounted
-      onClose={onClose}
+      onClose={() => {
+        setSelectedTeacher(null);
+        setSelectedRoom(null);
+        setError(null);
+        onClose();
+      }}
       fullWidth
       maxWidth="sm"
     >
@@ -120,12 +127,13 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       </DialogTitle>
 
       <DialogContent>
+        {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleSubmit}>
-          {error && (
+          {/* {error && (
             <span className="flex py-1.5 rounded-xl text-red-500 text-lg justify-center bg-red-100">
               {error}
             </span>
-          )}
+          )} */}
           <section className="flex gap-6 w-full">
             <div className="mt-6 flex-1">
               <Typography variant="h6" sx={{ mb: 1 }}>

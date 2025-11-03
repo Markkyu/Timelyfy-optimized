@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import SchoolIcon from "@mui/icons-material/School";
 import RenderWhenRole from "@components/RenderWhenRole";
-import AssignCollegeForm from "../../user-assignment/components/AssignCollegeForm";
+import AssignCollegeForm from "./AssignCollegeForm";
 
 export default function AssignedCollegesSection({
   assignedColleges,

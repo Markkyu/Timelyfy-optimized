@@ -49,7 +49,7 @@ export default function CourseList() {
 
   return (
     <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px] mx-auto">
-      <h1 className="relative text-4xl text-center font-bold mb-3">
+      <h1 className="relative text-4xl text-center font-bold mb-6">
         <Button
           startIcon={<ArrowLeft />}
           onClick={() => navigate(-1)}
@@ -60,9 +60,7 @@ export default function CourseList() {
             borderRadius: "12px",
             position: "absolute",
             left: 0,
-            "&:hover": {
-              backgroundColor: "rgba(127, 29, 29, 0.04)",
-            },
+            border: 2,
           }}
         >
           Back to College Info

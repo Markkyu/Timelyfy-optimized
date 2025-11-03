@@ -47,7 +47,8 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
   const handleRefresh = () => {
     try {
       refreshUser();
-    } catch (err) {
+    } catch (error) {
+      setToastType("error");
       setToastMessage("Error");
       setToastTrigger((prev) => prev + 1);
     }
@@ -60,8 +61,8 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
     },
 
     onSuccess: (data) => {
-      console.log(`Request Successful`);
-      setToastMessage("Password request successful");
+      console.log(`Successfully changed password`);
+      setToastMessage("Password Change Successful");
       setToastType("success");
       setToastTrigger((prev) => prev + 1);
       refreshUser();
@@ -69,6 +70,7 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
 
     onError: (error) => {
       console.error(error.message);
+      setToastType("error");
       setToastMessage(error.message);
       setToastTrigger((prev) => prev + 1);
     },
@@ -77,7 +79,16 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(newPassword, confirmPassword);
+    if (newPassword != confirmPassword) {
+      setToastType("error");
+      setToastMessage("Confirm password must match the new password!");
+      setToastTrigger((prev) => prev + 1);
+    }
+
+    // console.log(newPassword, confirmPassword);
+    if (newPassword === confirmPassword) {
+      changePasswordMutation(newPassword);
+    }
   };
 
   return (
@@ -207,6 +218,7 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
                     borderRadius: "12px",
                     paddingY: "6px",
                   }}
+                  onClick={handleSubmit}
                 >
                   Change Password
                 </Button>

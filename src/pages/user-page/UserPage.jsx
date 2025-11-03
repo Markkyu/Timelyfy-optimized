@@ -22,6 +22,9 @@ import UserCard from "./components/UserCard";
 import RegisterUser from "./components/RegisterUser";
 import useUsers from "@hooks/useUsers";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import { createUserQueryOptions } from "@hooks/createUserQueryOptionsById";
+
+import { useQuery } from "@tanstack/react-query";
 
 export default function UserPage() {
   const [open, setOpen] = useState(false);
@@ -37,7 +40,7 @@ export default function UserPage() {
     data: users,
     isPending: users_loading,
     error: users_error,
-  } = useUsers();
+  } = useQuery(createUserQueryOptions());
 
   console.log(users);
 
@@ -109,8 +112,8 @@ export default function UserPage() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header Section */}
         <header className="space-y-4">
           {/* Top Bar */}
