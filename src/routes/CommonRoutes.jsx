@@ -1,6 +1,5 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy } from "react";
-import Dashboard from "@pages/dashboard-page/Dashboard";
 import AboutPage from "@pages/about-page/AboutPage";
 import Tutorial from "@pages/tutorial-page/Tutorial";
 import AllTeachersPage from "@pages/all-teacher-page/AllTeachersPage";

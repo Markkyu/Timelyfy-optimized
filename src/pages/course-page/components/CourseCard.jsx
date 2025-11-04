@@ -1,5 +1,6 @@
 // React
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 // Material Icons and Components
 import { IconButton, Tooltip, Stack, Chip, Avatar } from "@mui/material";
@@ -8,6 +9,7 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 import PersonIcon from "@mui/icons-material/Person";
+import LockIcon from "@mui/icons-material/Lock";
 
 // components
 import EditCourseForm from "./EditCourseForm";
@@ -20,18 +22,24 @@ import { deleteCourse } from "@api/coursesAPI";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 
-export default function CourseCard({ course }) {
+export default function CourseCard({ course, collegeName, collegeMajor }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [teacherAssign, setTeacherAssign] = useState(false);
+
+  // console.log(course?.course_college);
+
+  const { college_id } = useParams();
 
   // const deleteCourseMutation = useDeleteCourse();
 
   const assignedTeacher = `${course?.first_name} ${course?.last_name}`;
 
+  const isPlotted = !!course?.is_plotted; // translate to boolean
+
   const queryClient = useQueryClient();
 
-  const { mutate, isPending: loading } = useMutation({
+  const { mutate: courseDeleteMutation, isPending: loading } = useMutation({
     mutationFn: (courseId) => deleteCourse(courseId),
 
     onSuccess: (data, courseId) => {
@@ -40,21 +48,21 @@ export default function CourseCard({ course }) {
       //   return old.filter((c) => c.course_id !== courseId);
       // });
 
-      queryClient.invalidateQueries({
-        queryKey: ["course"],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["course"],
+      // });
 
       // console.log(course);
       // console.log(courseId);
 
-      console.log(course);
+      queryClient.setQueryData(["course", college_id], (old) => {
+        if (!old) return [];
 
-      // queryClient.setQueryData(["course", course.course_college], (old) => {
-      //   console.log(old);
+        return old.filter((c) => c.course_id != data.id);
 
-      //   if (!old) return [];
-      //   return old.filter((c) => data.id != course.course_id);
-      // });
+        // if (!old) return [];
+        // return old.filter((c) => data.id != course.course_id);
+      });
 
       setDeleteOpen(false);
     },
@@ -67,12 +75,12 @@ export default function CourseCard({ course }) {
 
   const handleDelete = () => {
     // deleteCourseMutation.mutate(course.course_id);
-    mutate(course.course_id);
+    courseDeleteMutation(course.course_id);
   };
 
   if (!course) {
     return (
-      <div className="mb-3 p-4 border border-dashed border-gray-300 rounded-md text-center text-gray-400">
+      <div className="mb-3 p-4 border-2 border-dashed border-gray-300 rounded-md text-center italic text-gray-400">
         No subjects available
       </div>
     );
@@ -107,21 +115,57 @@ export default function CourseCard({ course }) {
       </div>
 
       {/* Course Actions */}
+      {/* Course Actions */}
       <Stack direction="row" className="bg-gray-100 shadow-md rounded-xl">
-        <Tooltip title="Edit Course">
-          <IconButton onClick={() => setEditOpen(true)}>
-            <EditSquareIcon color="info" />
-          </IconButton>
+        {isPlotted && (
+          <Tooltip title="This course is scheduled. Remove it from the timetable first.">
+            <Chip
+              size="small"
+              color="warning"
+              label="Plotted"
+              icon={<LockIcon sx={{ fontSize: 18 }} />}
+              className="mr-2"
+            />
+          </Tooltip>
+        )}
+
+        <Tooltip
+          title={isPlotted ? "Remove from scheduler first" : "Assign Teacher"}
+        >
+          <span>
+            <IconButton
+              onClick={() => !isPlotted && setTeacherAssign(true)}
+              disabled={isPlotted}
+            >
+              <AssignmentIndIcon color={isPlotted ? "disabled" : "success"} />
+            </IconButton>
+          </span>
         </Tooltip>
-        <Tooltip title="Assign Teacher">
-          <IconButton onClick={() => setTeacherAssign(true)}>
-            <AssignmentIndIcon color="success" />
-          </IconButton>
+
+        <Tooltip
+          title={isPlotted ? "Remove from scheduler first" : "Edit Course"}
+        >
+          <span>
+            <IconButton
+              onClick={() => !isPlotted && setEditOpen(true)}
+              disabled={isPlotted}
+            >
+              <EditSquareIcon color={isPlotted ? "disabled" : "info"} />
+            </IconButton>
+          </span>
         </Tooltip>
-        <Tooltip title="Delete Course">
-          <IconButton onClick={() => setDeleteOpen(true)}>
-            <DeleteIcon color="error" />
-          </IconButton>
+
+        <Tooltip
+          title={isPlotted ? "Remove from scheduler first" : "Delete Course"}
+        >
+          <span>
+            <IconButton
+              onClick={() => !isPlotted && setDeleteOpen(true)}
+              disabled={isPlotted}
+            >
+              <DeleteIcon color={isPlotted ? "disabled" : "error"} />
+            </IconButton>
+          </span>
         </Tooltip>
       </Stack>
 
@@ -138,6 +182,8 @@ export default function CourseCard({ course }) {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         course={course}
+        collegeName={collegeName}
+        collegeMajor={collegeMajor}
       />
 
       <AssignTeacherForm

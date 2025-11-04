@@ -18,6 +18,8 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import recentCourseQuery from "@hooks/recentCourseQuery";
+import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
+import { formatCode } from "./formatCode";
 
 export default function AddCourseForm({
   open,
@@ -25,6 +27,8 @@ export default function AddCourseForm({
   sem,
   college_id,
   year,
+  collegeMajor,
+  collegeName,
 }) {
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
@@ -54,9 +58,9 @@ export default function AddCourseForm({
       setHoursWeek(3);
       onClose();
 
-      queryClient.invalidateQueries({
-        queryKey: ["course", college_id],
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: ["course", college_id],
+      // });
     },
 
     onError: (error) => {
@@ -72,10 +76,30 @@ export default function AddCourseForm({
   // const { data: currSubjects } = useQuery(createCourseQueryOptions());
   const recentCourses = currSubjects?.reverse();
 
+  // function formatCode(college, major, code) {
+  //   const getInitials = (str) =>
+  //     str
+  //       .split(" ")
+  //       .map((word) => word[0])
+  //       .join("")
+  //       .toUpperCase();
+
+  //   const collegeInitials = getInitials(college);
+  //   const majorInitials = major ? getInitials(major) : null;
+  //   const normalizedCode = code.replace(/\s+/g, "").toUpperCase(); // remove spaces
+
+  //   return majorInitials
+  //     ? `${collegeInitials}-${majorInitials}_${normalizedCode}`
+  //     : `${collegeInitials}_${normalizedCode}`;
+  // }
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    const formattedCourseId = formatCode(collegeName, collegeMajor, courseCode);
+
     const courseData = {
+      course_id: formattedCourseId,
       course_code: courseCode,
       course_name: courseName,
       hours_week: hoursWeek,
@@ -85,6 +109,8 @@ export default function AddCourseForm({
       created_by: user.id,
       assigned_teacher: null,
     };
+
+    // console.log(courseData);
 
     mutate(courseData);
   };
@@ -100,7 +126,11 @@ export default function AddCourseForm({
       open={open}
       TransitionComponent={Grow}
       keepMounted
-      onClose={onClose}
+      onClose={() => {
+        setCourseName("");
+        setCourseCode("");
+        onClose();
+      }}
       fullWidth
       maxWidth="sm"
     >

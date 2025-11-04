@@ -8,7 +8,7 @@ function SlideTransition(props) {
 export default function ToastNotification({
   message,
   type = "error",
-  duration = 4000,
+  duration = 2500,
   trigger,
 }) {
   const [open, setOpen] = useState(false);

@@ -35,8 +35,6 @@ export const getRecentCourses = async () => {
   try {
     const { data } = await axios.get(`${API_URL}/api/courses/recent`);
 
-    console.log(data);
-
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -89,7 +87,7 @@ export const addCourse = async (details) => {
 };
 
 // UPDATE COURSE
-export const updateCourse = async (courseId, updates) => {
+export const updateCourse = async ({ courseId, updates }) => {
   try {
     const { data } = await axios.put(
       `${API_URL}/api/courses/${courseId}`,

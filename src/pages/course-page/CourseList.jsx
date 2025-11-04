@@ -13,6 +13,9 @@ import { ArrowLeft } from "lucide-react";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import { useQuery } from "@tanstack/react-query";
+import createCollegeQueryOptions, {
+  useCollegeQueryById,
+} from "@hooks/createCollegeQueryOptions";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -28,13 +31,23 @@ export default function CourseList() {
   //   error: courses_error,
   // } = useCourses(college_id);
 
+  const { data: collegeId } = useCollegeQueryById(college_id);
+  const { data: collegeList } = useQuery(createCollegeQueryOptions());
+
+  // const { college_name: collegeName, college_major: collegeMajor } = collegeId;
+
+  // console.log(collegeName, collegeMajor);
+
+  // const collegeName = collegeId?.college_name;
+  // const collegeMajor = collegeId?.college_major;
+
+  // console.log(collegeId?.college_name);
+
   const {
     data: courses,
     isFetching: courses_loading,
     error: courses_error,
   } = useQuery(createCourseQueryById(college_id));
-
-  console.log(courses);
 
   // Error Content Display
   if (courses_error)
@@ -49,24 +62,69 @@ export default function CourseList() {
 
   return (
     <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px] mx-auto">
-      <h1 className="relative text-4xl text-center font-bold mb-6">
+      <header className="flex items-center justify-between mb-6">
+        {/* Back Button */}
         <Button
-          startIcon={<ArrowLeft />}
+          variant="outlined"
+          startIcon={<ArrowLeft size={18} />}
           onClick={() => navigate(-1)}
           sx={{
-            mb: 3,
+            borderRadius: "10px",
+            color: "#800000",
+            borderColor: "#800000",
             fontWeight: 600,
-            color: "#7f1d1d",
-            borderRadius: "12px",
-            position: "absolute",
-            left: 0,
-            border: 2,
+            borderWidth: 2,
+            textTransform: "none",
           }}
         >
           Back to College Info
         </Button>
-        Course list
-      </h1>
+
+        {/* Title */}
+        <div className="text-center flex flex-col">
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            {collegeId?.college_name || "Loading..."}
+          </h1>
+
+          {collegeId?.college_major && (
+            <span className="text-sm text-gray-500 font-medium">
+              {collegeId.college_major}
+            </span>
+          )}
+
+          <p className="text-gray-700 text-lg font-semibold mt-1">
+            Course List
+          </p>
+        </div>
+
+        {/* Course Navigation */}
+        <div className="flex flex-col text-sm">
+          <label
+            htmlFor="course-colleges"
+            className="text-gray-600 mb-1 font-medium"
+          >
+            Jump to Course
+          </label>
+          <select
+            id="course-colleges"
+            className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
+            defaultValue=""
+            onChange={(e) => {
+              if (e.target.value) navigate(`/course-list/${e.target.value}`);
+            }}
+          >
+            <option value="" disabled>
+              Select a College
+            </option>
+            {collegeList?.map((c) => (
+              <option key={c.college_id} value={c.college_id}>
+                {c.college_name} {c.college_major}
+              </option>
+            ))}
+          </select>
+        </div>
+      </header>
+
       {uniqueYears.map(
         (
           year // Chop up by year level
@@ -75,7 +133,7 @@ export default function CourseList() {
             key={year}
             className="mb-6 border border-gray-300 rounded-lg bg-gray-50 p-4 shadow-md"
           >
-            <h2 className="text-2xl font-bold text-center mb-2">Year {year}</h2>
+            <h2 className="text-3xl font-bold text-center mb-2">Year {year}</h2>
             <div className="flex gap-4 justify-center">
               {uniqueSemesters.map(
                 (
@@ -88,6 +146,8 @@ export default function CourseList() {
                     college_id={college_id}
                     courses={courses}
                     loading={courses_loading}
+                    collegeName={collegeId?.college_name}
+                    collegeMajor={collegeId?.college_major}
                   />
                 )
               )}

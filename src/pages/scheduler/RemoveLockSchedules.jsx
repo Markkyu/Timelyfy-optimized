@@ -66,9 +66,12 @@ export default function RemoveLockSchedules({
     try {
       await deleteSchedules(scheduleToRemove);
 
-      queryClient.invalidateQueries({
-        queryKey: createCoursesQueryOptions().queryKey,
-      });
+      queryClient.invalidateQueries([
+        {
+          queryKey: createCoursesQueryOptions().queryKey,
+        },
+      ]);
+
       queryClient.invalidateQueries({
         queryKey: createSchedulesQueryOptions().queryKey,
       });
@@ -87,45 +90,12 @@ export default function RemoveLockSchedules({
   );
 
   // Get unique course names - returns [{slot_course: "CCS_101"}, {slot_course: "CCS_102"}]
-  const uniqueCourses = Object.keys(groupLockedSchedules).map((courseName) => ({
-    slot_course: courseName,
-    count: groupLockedSchedules[courseName].length, // Number of schedules for this course
-  }));
-
-  // console.log(uniqueCourses);
-
-  // Handle checkbox toggle
-  const handleCheckboxChange = (courseName) => {
-    setCheckedCourses((prev) => ({
-      ...prev,
-      [courseName]: !prev[courseName],
-    }));
-  };
-
-  // Get all schedules that belong to checked courses
-  const getSchedulesToRemove = () => {
-    // const checkedCourseNames = Object.keys(checkedCourses).filter(
-    //   (course) => checkedCourses[course]
-    // );
-    // // Return all schedules that ma`tch the checked courses
-    // return lockedSchedules.filter((schedule) =>
-    //   checkedCourseNames.includes(schedule.slot_course)
-    // );
-  };
-
-  // Handle remove all checked
-  const handleRemoveAllChecked = async () => {
-    // const schedulesToRemove = getSchedulesToRemove();
-    // if (schedulesToRemove.length === 0) {
-    //   alert("Please select at least one course to remove");
-    //   return;
-    // }
-    // console.log("Schedules to remove:", schedulesToRemove);
-    // mutate(schedulesToRemove);
-    // setCheckedCourses({});
-  };
-
-  const checkedCount = Object.values(checkedCourses).filter(Boolean).length;
+  const uniqueCourses = Object.keys(groupLockedSchedules).map(
+    (courseName, idx) => ({
+      slot_course: courseName,
+      count: groupLockedSchedules[courseName].length, // Number of schedules for this course
+    })
+  );
 
   if (schedules_loading) return <SchedulesLoading />;
 
@@ -133,7 +103,7 @@ export default function RemoveLockSchedules({
 
   return (
     <>
-      <div className="relative max-w-4xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
+      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
         {/* Header Warning */}
         <HeaderWarning />
 
@@ -148,7 +118,9 @@ export default function RemoveLockSchedules({
           )}
 
           {uniqueCourses?.length === 0 && (
-            <p className="text-gray-500 italic">No locked schedules found.</p>
+            <p className="text-gray-500 italic text-center">
+              No locked schedules found.
+            </p>
           )}
 
           {/* Has value state */}
@@ -223,7 +195,7 @@ export default function RemoveLockSchedules({
 const SchedulesLoading = () => {
   return (
     <>
-      <div className="relative max-w-4xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
+      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
         {/* {schedules_error && <SchedulesError />}
 
         {schedules_loading && <SchedulesLoading />} */}
@@ -323,10 +295,10 @@ const HeaderWarning = () => {
         <DeleteIcon className="ml-2" />
       </h2>
 
-      <p className="text-sm text-gray-700 font-medium mb-3">
-        ⚠️ Warning: Removing locked schedules may shift the flow of a timetable,
-        this may allow other users to fill-in the available cell disrupting the
-        flow of your schedule.
+      <p className="text-sm text-gray-700 mb-3">
+        ⚠️ Warning: Removing locked schedules may shift the flow of a timetable.
+        This may allow other users to fill-in the available cell therefore
+        disrupting the flow of your schedule.
       </p>
     </section>
   );
@@ -335,7 +307,7 @@ const HeaderWarning = () => {
 const SchedulesError = () => {
   return (
     <>
-      <div className="relative max-w-4xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
+      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
         <HeaderWarning />
         <div className="bg-white mt-4 px-8 py-6 rounded-2xl flex flex-col items-center gap-4 animate-fade-in">
           <span className="text-xl font-bold text-red-700">

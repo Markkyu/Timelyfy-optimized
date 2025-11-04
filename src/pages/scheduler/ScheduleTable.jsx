@@ -36,7 +36,7 @@ export default function ScheduleTable({
   });
 
   return (
-    <div className="w-full max-w-7xl mx-auto relative border-t-6 border-t-red-800 bg-white p-6 rounded-2xl shadow-md border border-gray-300 overflow-x-auto">
+    <div className="w-full max-w-7xl 2xl:max-w-[1600px] mx-auto relative border-t-6 border-t-red-800 bg-white p-6 rounded-2xl shadow-md border border-gray-300 overflow-x-auto">
       {/* header */}
 
       {schedules_error && <SchedulesError />}
@@ -143,7 +143,7 @@ export default function ScheduleTable({
                       {course ? (
                         <div className="flex flex-col items-center justify-center">
                           <button
-                            className="absolute top-2 right-2 group-hover:block hover:text-red-900 hidden cursor-pointer text-red-700 font-bold"
+                            className="absolute top-2 right-2 group-hover:block hover:text-red-900 hidden cursor-pointer text-red-700 font-bold bg-red- rounded-full shadow-md"
                             onClick={(e) => {
                               e.stopPropagation(); // prevent cell click event
                               onRemoveSchedule(
@@ -165,8 +165,10 @@ export default function ScheduleTable({
                           >
                             <CloseIcon fontSize="medium" />
                           </button>
-                          <span className="text-base font-semibold">
+                          <span className="text-base text-wrap w-full font-semibold">
                             {course.slot_course}
+                            <br />
+                            {course.course_name}
                           </span>
                         </div>
                       ) : (

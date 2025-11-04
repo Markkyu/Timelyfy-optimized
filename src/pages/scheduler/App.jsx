@@ -1,38 +1,53 @@
 // React imports
 import { useState, useMemo, useEffect } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+
 // MUI Components and Icons
 import { Button, Snackbar, Alert, Radio } from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LockIcon from "@mui/icons-material/Lock";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import UploadIcon from "@mui/icons-material/Upload";
+import { ArrowLeft } from "lucide-react";
+
 // Components
-import ToastNotification from "./ToastNotification";
+import ToastNotification from "@components/ToastNotification";
 import CourseList from "./CourseList";
 import ScheduleTable from "./ScheduleTable";
 import DurationToggle from "./DurationToggle";
 import validateSlot from "./validateSlot";
-import getSchedules from "./api/getSchedules";
 import ListRemoveCourse from "./ListRemoveCourse";
 import AutoAllocatingOverlay from "./AutoAllocatingOverlay";
+import RemoveLockSchedules from "./RemoveLockSchedules";
+
+// Tanstack and API
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import getSchedules from "./api/getSchedules";
 import autoAllocate from "./api/autoAllocate";
-import createSchedulesQueryOptions from "./api/createSchedulesQueryOptions";
-import createCoursesQueryOptions from "./api/createCoursesQueryOptions";
 import uploadSchedule from "./api/uploadSchedule";
 import { getCourses } from "./api/getCourses";
-import RemoveLockSchedules from "./RemoveLockSchedules";
-import axios from "axios";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import createSchedulesQueryOptions from "./api/createSchedulesQueryOptions";
+import createCoursesQueryOptions from "./api/createCoursesQueryOptions";
+import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 export default function SchedulerApp() {
-  const { college, year, sem } = useParams();
+  const { college } = useParams();
+  const [searchParams] = useSearchParams();
 
-  const college_group = 1; // useParams here
-  const college_year = 1; // useParams here
-  const college_sem = 1; // useParams here
+  const year = searchParams.get("year");
+  const sem = searchParams.get("sem");
+
+  console.log(college, year, sem);
+
+  const college_group = college;
+  const college_year = year;
+  const college_sem = sem;
+
+  const navigate = useNavigate();
+
+  const { data: collegeList } = useQuery(createCollegeQueryOptions());
 
   // Track selected course state
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -75,9 +90,12 @@ export default function SchedulerApp() {
     return [...existingSchedules, ...newSchedules];
   }, [existingSchedules, newSchedules]);
 
-  const disabledLockButton =
-    (selectedCourse && selectedCourse?.hours_week != 0) || !selectedCourse;
+  // state for disable lock
+  const disabledLockButton = selectedCourse && selectedCourse?.hours_week != 0;
 
+  const [disabledLock, setDisableLock] = useState(true);
+
+  // duration state
   const [duration, setDuration] = useState(1);
 
   // Auto allocate states
@@ -228,6 +246,7 @@ export default function SchedulerApp() {
 
       if (!assigningSchedules || assigningSchedules.length === 0) {
         setAllocatingStatus("empty");
+        await sleep(1000);
         return;
       }
 
@@ -251,6 +270,7 @@ export default function SchedulerApp() {
             : subject;
         })
       );
+
       await sleep(1000);
     } catch (err) {
       console.error(err.message);
@@ -270,10 +290,10 @@ export default function SchedulerApp() {
 
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: createCoursesQueryOptions().queryKey,
+          queryKey: ["courses"],
         });
         queryClient.invalidateQueries({
-          queryKey: createSchedulesQueryOptions().queryKey,
+          queryKey: ["schedules"],
         });
         console.log("Succesful Schedule!");
 
@@ -287,7 +307,7 @@ export default function SchedulerApp() {
 
       onError: (error) => {
         console.error(error?.message);
-        setToastMessage("Error saving schedules");
+        setToastMessage(`Error saving schedules: ${error?.message}`);
         setToastType("error");
         setToastTrigger((prev) => prev + 1);
       },
@@ -369,9 +389,66 @@ export default function SchedulerApp() {
 
   return (
     <div className="bg-gradient-to-r from-gray-200 to-gray-300 py-10 container-fluid">
-      <h1 className="text-center text-4xl font-bold underline text-gray-800">
-        Schedule of {"Computer Science"}
-      </h1>
+      <header className="flex max-w-7xl mx-auto items-center justify-between mb-6">
+        {/* Back Button */}
+        <Button
+          variant="outlined"
+          startIcon={<ArrowLeft size={18} />}
+          onClick={() => navigate(-1)}
+          sx={{
+            borderRadius: "10px",
+            color: "#800000",
+            borderColor: "#800000",
+            fontWeight: 600,
+            borderWidth: 2,
+            textTransform: "none",
+          }}
+        >
+          Back to College Info
+        </Button>
+
+        {/* Title */}
+        <div className="text-center flex flex-col">
+          <h1 className="text-3xl font-extrabold tracking-tight">
+            {/* {collegeId?.college_name || "Loading..."} */}
+          </h1>
+
+          {/* {collegeId?.college_major && (
+            <span className="text-sm text-gray-500 font-medium">
+              {collegeId.college_major}
+            </span>
+          )} */}
+
+          <p className="text-gray-700 text-4xl font-semibold mt-1">Schedule</p>
+        </div>
+
+        {/* Course Navigation */}
+        <div className="flex flex-col text-sm">
+          <label
+            htmlFor="course-colleges"
+            className="text-gray-600 mb-1 font-medium"
+          >
+            Jump to Course
+          </label>
+          <select
+            id="course-colleges"
+            className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
+            defaultValue=""
+            onChange={(e) => {
+              if (e.target.value) navigate(`/schedule/${e.target.value}`);
+            }}
+          >
+            <option value="" disabled>
+              Select a College
+            </option>
+            {collegeList?.map((c) => (
+              <option key={c.college_id} value={c.college_id}>
+                {c.college_name} {c.college_major}
+              </option>
+            ))}
+          </select>
+        </div>
+      </header>
       <main className="flex flex-col gap-4 p-6">
         <div className="w-full flex flex-col justify-center gap-4">
           <div className="justify-end">
@@ -417,8 +494,8 @@ export default function SchedulerApp() {
                   : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-900/30"
               }`}
               >
-                <span>{allocating ? "Allocating..." : "Auto Allocate"}</span>
                 <AutoAwesomeIcon fontSize="small" />
+                <span>{allocating ? "Allocating..." : "Auto Allocate"}</span>
               </button>
 
               {/* Reset Table */}
@@ -426,8 +503,8 @@ export default function SchedulerApp() {
                 onClick={handleResetTable}
                 className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm bg-gray-500 hover:bg-gray-400 text-gray-50 shadow-md shadow-gray-900/40"
               >
-                <span>Reset Non-locked Schedules</span>
                 <RotateLeftIcon fontSize="small" />
+                <span>Reset Non-locked Schedules</span>
               </button>
 
               {/* Lock Schedule */}
@@ -441,8 +518,8 @@ export default function SchedulerApp() {
                   : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/40"
               }`}
               >
-                <span>{"Lock Schedule"}</span>
                 <LockIcon fontSize="small" />
+                <span>{"Lock Schedule"}</span>
               </button>
             </ScheduleTable>
           </div>

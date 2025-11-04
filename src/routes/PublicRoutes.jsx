@@ -38,7 +38,7 @@ export default function PublicRoutes() {
       <Route path="/course-list/:college_id" element={<CourseList />} />
       <Route path="/teachers/:department" element={<TeacherPage />} />
       <Route path="/teacher/schedule/:department" element={<EditSchedule />} />
-      <Route path="/schedule/:college_id" element={<SchedulerApp />} />
+      <Route path="/schedule/:college" element={<SchedulerApp />} />
 
       <Route path="/room-page" element={<RoomPage />} />
       <Route path="/account" element={<AccountPage />} />

@@ -19,7 +19,7 @@ import { useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 
-import createRoomQueryOptions from "@hooks/createRoomQueryOptions";
+import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 
 export default function AssignTeacherForm({ open, onClose, courseId }) {
@@ -46,7 +46,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
     data: rooms,
     isLoading: roomsLoading,
     isError: roomsError,
-  } = useQuery(createRoomQueryOptions(teacherId));
+  } = useQuery(allRoomsQuery());
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -151,6 +151,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
                 styles={{
                   control: (base) => ({ ...base, zIndex: 100, height: "60px" }),
                 }}
+                required
               />
             </div>
 
@@ -176,6 +177,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
                 styles={{
                   control: (base) => ({ ...base, zIndex: 1, height: "60px" }),
                 }}
+                required
               />
             </div>
           </section>

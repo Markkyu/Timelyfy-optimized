@@ -7,6 +7,8 @@ export default async function getSchedules(classGroup, year, sem) {
     const { data } = await axios.get(
       `${API_URL}/api/schedules/${classGroup}/filter?year=${year}&sem=${sem}`
     );
+
+    console.log(data);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

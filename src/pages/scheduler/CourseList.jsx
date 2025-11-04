@@ -32,7 +32,7 @@ export default function CourseList({
   if (courses_error) {
     return (
       <section className="w-full h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
-        <h2 className="text-2xl font-semibold text-red-800">
+        <h2 className="text-2xl font-semibold text-red-800 mb-4">
           Available Courses
         </h2>
         <div className="py-4">{children}</div>
@@ -53,7 +53,7 @@ export default function CourseList({
 
     return (
       <section className="w-full h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
-        <h2 className="text-2xl font-semibold text-red-800">
+        <h2 className="text-2xl font-semibold text-red-800 mb-4">
           Available Courses
         </h2>
         <div className="py-4">{children}</div>
@@ -68,7 +68,9 @@ export default function CourseList({
 
   return (
     <section className="w-full max-w-7xl mx-auto h-full p-6 bg-white shadow-md rounded-xl">
-      <h2 className="text-2xl font-semibold text-red-800">Available Courses</h2>
+      <h2 className="text-2xl font-semibold text-red-800 mb-4">
+        Available Courses
+      </h2>
 
       <div className="grid grid-cols-4 gap-4">
         {courses?.map((course) => {

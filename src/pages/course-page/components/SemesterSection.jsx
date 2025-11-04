@@ -85,6 +85,7 @@ import CourseCard from "./CourseCard";
 import CourseSkeletonLoader from "./CourseSkeletonLoader";
 import AddCourseForm from "./AddCourseForm";
 import { CalendarIcon } from "lucide-react";
+import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
 
 export default function SemesterSection({
   sem,
@@ -92,6 +93,8 @@ export default function SemesterSection({
   year,
   college_id,
   loading,
+  collegeName,
+  collegeMajor,
 }) {
   const [addOpen, setAddOpen] = useState(false);
 
@@ -116,7 +119,12 @@ export default function SemesterSection({
     if (filteredCourses.length === 0) return <CourseCard course={null} />;
 
     return filteredCourses.map((course) => (
-      <CourseCard key={course.course_id} course={course} />
+      <CourseCard
+        key={course.course_id}
+        course={course}
+        collegeName={collegeName}
+        collegeMajor={collegeMajor}
+      />
     ));
   };
 
@@ -137,7 +145,9 @@ export default function SemesterSection({
               fontWeight: 600,
             }}
             startIcon={<CalendarIcon />}
-            onClick={() => navigate(`/schedule/${college_id}`)}
+            onClick={() =>
+              navigate(`/schedule/${college_id}?year=${year}&sem=${sem}`)
+            }
           >
             Schedule
           </Button>
@@ -166,6 +176,8 @@ export default function SemesterSection({
         sem={sem}
         college_id={college_id}
         year={year}
+        collegeName={collegeName}
+        collegeMajor={collegeMajor}
       />
     </section>
   );

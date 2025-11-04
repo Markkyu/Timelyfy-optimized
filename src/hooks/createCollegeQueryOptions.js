@@ -14,7 +14,6 @@ export function useCollegeQueryById(collegeId) {
   return useQuery({
     queryKey: ["college", collegeId],
     queryFn: () => getCollegeById(collegeId),
-    enabled: !!collegeId,
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: 2,
   });
