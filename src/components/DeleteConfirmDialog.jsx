@@ -6,7 +6,6 @@ import {
   DialogContentText,
   DialogActions,
   Button,
-  Slide,
   Grow,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -37,7 +36,7 @@ export default function DeleteConfirmDialog({
           color="inherit"
           onClick={onClose}
           sx={{ fontWeight: 600 }}
-          fullWidth
+          // fullWidth
           disableElevation
         >
           Cancel
@@ -48,7 +47,7 @@ export default function DeleteConfirmDialog({
           onClick={handleDelete}
           variant="contained"
           sx={{ fontWeight: 600 }}
-          fullWidth
+          // fullWidth
           disableElevation
         >
           Delete

@@ -10,16 +10,18 @@ import {
   ArrowLeft,
   DoorOpen,
   MapPin,
-  Building,
+  DoorClosed,
 } from "lucide-react";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
-import RoomCard from "./components/RoomCard";
 import RoomListView from "./components/RoomListView";
 import EmptyContent from "@components/EmptyContent";
 import LoadingContent from "@components/LoadingContent";
 import ErrorContent from "@components/ErrorContent";
 import RenderWhenRole from "@components/RenderWhenRole";
+import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
+import { useQuery } from "@tanstack/react-query";
+import AddRoomForm from "./components/AddRoomForm";
 // import AddRoomForm from "./components/AddRoomForm";
 // import useRooms from "./useRooms";
 
@@ -38,17 +40,23 @@ export default function RoomPage() {
   //   error: rooms_error,
   // } = useRooms();
 
-  const rooms = [{ room_id: 1, room_name: "test" }];
+  // const rooms = [{ room_id: 1, room_name: "test" }];
   // const rooms = [];
-  const rooms_loading = false;
-  const rooms_error = null;
+  // const rooms_loading = false;
+  // const rooms_error = null;
+
+  const {
+    data: rooms,
+    isPending: rooms_loading,
+    isError: rooms_error,
+  } = useQuery(allRoomsQuery());
 
   // Search Function
   const filteredData = useMemo(() => {
     if (!rooms) return [];
 
     const lower = searchTerm.toLowerCase();
-    return rooms.filter((room) => {
+    return rooms?.filter((room) => {
       const roomName = room.room_name?.toLowerCase() || "";
       return roomName.includes(lower);
     });
@@ -64,11 +72,9 @@ export default function RoomPage() {
 
   // Stats
   const stats = useMemo(() => {
-    if (!rooms) return { total: 0, available: 0, occupied: 0 };
+    if (!rooms) return { total: 0 };
     return {
       total: rooms.length,
-      available: rooms.filter((r) => r.status === "available").length || 0,
-      occupied: rooms.filter((r) => r.status === "occupied").length || 0,
     };
   }, [rooms]);
 
@@ -121,9 +127,6 @@ export default function RoomPage() {
                   fontWeight: 600,
                   bgcolor: "maroon",
                   px: 3,
-                  "&:hover": {
-                    bgcolor: "#600000",
-                  },
                 }}
               >
                 Add Room
@@ -147,7 +150,7 @@ export default function RoomPage() {
               <div className="flex gap-4 flex-wrap">
                 <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 min-w-[120px]">
                   <div className="flex items-center gap-2 mb-1">
-                    <Building size={16} className="text-blue-600" />
+                    <DoorClosed size={16} className="text-blue-600" />
                     <p className="text-blue-600 text-sm font-medium">
                       Total Rooms
                     </p>
@@ -273,7 +276,7 @@ export default function RoomPage() {
         </main>
       </div>
 
-      {/* <AddRoomForm open={openAddRoom} onClose={() => setOpenAddRoom(false)} /> */}
+      <AddRoomForm open={openAddRoom} onClose={() => setOpenAddRoom(false)} />
     </div>
   );
 }

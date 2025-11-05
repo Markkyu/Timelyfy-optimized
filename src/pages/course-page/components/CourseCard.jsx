@@ -101,13 +101,13 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
           <span className="ml-2 space-x-2">
             <Chip
               size="small"
-              color={course?.first_name ? "primary" : "error"}
+              color={course?.first_name ? "success" : "error"}
               label={course?.first_name ? assignedTeacher : "TBA"}
             />
             <span>➜</span>
             <Chip
               size="small"
-              color={course?.room_name ? "secondary" : "error"}
+              color={course?.room_name ? "info" : "error"}
               label={course?.room_name ? course?.room_name : "TBA"}
             />
           </span>

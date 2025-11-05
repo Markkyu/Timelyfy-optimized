@@ -9,8 +9,8 @@ export default function createSchedulesQueryOptions(
   return queryOptions({
     queryKey: ["schedules", classGroup, year, semester],
     queryFn: () => getSchedules(classGroup, year, semester),
-    cacheTime: 1000 * 60 * 2,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 2,
+    gcTime: 1000 * 60 * 5,
     retry: 1,
   });
 }

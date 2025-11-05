@@ -9,6 +9,7 @@ import {
   Slide,
   Typography,
   Grow,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useAddTeachersDepartment } from "@hooks/useTeachersDepartment";
@@ -16,6 +17,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import { createCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ToastNotification from "@components/ToastNotification";
 
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
@@ -27,6 +29,10 @@ export default function AddCollegeForm({ open, onClose }) {
   const [collegeMajor, setCollegeMajor] = useState("");
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+  const [toastType, setToastType] = useState("error");
 
   const queryClient = useQueryClient();
 
@@ -41,11 +47,19 @@ export default function AddCollegeForm({ open, onClose }) {
       setCollegeName("");
       setCollegeMajor("");
       onClose();
+
+      setToastMessage("College Program Successfully Added!");
+      setToastType("success");
+      setToastTrigger((prev) => prev + 1);
     },
 
     onError: (error) => {
       console.error(error.message);
-      setError(error.message);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong."
+      );
     },
   });
 
@@ -67,7 +81,12 @@ export default function AddCollegeForm({ open, onClose }) {
         open={open}
         TransitionComponent={Grow}
         keepMounted
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setCollegeName("");
+          setCollegeMajor("");
+          setError(null);
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -94,20 +113,17 @@ export default function AddCollegeForm({ open, onClose }) {
           </Typography>
         </DialogTitle>
 
-        {error && (
-          <div className="flex">
-            <span className="p-2 bg-red-100 border-2 border-red-300 text-red-500 text-center w-full mx-2">
-              {error}
-            </span>
-          </div>
-        )}
+        {error && <Alert severity="error">{error}</Alert>}
 
         <DialogContent>
-          <form onSubmit={handleSubmit} className="space-y-2 mt-2">
+          <form onSubmit={handleSubmit} className="space-y-2">
             <TextField
               label="College Program Name"
               value={collegeName}
-              onChange={(e) => setCollegeName(e.target.value)}
+              onChange={(e) => {
+                setError(null);
+                setCollegeName(e.target.value);
+              }}
               fullWidth
               margin="normal"
               required
@@ -135,7 +151,7 @@ export default function AddCollegeForm({ open, onClose }) {
               placeholder="Secondary Education"
             />
 
-            <label htmlFor="">College Program Name</label>
+            <label htmlFor="">Major (optional)</label>
             <input
               type="text"
               className="border border-gray-400 p-3 w-full rounded"
@@ -163,6 +179,11 @@ export default function AddCollegeForm({ open, onClose }) {
           </form>
         </DialogContent>
       </Dialog>
+      <ToastNotification
+        message={toastMessage}
+        trigger={toastTrigger}
+        type={toastType}
+      />
     </>
   );
 }

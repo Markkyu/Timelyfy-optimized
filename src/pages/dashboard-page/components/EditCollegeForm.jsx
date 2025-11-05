@@ -17,12 +17,17 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import { updateCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ToastNotification from "@components/ToastNotification";
 
 export default function EditCollegeForm({ open, onClose, college }) {
   const [collegeName, setCollegeName] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+  const [toastType, setToastType] = useState("error");
 
   const collegeId = college?.college_id;
 
@@ -33,6 +38,32 @@ export default function EditCollegeForm({ open, onClose, college }) {
 
   const queryClient = useQueryClient();
 
+  // const { mutate: updateCollegeMutation, isPending } = useMutation({
+  //   mutationFn: (collegeId, updates) => {
+  //     updateCollege(collegeId, updates);
+  //   },
+
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({
+  //       queryKey: createCollegeQueryOptions().queryKey,
+  //     });
+
+  //     onClose();
+  // setToastMessage("College Program Successfully Added!");
+  // setToastType("success");
+  // setToastTrigger((prev) => prev + 1);
+  //   },
+
+  //   onError: (error) => {
+  //     console.error(error.message);
+  // setError(
+  //   error.response?.data?.message ||
+  //     error.message ||
+  //     "Something went wrong."
+  // );
+  //   },
+  // });
+
   // handle function add college
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -42,15 +73,26 @@ export default function EditCollegeForm({ open, onClose, college }) {
       college_major: collegeMajor,
     };
 
+    // updateCollegeMutation(collegeId, updates);
+
     try {
       setLoading(true);
       await updateCollege(collegeId, updates);
       await queryClient.invalidateQueries({
         queryKey: createCollegeQueryOptions().queryKey,
       });
+
+      setToastMessage("College Program Successfully Added!");
+      setToastType("success");
+      setToastTrigger((prev) => prev + 1);
+
       onClose();
     } catch (err) {
-      setError(err.message);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Something went wrong."
+      );
     } finally {
       setLoading(false);
     }
@@ -62,7 +104,10 @@ export default function EditCollegeForm({ open, onClose, college }) {
         open={open}
         TransitionComponent={Grow}
         keepMounted
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setError(null);
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -129,6 +174,11 @@ export default function EditCollegeForm({ open, onClose, college }) {
           </form>
         </DialogContent>
       </Dialog>
+      <ToastNotification
+        message={toastMessage}
+        trigger={toastTrigger}
+        type={toastType}
+      />
     </>
   );
 }

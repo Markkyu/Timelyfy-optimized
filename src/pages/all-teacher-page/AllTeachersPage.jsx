@@ -86,7 +86,7 @@ export default function AllTeachersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-8 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-8">
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

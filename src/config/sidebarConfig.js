@@ -26,6 +26,13 @@ export const sidebarItems = [
     roles: ["*"],
   },
   {
+    // User management in one page
+    text: "Room List",
+    path: "rooms",
+    icon: MeetingRoomIcon,
+    roles: ["*"],
+  },
+  {
     // control the phase of the program
     text: "Phase Control",
     path: "phase-control",
@@ -53,13 +60,6 @@ export const sidebarItems = [
   //   icon: KeyOutlinedIcon,
   //   roles: ["admin"],
   // },
-  {
-    // User management in one page
-    text: "Room List",
-    path: "room-page",
-    icon: MeetingRoomIcon,
-    roles: ["*"],
-  },
   {
     // User management in one page
     text: "Manage Users",

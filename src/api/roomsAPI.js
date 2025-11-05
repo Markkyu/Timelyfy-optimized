@@ -51,8 +51,11 @@ export const updateRoom = async (roomId, updates) => {
 };
 
 export const deleteRoom = async (roomId) => {
+  console.log(roomId);
+
   try {
-    const { data } = await axios.put(`${API_URL}/api/rooms/${roomId}`);
+    const { data } = await axios.delete(`${API_URL}/api/rooms/${roomId}`);
+
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

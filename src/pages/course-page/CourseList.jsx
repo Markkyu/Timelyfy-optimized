@@ -67,7 +67,7 @@ export default function CourseList() {
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           sx={{
             borderRadius: "10px",
             color: "#800000",
@@ -82,7 +82,7 @@ export default function CourseList() {
 
         {/* Title */}
         <div className="text-center flex flex-col">
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="text-4xl font-extrabold tracking-tight">
             {collegeId?.college_name || "Loading..."}
           </h1>
 

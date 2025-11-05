@@ -1,0 +1,24 @@
+import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
+
+export const getTeacherSchedules = async (teacherId) => {
+  try {
+    const { data } = await axios.get(
+      `${API_URL}/api/schedules/teacher/${teacherId}`
+    );
+
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};
+export const getRoomSchedules = async () => {
+  try {
+    const { data } = await axios.get(`${API_URL}/api/schedules/room/:room_id`);
+
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || error.message);
+  }
+};

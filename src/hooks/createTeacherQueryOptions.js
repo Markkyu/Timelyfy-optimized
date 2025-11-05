@@ -3,18 +3,21 @@ import { getTeacherById, getTeachers } from "@api/teachersAPI";
 
 export default function createTeacherQueryOptions() {
   return queryOptions({
-    queryKey: ["teacher"],
+    queryKey: ["teachers"],
     queryFn: () => getTeachers(),
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    cacheTime: 1000 * 60 * 20, // 20 minutes
+    staleTime: 1000 * 60 * 2, // 2 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    retry: 1,
   });
 }
 
 export function useTeacherQueryById(teacherId) {
   return useQuery({
-    queryKey: ["teacher", teacherId],
+    queryKey: ["teachers", teacherId],
     queryFn: () => getTeacherById(teacherId),
-    staleTime: 1000 * 60 * 10, // 5 minutes
+    enabled: !!teacherId,
+    staleTime: 1000 * 60 * 2, // 2 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes
     retry: 1,
   });
 }

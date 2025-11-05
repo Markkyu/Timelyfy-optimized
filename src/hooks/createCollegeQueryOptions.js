@@ -5,8 +5,8 @@ export default function createCollegeQueryOptions() {
   return queryOptions({
     queryKey: ["college"],
     queryFn: () => getColleges(),
-    staleTime: Infinity,
-    cacheTime: Infinity,
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
   });
 }
 
@@ -14,7 +14,8 @@ export function useCollegeQueryById(collegeId) {
   return useQuery({
     queryKey: ["college", collegeId],
     queryFn: () => getCollegeById(collegeId),
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 1000 * 60 * 5,
+    gcTime: 1000 * 60 * 30,
     retry: 2,
   });
 }

@@ -129,11 +129,6 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleSubmit}>
-          {/* {error && (
-            <span className="flex py-1.5 rounded-xl text-red-500 text-lg justify-center bg-red-100">
-              {error}
-            </span>
-          )} */}
           <section className="flex gap-6 w-full">
             <div className="mt-6 flex-1">
               <Typography variant="h6" sx={{ mb: 1 }}>
@@ -165,12 +160,12 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
                 isLoading={roomsLoading}
                 value={selectedRoom}
                 onChange={(option) => setSelectedRoom(option)}
-                placeholder={
-                  !selectedTeacher
-                    ? "Select teacher first..."
-                    : "Choose a room..."
-                }
-                isDisabled={!selectedTeacher}
+                // placeholder={
+                //   !selectedTeacher
+                //     ? "Select teacher first..."
+                //     : "Choose a room..."
+                // }
+                // isDisabled={!selectedTeacher}
                 isClearable
                 menuPosition="fixed"
                 menuShouldScrollIntoView={false}

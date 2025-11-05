@@ -59,17 +59,12 @@ export default function CollegeCard({ college }) {
   };
 
   return (
-    <div
-      className="group relative bg-white rounded-2xl border-2 border-gray-200 hover:border-maroon transition-all duration-300 overflow-hidden hover:shadow-xl cursor-pointer"
-      onClick={goToCollege}
-    >
+    <div className="group relative bg-white rounded-2xl border-2 border-gray-200 hover:border-maroon transition-all duration-300 overflow-hidden hover:shadow-xl">
       {/* Gradient Header */}
       <div
         className="h-32 relative"
         style={{ background: getGradient(college?.college_name) }}
       >
-        {/* <div className="absolute inset-0 bg-red-800 bg-opacity-10"></div> */}
-
         {/* Menu Button */}
         <RenderWhenRole role={["master_scheduler", "admin"]}>
           <div className="absolute top-3 right-3">
@@ -132,7 +127,13 @@ export default function CollegeCard({ college }) {
       </div>
 
       {/* Content */}
-      <div className="pt-12 px-6 pb-6">
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+          goToCollege();
+        }}
+        className="pt-12 px-6 pb-6 cursor-pointer"
+      >
         {/* Title */}
         <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-maroon transition-colors line-clamp-2">
           {college?.college_name}

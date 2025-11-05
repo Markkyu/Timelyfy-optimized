@@ -22,7 +22,7 @@ export default function StatCard({
   label,
   Icon,
   color,
-  colSpan = 1,
+  colSpan,
   stats,
   description,
   year,

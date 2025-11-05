@@ -139,6 +139,20 @@ export default function SemesterSection({
           <Button
             variant="contained"
             sx={{
+              background: "#800000",
+              borderRadius: "12px",
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+            startIcon={<AssignmentAddIcon />}
+            onClick={() => setAddOpen(true)}
+          >
+            Add Subject
+          </Button>
+
+          <Button
+            variant="contained"
+            sx={{
               background: "#7f1d1d",
               borderRadius: "12px",
               textTransform: "none",
@@ -150,20 +164,6 @@ export default function SemesterSection({
             }
           >
             Schedule
-          </Button>
-
-          <Button
-            variant="contained"
-            sx={{
-              background: "#800000",
-              borderRadius: "12px",
-              textTransform: "none",
-              fontWeight: 600,
-            }}
-            startIcon={<AssignmentAddIcon />}
-            onClick={() => setAddOpen(true)}
-          >
-            Add Subject
           </Button>
         </div>
       </div>

@@ -39,8 +39,6 @@ export default function SchedulerApp() {
   const year = searchParams.get("year");
   const sem = searchParams.get("sem");
 
-  console.log(college, year, sem);
-
   const college_group = college;
   const college_year = year;
   const college_sem = sem;
@@ -48,6 +46,9 @@ export default function SchedulerApp() {
   const navigate = useNavigate();
 
   const { data: collegeList } = useQuery(createCollegeQueryOptions());
+
+  // to display the current college
+  const currCollege = collegeList?.find((c) => c.college_id == college_group);
 
   // Track selected course state
   const [selectedCourse, setSelectedCourse] = useState(null);
@@ -91,9 +92,29 @@ export default function SchedulerApp() {
   }, [existingSchedules, newSchedules]);
 
   // state for disable lock
-  const disabledLockButton = selectedCourse && selectedCourse?.hours_week != 0;
+  // const disabledLockButton = selectedCourse && selectedCourse?.hours_week != 0;
 
-  const [disabledLock, setDisableLock] = useState(true);
+  // Check if any course is partially scheduled
+  const hasPartiallyScheduledCourses = useMemo(() => {
+    return queueSubjects.some((course) => {
+      // Check if this course has any schedules in newSchedules
+      const hasSchedules = newSchedules.some(
+        (sched) => sched.slot_course === course.course_id
+      );
+
+      // Partially scheduled = has some schedules but hours remaining
+      return hasSchedules && course.hours_week > 0 && course.is_plotted !== 1;
+    });
+  }, [queueSubjects, newSchedules]);
+
+  // Disable lock button if:
+  // 1. User is actively working on a selected course with remaining hours
+  // 2. OR any course is partially scheduled (incomplete)
+  // 3. OR there are no new schedules to lock
+  const disabledLockButton =
+    (selectedCourse && selectedCourse.hours_week > 0) ||
+    hasPartiallyScheduledCourses ||
+    newSchedules.length === 0;
 
   // duration state
   const [duration, setDuration] = useState(1);
@@ -233,6 +254,8 @@ export default function SchedulerApp() {
         room_ID: s.assigned_room?.toString() || "0",
       }));
 
+    // console.log(slots);
+
     // wait for how many ms
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -246,7 +269,7 @@ export default function SchedulerApp() {
 
       if (!assigningSchedules || assigningSchedules.length === 0) {
         setAllocatingStatus("empty");
-        await sleep(1000);
+        // await sleep(0);
         return;
       }
 
@@ -255,7 +278,7 @@ export default function SchedulerApp() {
       // success — animate insertion
       for (let i = 0; i < assigningSchedules.length; i++) {
         setNewSchedules((prev) => [...prev, assigningSchedules[i]]);
-        await sleep(45);
+        await sleep(38);
       }
 
       // update hours
@@ -270,14 +293,12 @@ export default function SchedulerApp() {
             : subject;
         })
       );
-
-      await sleep(1000);
     } catch (err) {
       console.error(err.message);
       setAllocatingError(err.message);
       setAllocatingStatus("error");
-      await sleep(1000);
     } finally {
+      await sleep(850);
       setAllocating(false);
       setSelectedCourse(null);
     }
@@ -295,6 +316,10 @@ export default function SchedulerApp() {
         queryClient.invalidateQueries({
           queryKey: ["schedules"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["course", college],
+        });
+
         console.log("Succesful Schedule!");
 
         setSelectedCourse(null);
@@ -387,14 +412,40 @@ export default function SchedulerApp() {
     );
   };
 
+  const getLockButtonTooltip = () => {
+    if (newSchedules.length === 0) {
+      return "No schedules to lock";
+    }
+
+    if (selectedCourse && selectedCourse.hours_week > 0) {
+      return `Finish scheduling ${selectedCourse.course_code} first (${selectedCourse.hours_week}h remaining)`;
+    }
+
+    const incompleteCourses = queueSubjects.filter((course) => {
+      const hasSchedules = newSchedules.some(
+        (sched) => sched.slot_course === course.course_id
+      );
+      return hasSchedules && course.hours_week > 0;
+    });
+
+    if (incompleteCourses.length > 0) {
+      const names = incompleteCourses
+        .map((c) => `${c.course_code} (${c.hours_week}h left)`)
+        .join(", ");
+      return `Complete these courses first: ${names}`;
+    }
+
+    return "Lock schedules to database";
+  };
+
   return (
-    <div className="bg-gradient-to-r from-gray-200 to-gray-300 py-10 container-fluid">
-      <header className="flex max-w-7xl mx-auto items-center justify-between mb-6">
+    <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto p-5">
+      <header className="flex items-center justify-between">
         {/* Back Button */}
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/course-list/${college_group}`)}
           sx={{
             borderRadius: "10px",
             color: "#800000",
@@ -404,13 +455,14 @@ export default function SchedulerApp() {
             textTransform: "none",
           }}
         >
-          Back to College Info
+          Back to Courses
         </Button>
 
         {/* Title */}
         <div className="text-center flex flex-col">
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="text-4xl font-extrabold tracking-tight">
             {/* {collegeId?.college_name || "Loading..."} */}
+            {currCollege?.college_name || "Loading..."}
           </h1>
 
           {/* {collegeId?.college_major && (
@@ -419,7 +471,11 @@ export default function SchedulerApp() {
             </span>
           )} */}
 
-          <p className="text-gray-700 text-4xl font-semibold mt-1">Schedule</p>
+          <p className="text-gray-700 text-lg font-semibold mt-1">
+            Schedule: Year {year} / Semester {sem}
+          </p>
+          {/* <p className="text-gray-500 text-xl font-semibold"> */}
+          {/* </p> */}
         </div>
 
         {/* Course Navigation */}
@@ -435,7 +491,8 @@ export default function SchedulerApp() {
             className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
             defaultValue=""
             onChange={(e) => {
-              if (e.target.value) navigate(`/schedule/${e.target.value}`);
+              if (e.target.value)
+                navigate(`/schedule/${e.target.value}?year=${year}&sem=${sem}`);
             }}
           >
             <option value="" disabled>
@@ -450,8 +507,8 @@ export default function SchedulerApp() {
         </div>
       </header>
       <main className="flex flex-col gap-4 p-6">
-        <div className="w-full flex flex-col justify-center gap-4">
-          <div className="justify-end">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col 2xl:flex-row justify-center gap-4">
+          <section className="flex-1">
             <CourseList
               courses={queueSubjects}
               courses_error={queue_error}
@@ -472,8 +529,9 @@ export default function SchedulerApp() {
                 setDuration={setDuration}
               />
             </CourseList>
-          </div>
-          <div className="flex-3">
+          </section>
+
+          <div className="flex-4">
             <ScheduleTable
               schedules_loading={schedules_loading}
               schedules_error={schedules_error}
@@ -510,6 +568,7 @@ export default function SchedulerApp() {
               {/* Lock Schedule */}
               <button
                 onClick={uploadScheduleToDatabase}
+                title={getLockButtonTooltip()}
                 disabled={disabledLockButton}
                 className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200
               ${

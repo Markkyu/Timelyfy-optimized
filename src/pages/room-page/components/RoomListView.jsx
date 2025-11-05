@@ -5,26 +5,26 @@ import { IconButton, Button } from "@mui/material";
 import { Calendar, Trash2, Edit, ChevronRight, DoorOpen } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { deleteRoom } from "@api/roomsAPI";
-import createRoomQueryOptions from "@hooks/createRoomQueryOptions";
+import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import RenderWhenRole from "@components/RenderWhenRole";
-// import EditRoomForm from "./EditRoomForm";
+import DeleteConfirmDialog from "@components/DeleteConfirmDialog"; // ✅ import dialog
 
 export default function RoomListView({ room }) {
   const [openEdit, setOpenEdit] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // ✅ dialog state
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleDeleteRoom = async () => {
-    if (confirm(`Are you sure you want to delete ${room.room_name}?`)) {
-      await deleteRoom(room.room_id);
-      queryClient.invalidateQueries({
-        queryKey: createRoomQueryOptions().queryKey,
-      });
-    }
+    await deleteRoom(room.room_id);
+    queryClient.invalidateQueries({
+      queryKey: allRoomsQuery().queryKey,
+    });
+    setOpenDeleteDialog(false);
   };
 
   const handleViewSchedule = () => {
-    navigate(`/room/${room.room_id}/schedule`);
+    navigate(`/rooms/${room.room_id}/schedule`);
   };
 
   const getGradient = (name) => {
@@ -43,76 +43,83 @@ export default function RoomListView({ room }) {
   };
 
   return (
-    <div className="group bg-white border-2 border-gray-200 rounded-2xl hover:border-maroon hover:shadow-lg transition-all duration-300">
-      <div className="flex items-center gap-6 p-6">
-        {/* Icon */}
-        <div
-          className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center"
-          style={{ background: getGradient(room.room_name) }}
-        >
-          <DoorOpen size={28} className="text-white" />
-        </div>
-
-        {/* Room Name */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon transition-colors">
-            {room.room_name}
-          </h3>
-          <p className="text-sm text-gray-500 mt-1">Room ID: {room.room_id}</p>
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-2 flex-shrink-0">
-          <Button
-            variant="contained"
-            onClick={handleViewSchedule}
-            startIcon={<Calendar size={16} />}
-            sx={{
-              bgcolor: "maroon",
-              borderRadius: "10px",
-              fontWeight: 600,
-              px: 3,
-              textTransform: "none",
-              "&:hover": {
-                bgcolor: "#600000",
-              },
-            }}
+    <>
+      <div className="group bg-white border-2 border-gray-200 rounded-2xl hover:border-maroon hover:shadow-lg transition-all duration-300">
+        <div className="flex items-center gap-6 p-6">
+          {/* Icon */}
+          <div
+            className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center"
+            style={{ background: getGradient(room.room_name) }}
           >
-            View Schedule
-          </Button>
+            <DoorOpen size={28} className="text-white" />
+          </div>
 
-          <RenderWhenRole role={["master_scheduler", "admin"]}>
-            <IconButton
-              onClick={() => setOpenEdit(true)}
-              sx={{ color: "gray" }}
-            >
-              <Edit size={20} />
-            </IconButton>
+          {/* Room Name */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon transition-colors">
+              {room.room_name}
+            </h3>
+            <p className="text-sm text-gray-500 mt-1">
+              Room ID: {room.room_id}
+            </p>
+          </div>
 
-            <IconButton
-              onClick={handleDeleteRoom}
+          {/* Actions */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Button
+              variant="contained"
+              onClick={handleViewSchedule}
+              startIcon={<Calendar size={16} />}
               sx={{
-                color: "error.main",
+                bgcolor: "maroon",
+                borderRadius: "10px",
+                fontWeight: 600,
+                px: 3,
+                textTransform: "none",
                 "&:hover": {
-                  bgcolor: "error.lighter",
+                  bgcolor: "#600000",
                 },
               }}
             >
-              <Trash2 size={20} />
-            </IconButton>
-          </RenderWhenRole>
+              View Schedule
+            </Button>
 
-          <IconButton onClick={handleViewSchedule} sx={{ color: "gray" }}>
-            <ChevronRight size={20} />
-          </IconButton>
+            <RenderWhenRole role={["master_scheduler", "admin"]}>
+              <IconButton
+                onClick={() => setOpenEdit(true)}
+                sx={{ color: "gray" }}
+              >
+                <Edit size={20} />
+              </IconButton>
+
+              <IconButton
+                onClick={() => setOpenDeleteDialog(true)} // ✅ open dialog
+                sx={{
+                  color: "error.main",
+                  "&:hover": {
+                    bgcolor: "error.lighter",
+                  },
+                }}
+              >
+                <Trash2 size={20} />
+              </IconButton>
+            </RenderWhenRole>
+
+            <IconButton onClick={handleViewSchedule} sx={{ color: "gray" }}>
+              <ChevronRight size={20} />
+            </IconButton>
+          </div>
         </div>
       </div>
 
-      {/* <EditRoomForm
-        open={openEdit}
-        onClose={() => setOpenEdit(false)}
-        room={room}
-      /> */}
-    </div>
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
+        title={`Delete Room`}
+        desc={`Are you sure you want to delete room "${room.room_name}"? This action cannot be undone.`}
+        handleDelete={handleDeleteRoom}
+      />
+    </>
   );
 }

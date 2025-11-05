@@ -16,7 +16,7 @@ export default function DurationToggle({
   return (
     <div className="flex justify-center items-center w-full">
       <div
-        className={`flex items-center 2xl:gap-4 rounded-full px-3 py-2 shadow-sm transition-all duration-200 border
+        className={`flex items-center 2xl:gap-2 rounded-full px-3 py-2 shadow-sm transition-all duration-200 border
           ${
             hasSelected
               ? "bg-white border-red-800"
@@ -36,8 +36,8 @@ export default function DurationToggle({
                 duration === option.value
                   ? "bg-red-800 text-white"
                   : hasSelected
-                  ? "text-gray-700 hover:bg-red-100"
-                  : "text-gray-400"
+                    ? "text-gray-700 hover:bg-red-100"
+                    : "text-gray-400"
               }`}
           >
             <input
@@ -52,10 +52,10 @@ export default function DurationToggle({
         ))}
 
         <div
-          className={`ml-2 bg-gray-200 px-2 rounded-full font-medium
+          className={`ml-2 bg-gray-100 w-full rounded-full font-medium whitespace-nowrap
           ${hasSelected ? "text-gray-800" : "text-gray-400"}`}
         >
-          <span>{selectedCourse?.hours_week ?? "-"} hrs left</span>
+          {selectedCourse?.hours_week ?? "-"} hrs left
         </div>
       </div>
     </div>

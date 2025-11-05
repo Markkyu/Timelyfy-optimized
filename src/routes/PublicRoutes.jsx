@@ -13,6 +13,7 @@ import PageNotFound from "@pages/page-not-found/PageNotFound";
 import UnauthorizedPage from "@pages/unauthorized/UnauthorizedPage";
 import ProtectedRoute from "@context/ProtectedRoute";
 import GlobalDashboard from "@pages/dashboard-page/GlobalDashboard";
+// import TeacherSchedule from "@pages/all-teacher-page/TeacherSchedule";
 // import SchedulerApp from "@pages/scheduler/App";
 // import AccountPage from "@pages/account-page/AccountPage";
 
@@ -22,6 +23,10 @@ const CourseList = lazy(() => import("@pages/course-page/CourseList"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));
 const ScheduleList = lazy(() => import("@pages/schedule-page/ScheduleList"));
 const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
+
+const TeacherSchedule = lazy(
+  () => import("@pages/all-teacher-page/TeacherSchedule")
+);
 
 // public routes no auth - login
 // routes with auth - dashboard, all teachers, not found, schedule list, course list, teacher page, about, tutorial
@@ -40,14 +45,17 @@ export default function PublicRoutes() {
       <Route path="/teacher/schedule/:department" element={<EditSchedule />} />
       <Route path="/schedule/:college" element={<SchedulerApp />} />
 
-      <Route path="/room-page" element={<RoomPage />} />
+      <Route path="/rooms" element={<RoomPage />} />
       <Route path="/account" element={<AccountPage />} />
 
       {/* Phase Control */}
       <Route path="/phase-control" element={<PhaseControl />} />
 
       {/* Teacher route */}
-      <Route path="/teacher-schedule/:teacher_id" element={<TeacherTable />} />
+      <Route
+        path="/teachers/:teacher_id/schedule"
+        element={<TeacherSchedule />}
+      />
       <Route path="/teachers" element={<AllTeachersPage />} />
 
       {/* User routes */}

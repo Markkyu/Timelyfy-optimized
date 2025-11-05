@@ -44,7 +44,6 @@ export default function LoginForm({ showLogin, setShowLogin }) {
   useEffect(() => {
     setAlertMessage("");
     if (showLogin) {
-      console.log("Username Ref:", usernameRef.current);
       if (usernameRef.current) {
         setTimeout(() => {
           usernameRef.current.focus();
@@ -69,7 +68,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
         setPassword("");
         navigate("/");
         setLoading(false);
-      }, 500);
+      }, 700);
     } catch (err) {
       setAlertMessage(err.response?.data?.message || err.message);
       setLoading(false);

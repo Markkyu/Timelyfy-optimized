@@ -17,7 +17,7 @@ export default function CourseList({
 }) {
   const handleSelect = (course) => {
     setSelectedCourse((prev) => {
-      if (prev?.course_id === course.course_id) {
+      if (prev?.course_id == course.course_id) {
         setSelectedCourseOriginalHours(null);
         return null;
       } else {
@@ -66,13 +66,29 @@ export default function CourseList({
     );
   }
 
+  if (courses?.length === 0)
+    return (
+      <section className="h-full p-6 bg-white shadow-md rounded-xl">
+        <h2 className="text-2xl font-semibold text-red-800 mb-4">
+          Available Courses
+        </h2>
+
+        <h5 className="text-gray-500 text-lg text-center italic">
+          No courses found. Add a course in the courses page.
+        </h5>
+        <div className="mt-8">{children}</div>
+      </section>
+    );
+
   return (
-    <section className="w-full max-w-7xl mx-auto h-full p-6 bg-white shadow-md rounded-xl">
+    <section className="h-full p-6 bg-white shadow-md rounded-xl">
       <h2 className="text-2xl font-semibold text-red-800 mb-4">
         Available Courses
       </h2>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="py-4">{children}</div>
+
+      <div className="grid grid-cols-4 2xl:flex 2xl:flex-col gap-4">
         {courses?.map((course) => {
           const isSelected = selectedCourse?.course_id === course.course_id;
           const isPlotted = course.is_plotted;
@@ -99,7 +115,6 @@ export default function CourseList({
           );
         })}
       </div>
-      <div className="mt-8">{children}</div>
     </section>
   );
 }

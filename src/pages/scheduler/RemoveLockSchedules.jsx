@@ -1,11 +1,15 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Chip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import deleteSchedules from "./api/deleteSchedules";
 import createSchedulesQueryOptions from "./api/createSchedulesQueryOptions";
 import createCoursesQueryOptions from "./api/createCoursesQueryOptions";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 export default function RemoveLockSchedules({
   lockedSchedules,
@@ -15,7 +19,6 @@ export default function RemoveLockSchedules({
 }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState(null);
-  const [checkedCourses, setCheckedCourses] = useState({});
 
   const queryClient = useQueryClient();
 
@@ -33,8 +36,6 @@ export default function RemoveLockSchedules({
 
       setConfirmOpen(false);
       setSelectedSchedule(null);
-
-      // setExistingSchedules([]);
     },
     onError: (error) => {
       console.log(error);
@@ -55,14 +56,10 @@ export default function RemoveLockSchedules({
   };
 
   const handleConfirmRemove = async () => {
-    // Get all schedules for this course
     const scheduleToRemove = uniqueSchedules.filter(
       (s) => s.slot_course === selectedSchedule
     );
 
-    console.log("Removing from db:", scheduleToRemove);
-
-    // mutate(scheduleToRemove);
     try {
       await deleteSchedules(scheduleToRemove);
 
@@ -79,7 +76,7 @@ export default function RemoveLockSchedules({
       setConfirmOpen(false);
       setSelectedSchedule(null);
     } catch (err) {
-      console.error("Error");
+      console.error("Error removing schedule:", err);
     }
   };
 
@@ -89,258 +86,369 @@ export default function RemoveLockSchedules({
     (groupSched) => groupSched.slot_course
   );
 
-  // Get unique course names - returns [{slot_course: "CCS_101"}, {slot_course: "CCS_102"}]
-  const uniqueCourses = Object.keys(groupLockedSchedules).map(
-    (courseName, idx) => ({
-      slot_course: courseName,
-      count: groupLockedSchedules[courseName].length, // Number of schedules for this course
-    })
-  );
+  // Get unique course names with counts
+  const uniqueCourses = Object.keys(groupLockedSchedules).map((courseName) => ({
+    slot_course: courseName,
+    count: groupLockedSchedules[courseName].length,
+  }));
 
   if (schedules_loading) return <SchedulesLoading />;
-
   if (schedules_error) return <SchedulesError />;
 
   return (
     <>
-      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
-        {/* Header Warning */}
-        <HeaderWarning />
-
-        {/* Empty state */}
-        <div className="grid gap-4 mt-4 text-xl">
-          {uniqueCourses.length != 0 ? (
-            <h1 className="text-gray-700">
-              {uniqueCourses?.length} locked schedules found
-            </h1>
-          ) : (
-            ""
-          )}
-
-          {uniqueCourses?.length === 0 && (
-            <p className="text-gray-500 italic text-center">
-              No locked schedules found.
-            </p>
-          )}
-
-          {/* Has value state */}
-          {uniqueCourses?.map((course, i) => {
-            return (
-              <div
-                key={i}
-                className="flex justify-between items-center bg-gray-100 p-3 rounded-md border border-gray-300"
-              >
-                <div className="flex gap-4 items-center">
-                  <div>
-                    <p className="font-semibold">{course.slot_course}</p>
-                    <p className="text-xs text-gray-500">
-                      {course.count} time slot{course.count > 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-
-                <Button
-                  variant="contained"
-                  color="error"
-                  size="small"
-                  endIcon={<DeleteIcon />}
-                  onClick={() => handleDeleteClick(course.slot_course)}
-                  sx={{ textTransform: "none", fontWeight: 600 }}
-                >
-                  Remove
-                </Button>
+      <div className="relative max-w-7xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+        {/* Header Section with Gradient */}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-5">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5">
+                <LockOpenIcon className="text-white" fontSize="medium" />
               </div>
-            );
-          })}
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Locked Schedules Management
+                </h2>
+                <p className="text-red-100 text-sm mt-0.5">
+                  Remove locked course schedules from the timetable
+                </p>
+              </div>
+            </div>
+            {uniqueCourses.length > 0 && (
+              <Chip
+                label={`${uniqueCourses.length} ${
+                  uniqueCourses.length === 1 ? "Course" : "Courses"
+                }`}
+                sx={{
+                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  color: "white",
+                  fontWeight: 600,
+                  fontSize: "0.9rem",
+                  backdropFilter: "blur(10px)",
+                }}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Warning Banner */}
+        <div className="bg-amber-50 border-l-4 border-amber-400 px-6 py-4">
+          <div className="flex items-start gap-3">
+            <WarningAmberIcon className="text-amber-600 mt-0.5" />
+            <div>
+              <h3 className="font-semibold text-amber-900 text-sm mb-1">
+                Important Notice
+              </h3>
+              <p className="text-amber-800 text-sm leading-relaxed">
+                Removing locked schedules will make those time slots available
+                again. Other users may fill these slots, potentially disrupting
+                your current schedule flow. Proceed with caution.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className="p-6">
+          {uniqueCourses.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <div className="space-y-3">
+              {uniqueCourses.map((course, i) => (
+                <ScheduleCard
+                  key={i}
+                  course={course}
+                  onDelete={handleDeleteClick}
+                  isLoading={loadingRemove}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Confirmation Modal */}
       {confirmOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-96">
-            <h3 className="text-lg flex items-center font-semibold text-gray-800 mb-3">
-              Confirm Removal
-            </h3>
-            <p className="text-sm text-gray-700 mb-4">
-              Deleting this locked course-schedule may cause other users to
-              fill-in its current cell. Are you sure you want to remove{" "}
-              <strong>{selectedSchedule}</strong>?
-            </p>
-
-            <div className="flex justify-end gap-3">
-              <Button
-                variant="outlined"
-                onClick={() => setConfirmOpen(false)}
-                sx={{ fontWeight: 600, textTransform: "none" }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="contained"
-                color="error"
-                onClick={handleConfirmRemove}
-                sx={{ fontWeight: 600, textTransform: "none" }}
-              >
-                Yes, Remove
-              </Button>
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          selectedSchedule={selectedSchedule}
+          onConfirm={handleConfirmRemove}
+          onCancel={() => setConfirmOpen(false)}
+          isLoading={loadingRemove}
+        />
       )}
     </>
   );
 }
 
-const SchedulesLoading = () => {
+// Schedule Card Component
+const ScheduleCard = ({ course, onDelete, isLoading }) => {
   return (
-    <>
-      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
-        {/* {schedules_error && <SchedulesError />}
+    <div className="group relative bg-gradient-to-r from-gray-50 to-gray-100 hover:from-red-50 hover:to-red-100 rounded-xl p-4 border border-gray-200 hover:border-red-300 transition-all duration-300 hover:shadow-md">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          {/* Course Icon */}
+          <div className="bg-white group-hover:bg-red-100 rounded-lg p-3 transition-colors duration-300 border border-gray-200 group-hover:border-red-300">
+            <EventBusyIcon className="text-gray-600 group-hover:text-red-600 transition-colors" />
+          </div>
 
-        {schedules_loading && <SchedulesLoading />} */}
-
-        <HeaderWarning />
-
-        <div className="bg-white mt-4 px-8 py-6 rounded-2xl flex flex-col items-center gap-3 animate-fade-in">
-          <div className="w-10 h-10 border-4 border-gray-300 border-t-red-800 rounded-full animate-spin"></div>
-          <span className="text-lg font-semibold text-gray-700 flex items-center">
-            Loading Schedules<span className="typing-dots ml-1"></span>
-          </span>
+          {/* Course Details */}
+          <div>
+            <h3 className="font-bold text-gray-900 text-lg mb-1">
+              {course.slot_course}
+            </h3>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600 font-medium">
+                {course.count} time slot{course.count > 1 ? "s" : ""}
+              </span>
+              <span className="text-gray-400">•</span>
+              <span className="text-xs text-gray-500">
+                {(course.count * 0.5).toFixed(1)} hours per week
+              </span>
+            </div>
+          </div>
         </div>
 
-        <style jsx="true">{`
-          .typing-dots::after {
-            content: "...";
-            animation: dots 1.2s steps(4, end) infinite;
-          }
-          @keyframes dots {
-            0%,
-            20% {
-              content: "";
-            }
-            40% {
-              content: ".";
-            }
-            60% {
-              content: "..";
-            }
-            80%,
-            100% {
-              content: "...";
-            }
-          }
-          @keyframes fade-in {
-            from {
-              opacity: 0;
-              transform: scale(0.95);
-            }
-            to {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-        `}</style>
+        {/* Delete Button */}
+        <Button
+          variant="contained"
+          color="error"
+          size="medium"
+          endIcon={<DeleteIcon />}
+          onClick={() => onDelete(course.slot_course)}
+          disabled={isLoading}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: "10px",
+            px: 3,
+            py: 1.5,
+            boxShadow: "0 4px 12px rgba(220, 38, 38, 0.2)",
+            "&:hover": {
+              boxShadow: "0 6px 16px rgba(220, 38, 38, 0.3)",
+            },
+          }}
+        >
+          Remove
+        </Button>
       </div>
-    </>
-    // <div className="flex items-center justify-center backdrop-blur-xs bg-white/40 z-10">
-    // <div className="bg-white border border-gray-300 shadow-xl px-8 py-6 rounded-2xl flex flex-col items-center gap-3 animate-fade-in">
-    //   <div className="w-10 h-10 border-4 border-gray-300 border-t-red-800 rounded-full animate-spin"></div>
-    //   <span className="text-lg font-semibold text-gray-700 flex items-center">
-    //     Loading Schedules<span className="typing-dots ml-1"></span>
-    //   </span>
-    // </div>
-
-    // <style jsx>{`
-    //   .typing-dots::after {
-    //     content: "...";
-    //     animation: dots 1.2s steps(4, end) infinite;
-    //   }
-    //   @keyframes dots {
-    //     0%,
-    //     20% {
-    //       content: "";
-    //     }
-    //     40% {
-    //       content: ".";
-    //     }
-    //     60% {
-    //       content: "..";
-    //     }
-    //     80%,
-    //     100% {
-    //       content: "...";
-    //     }
-    //   }
-    //   @keyframes fade-in {
-    //     from {
-    //       opacity: 0;
-    //       transform: scale(0.95);
-    //     }
-    //     to {
-    //       opacity: 1;
-    //       transform: scale(1);
-    //     }
-    //   }
-    // `}</style>
-    // </div>
+    </div>
   );
 };
 
-const HeaderWarning = () => {
+// Empty State Component
+const EmptyState = () => {
   return (
-    <section className=" p-6 bg-yellow-50 border-4 border-yellow-400 shadow-md rounded-xl">
-      <h2 className="text-xl flex items-center font-bold mb-4 text-yellow-800">
-        <span>Removing Locked Schedules</span>
-        <DeleteIcon className="ml-2" />
-      </h2>
-
-      <p className="text-sm text-gray-700 mb-3">
-        ⚠️ Warning: Removing locked schedules may shift the flow of a timetable.
-        This may allow other users to fill-in the available cell therefore
-        disrupting the flow of your schedule.
+    <div className="flex flex-col items-center justify-center py-16">
+      <div className="bg-gray-100 rounded-full p-6 mb-4">
+        <CheckCircleIcon sx={{ fontSize: 64, color: "#10b981" }} />
+      </div>
+      <h3 className="text-xl font-bold text-gray-800 mb-2">All Clear!</h3>
+      <p className="text-gray-600 text-center max-w-md">
+        No locked schedules found. All time slots are available for scheduling.
       </p>
-    </section>
+    </div>
   );
 };
 
-const SchedulesError = () => {
+// Loading State Component
+const SchedulesLoading = () => {
   return (
-    <>
-      <div className="relative max-w-7xl bg-white border-t-6 border-red-800 p-4 rounded-md shadow-md w-full ">
-        <HeaderWarning />
-        <div className="bg-white mt-4 px-8 py-6 rounded-2xl flex flex-col items-center gap-4 animate-fade-in">
-          <span className="text-xl font-bold text-red-700">
-            Error Loading Schedule
-          </span>
-          <p className="text-gray-600 text-center">
-            Something went wrong while fetching data.
+    <div className="relative max-w-7xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+      {/* Header with shimmer effect */}
+      <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-5">
+        <div className="flex items-center gap-3">
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5">
+            <LockOpenIcon className="text-white" fontSize="medium" />
+          </div>
+          <div className="flex-1">
+            <div className="h-6 bg-white/20 rounded-md w-64 mb-2 animate-pulse"></div>
+            <div className="h-4 bg-white/10 rounded-md w-80 animate-pulse"></div>
+          </div>
+        </div>
+      </div>
+
+      {/* Loading Content */}
+      <div className="p-6">
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-gray-200 border-t-red-600 rounded-full animate-spin"></div>
+            <div className="absolute inset-0 w-16 h-16 border-4 border-transparent border-r-red-400 rounded-full animate-spin animation-delay-150"></div>
+          </div>
+          <p className="text-lg font-semibold text-gray-700 mt-6 flex items-center gap-2">
+            Loading Schedules
+            <span className="flex gap-1">
+              <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-bounce"></span>
+              <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-bounce animation-delay-200"></span>
+              <span className="w-1.5 h-1.5 bg-red-600 rounded-full animate-bounce animation-delay-400"></span>
+            </span>
           </p>
         </div>
       </div>
-    </>
-    // <div className="flex items-center justify-center backdrop-blur-xs bg-white/40 z-10">
-    // <div className="bg-white border border-red-300 shadow-xl px-8 py-6 rounded-2xl flex flex-col items-center gap-4 animate-fade-in">
-    //   <span className="text-xl font-bold text-red-700">
-    //     Error Loading Schedule
-    //   </span>
-    //   <p className="text-gray-600 text-center">
-    //     Something went wrong while fetching data.
-    //   </p>
-    // </div>
 
-    //   <style jsx="true">{`
-    //     @keyframes fade-in {
-    //       from {
-    //         opacity: 0;
-    //         transform: scale(0.95);
-    //       }
-    //       to {
-    //         opacity: 1;
-    //         transform: scale(1);
-    //       }
-    //     }
-    //   `}</style>
-    // </div>
+      <style jsx="true">{`
+        @keyframes bounce {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+        .animation-delay-150 {
+          animation-delay: 150ms;
+        }
+        .animation-delay-200 {
+          animation-delay: 200ms;
+        }
+        .animation-delay-400 {
+          animation-delay: 400ms;
+        }
+      `}</style>
+    </div>
+  );
+};
+
+// Error State Component
+const SchedulesError = () => {
+  return (
+    <div className="relative max-w-7xl w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-red-200">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-5">
+        <div className="flex items-center gap-3">
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5">
+            <ErrorOutlineIcon className="text-white" fontSize="medium" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">
+              Error Loading Schedules
+            </h2>
+            <p className="text-red-100 text-sm mt-0.5">
+              Unable to fetch locked schedules
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Error Content */}
+      <div className="p-6">
+        <div className="flex flex-col items-center justify-center py-16">
+          <div className="bg-red-100 rounded-full p-6 mb-4">
+            <ErrorOutlineIcon sx={{ fontSize: 64, color: "#dc2626" }} />
+          </div>
+          <h3 className="text-xl font-bold text-gray-800 mb-2">
+            Something Went Wrong
+          </h3>
+          <p className="text-gray-600 text-center max-w-md mb-6">
+            We encountered an error while fetching the locked schedules. Please
+            try refreshing the page.
+          </p>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => window.location.reload()}
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+              borderRadius: "10px",
+              px: 4,
+              py: 1.5,
+            }}
+          >
+            Refresh Page
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Confirmation Modal Component
+const ConfirmationModal = ({
+  selectedSchedule,
+  onConfirm,
+  onCancel,
+  isLoading,
+}) => {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
+        {/* Modal Header */}
+        <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2">
+              <WarningAmberIcon className="text-white" fontSize="medium" />
+            </div>
+            <h3 className="text-xl font-bold text-white">Confirm Removal</h3>
+          </div>
+        </div>
+
+        {/* Modal Content */}
+        <div className="p-6">
+          <p className="text-gray-700 leading-relaxed mb-2">
+            You are about to remove the locked schedule for:
+          </p>
+          <div className="bg-red-50 border border-red-200 rounded-lg px-4 py-3 mb-4">
+            <p className="font-bold text-red-900 text-lg">{selectedSchedule}</p>
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            This action will make the time slots available again. Other users
+            may fill these slots, potentially disrupting your current schedule.
+          </p>
+        </div>
+
+        {/* Modal Actions */}
+        <div className="bg-gray-50 px-6 py-4 flex justify-end gap-3">
+          <Button
+            variant="outlined"
+            onClick={onCancel}
+            disabled={isLoading}
+            sx={{
+              fontWeight: 600,
+              textTransform: "none",
+              borderRadius: "10px",
+              borderWidth: 2,
+              px: 3,
+              "&:hover": {
+                borderWidth: 2,
+              },
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            onClick={onConfirm}
+            disabled={isLoading}
+            sx={{
+              fontWeight: 600,
+              textTransform: "none",
+              borderRadius: "10px",
+              px: 3,
+              boxShadow: "0 4px 12px rgba(220, 38, 38, 0.2)",
+            }}
+          >
+            {isLoading ? "Removing..." : "Yes, Remove"}
+          </Button>
+        </div>
+      </div>
+
+      <style jsx="true">{`
+        @keyframes scale-in {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-scale-in {
+          animation: scale-in 0.2s ease-out;
+        }
+      `}</style>
+    </div>
   );
 };

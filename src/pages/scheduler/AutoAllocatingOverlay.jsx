@@ -10,7 +10,7 @@ export default function AutoAllocatingOverlay({
 
   const logMessages = [
     { text: "$ initializing schedule allocator...", delay: 0 },
-    { text: null, delay: 10000 },
+    { text: null, delay: 5000 },
   ];
 
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

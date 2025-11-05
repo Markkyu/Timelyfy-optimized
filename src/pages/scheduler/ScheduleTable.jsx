@@ -165,11 +165,14 @@ export default function ScheduleTable({
                           >
                             <CloseIcon fontSize="medium" />
                           </button>
-                          <span className="text-base text-wrap w-full font-semibold">
-                            {course.slot_course}
-                            <br />
-                            {course.course_name}
-                          </span>
+                          <div>
+                            <p className="text-wrap text-base font-semibold text-gray-50">
+                              {course.slot_course}
+                            </p>
+                            <p className="text-wrap text-base font-semibold">
+                              {/* {course.course_name} */}
+                            </p>
+                          </div>
                         </div>
                       ) : (
                         ""

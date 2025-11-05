@@ -11,31 +11,85 @@ import {
   MoreVertical,
   Mail,
   Phone,
-  Calendar,
+  CalendarCheck,
   Clock,
   Trash2,
   Settings,
 } from "lucide-react";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteTeacher } from "@api/teachersAPI";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
+import ToastNotification from "@components/ToastNotification";
 
 export default function TeacherCard({ teacher }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const queryClient = useQueryClient();
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+  const [toastType, setToastType] = useState("error");
+
+  const navigate = useNavigate();
+
   const getInitials = (firstName, lastName) => {
     return `${firstName?.charAt(0)}${lastName?.charAt(0)}`.toUpperCase();
   };
 
-  const handleDeleteTeacher = async () => {
-    if (confirm("Are you sure you want to delete this teacher?")) {
-      await deleteTeacher(teacher.teacher_id);
-      queryClient.invalidateQueries({
-        queryKey: createTeacherQueryOptions().queryKey,
+  const { mutate: teacherDeleteMutation, isPending } = useMutation({
+    mutationFn: (id) => deleteTeacher(id),
+
+    onSuccess: (data, variables, context) => {
+      // queryClient.invalidateQueries({
+      // queryKey: createTeacherQueryOptions().queryKey,
+      // });
+
+      console.log(data);
+      console.log(variables);
+      console.log(context);
+
+      queryClient.setQueryData(["teachers"], (old) => {
+        console.log(old);
+
+        if (!old) return [];
+        return old.filter((c) => c.teacher_id != variables);
       });
-    }
+
+      setToastTrigger((prev) => prev + 1);
+      setToastMessage("Teacher Deleted Successfully!");
+      setToastType("success");
+    },
+
+    onError: (error) => {
+      console.error(error.message);
+      setToastTrigger((prev) => prev + 1);
+      setToastMessage("Cannot Delete Teacher!");
+      setToastType("error");
+    },
+  });
+
+  const handleDeleteTeacher = async () => {
+    // if (confirm("Are you sure you want to delete this teacher?")) {
+    // }
+    console.log(teacher.teacher_id);
+
+    await teacherDeleteMutation(teacher.teacher_id);
+
+    // try {
+    //   await deleteTeacher(teacher.teacher_id);
+    //   setToastTrigger((prev) => prev + 1);
+    //   setToastMessage("Teacher Added Successfully!");
+    //   setToastType("success");
+    //   queryClient.invalidateQueries({
+    //     queryKey: createTeacherQueryOptions().queryKey,
+    //   });
+    // } catch (err) {
+    //   setToastTrigger((prev) => prev + 1);
+    //   setToastMessage("Cannot Delete Teacher!");
+    //   setToastType(err.message);
+    // }
+
     setAnchorEl(null);
   };
 
@@ -138,21 +192,24 @@ export default function TeacherCard({ teacher }) {
         <Button
           fullWidth
           variant="contained"
-          startIcon={<Settings size={18} />}
+          startIcon={<CalendarCheck size={18} />}
+          onClick={() => navigate(`/teachers/${teacher.teacher_id}/schedule`)}
           sx={{
             bgcolor: "maroon",
             borderRadius: "12px",
             fontWeight: 600,
             py: 1.5,
             textTransform: "none",
-            "&:hover": {
-              bgcolor: "#600000",
-            },
           }}
         >
-          Configure Teacher
+          Teaching Assignment
         </Button>
       </div>
+      <ToastNotification
+        trigger={toastTrigger}
+        message={toastMessage}
+        type={toastType}
+      />
     </div>
   );
 }

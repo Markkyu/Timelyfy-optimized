@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -16,6 +16,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeacher } from "@api/teachersAPI";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
+import ToastNotification from "@components/ToastNotification";
 
 // Slide transition for dialog
 const Transition = forwardRef(function Transition(props, ref) {
@@ -29,6 +30,10 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+  const [toastType, setToastType] = useState("error");
+
   const addTeacherMutation = useAddTeachersDepartment();
 
   const queryClient = useQueryClient();
@@ -40,6 +45,10 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
       queryClient.invalidateQueries({
         queryKey: createTeacherQueryOptions().queryKey,
       });
+      setToastTrigger((prev) => prev + 1);
+      setToastMessage("Teacher Added Successfully!");
+      setToastType("success");
+
       setFirstName("");
       setLastName("");
       onClose();
@@ -81,13 +90,30 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
     // }
   };
 
+  const firstNameRef = useRef(null);
+
+  // Focus username when dialog opens
+  useEffect(() => {
+    // if (open) {
+    if (firstNameRef.current) {
+      // setTimeout(() => {
+      firstNameRef.current.focus();
+      // }, 100);
+      // }
+    }
+  }, [open]);
+
   return (
     <>
       <Dialog
         open={open}
         TransitionComponent={Grow}
         keepMounted
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setFirstName("");
+          setLastName("");
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -106,9 +132,10 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
         <DialogTitle>
           <Typography
             variant="h5"
-            component="span"
             align="center"
             display="block"
+            fontWeight="bold"
+            component="span"
           >
             Add Teacher
           </Typography>
@@ -120,6 +147,7 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
               label="First Name"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
+              inputRef={firstNameRef}
               fullWidth
               margin="normal"
               required
@@ -152,6 +180,11 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
           </form>
         </DialogContent>
       </Dialog>
+      <ToastNotification
+        trigger={toastTrigger}
+        message={toastMessage}
+        type={toastType}
+      />
     </>
   );
 }
