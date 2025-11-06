@@ -97,7 +97,7 @@ export default function RoomPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header Section */}
         <header className="space-y-4">
           {/* Top Bar */}

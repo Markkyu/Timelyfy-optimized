@@ -26,6 +26,7 @@ const Transition = forwardRef(function Transition(props, ref) {
 
 export default function AddCollegeForm({ open, onClose }) {
   const [collegeName, setCollegeName] = useState("");
+  const [collegeCode, setCollegeCode] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -46,6 +47,7 @@ export default function AddCollegeForm({ open, onClose }) {
       });
       setCollegeName("");
       setCollegeMajor("");
+      setCollegeCode("");
       onClose();
 
       setToastMessage("College Program Successfully Added!");
@@ -68,6 +70,7 @@ export default function AddCollegeForm({ open, onClose }) {
     e.preventDefault();
 
     const collegeData = {
+      college_code: collegeCode,
       college_name: collegeName,
       college_major: collegeMajor,
     };
@@ -118,12 +121,23 @@ export default function AddCollegeForm({ open, onClose }) {
         <DialogContent>
           <form onSubmit={handleSubmit} className="space-y-2">
             <TextField
-              label="College Program Name"
-              value={collegeName}
+              label="College Code"
+              value={collegeCode}
               onChange={(e) => {
                 setError(null);
-                setCollegeName(e.target.value);
+                setCollegeCode(e.target.value);
               }}
+              fullWidth
+              margin="normal"
+              required
+              autoComplete="off"
+              placeholder="ex. BSEd"
+            />
+
+            <TextField
+              label="College Program Name"
+              value={collegeName}
+              onChange={(e) => setCollegeName(e.target.value)}
               fullWidth
               margin="normal"
               required
@@ -138,7 +152,7 @@ export default function AddCollegeForm({ open, onClose }) {
               fullWidth
               margin="normal"
               autoComplete="off"
-              placeholder="ex. Major in Mathematics"
+              placeholder="ex. Mathematics"
             />
 
             {/* <label htmlFor="">College Program Name</label>

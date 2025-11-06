@@ -4,7 +4,6 @@ import AboutPage from "@pages/about-page/AboutPage";
 import Tutorial from "@pages/tutorial-page/Tutorial";
 import AllTeachersPage from "@pages/all-teacher-page/AllTeachersPage";
 import TeacherTable from "@pages/all-teacher-page/TeacherTable";
-import EditSchedule from "@pages/teacher-page/components/EditSchedule";
 import UserPage from "@pages/user-page/UserPage";
 import UserDetails from "@pages/user-page/UserDetails";
 import CollegePage from "@pages/dashboard-page/components/CollegePage";
@@ -18,11 +17,12 @@ import GlobalDashboard from "@pages/dashboard-page/GlobalDashboard";
 // import AccountPage from "@pages/account-page/AccountPage";
 
 const SchedulerApp = lazy(() => import("@pages/scheduler/App"));
-const TeacherPage = lazy(() => import("@pages/teacher-page/TeacherPage"));
 const CourseList = lazy(() => import("@pages/course-page/CourseList"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));
 const ScheduleList = lazy(() => import("@pages/schedule-page/ScheduleList"));
 const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
+
+const RoomSchedule = lazy(() => import("@pages/room-page/RoomSchedule"));
 
 const TeacherSchedule = lazy(
   () => import("@pages/all-teacher-page/TeacherSchedule")
@@ -41,12 +41,16 @@ export default function PublicRoutes() {
       <Route path="/" element={<GlobalDashboard />} />
       <Route path="/college/:college_id" element={<CollegePage />} />
       <Route path="/course-list/:college_id" element={<CourseList />} />
-      <Route path="/teachers/:department" element={<TeacherPage />} />
-      <Route path="/teacher/schedule/:department" element={<EditSchedule />} />
-      <Route path="/schedule/:college" element={<SchedulerApp />} />
+      <Route
+        path="/:class_group/schedule/:college"
+        element={<SchedulerApp />}
+      />
 
-      <Route path="/rooms" element={<RoomPage />} />
       <Route path="/account" element={<AccountPage />} />
+
+      {/* Room Schedules */}
+      <Route path="/rooms" element={<RoomPage />} />
+      <Route path="/rooms/:room_id/schedule" element={<RoomSchedule />} />
 
       {/* Phase Control */}
       <Route path="/phase-control" element={<PhaseControl />} />

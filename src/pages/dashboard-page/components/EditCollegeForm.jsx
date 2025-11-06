@@ -20,6 +20,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ToastNotification from "@components/ToastNotification";
 
 export default function EditCollegeForm({ open, onClose, college }) {
+  const [collegeCode, setCollegeCode] = useState("");
   const [collegeName, setCollegeName] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +33,7 @@ export default function EditCollegeForm({ open, onClose, college }) {
   const collegeId = college?.college_id;
 
   useEffect(() => {
+    setCollegeCode(college?.college_code);
     setCollegeName(college?.college_name);
     setCollegeMajor(college?.college_major);
   }, []);
@@ -69,6 +71,7 @@ export default function EditCollegeForm({ open, onClose, college }) {
     e.preventDefault();
 
     const updates = {
+      college_code: collegeCode,
       college_name: collegeName,
       college_major: collegeMajor,
     };
@@ -137,6 +140,17 @@ export default function EditCollegeForm({ open, onClose, college }) {
         <DialogContent>
           {error && <Alert severity="error">{error}</Alert>}
           <form onSubmit={handleSubmit}>
+            <TextField
+              label="College Code"
+              value={collegeCode}
+              onChange={(e) => setCollegeCode(e.target.value)}
+              fullWidth
+              margin="normal"
+              required
+              autoComplete="off"
+              disabled
+            />
+
             <TextField
               label="College Program Name"
               value={collegeName}

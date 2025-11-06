@@ -25,6 +25,7 @@ import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import { createUserQueryOptions } from "@hooks/createUserQueryOptionsById";
 
 import { useQuery } from "@tanstack/react-query";
+import RenderWhenRole from "@components/RenderWhenRole";
 
 export default function UserPage() {
   const [open, setOpen] = useState(false);
@@ -133,19 +134,21 @@ export default function UserPage() {
               back to home
             </Button>
 
-            <Button
-              variant="contained"
-              onClick={() => setOpen(true)}
-              startIcon={<PersonAddAlt1Icon size={18} />}
-              sx={{
-                borderRadius: "12px",
-                fontWeight: 600,
-                bgcolor: "maroon",
-                px: 3,
-              }}
-            >
-              Register User
-            </Button>
+            <RenderWhenRole role={"admin"}>
+              <Button
+                variant="contained"
+                onClick={() => setOpen(true)}
+                startIcon={<PersonAddAlt1Icon size={18} />}
+                sx={{
+                  borderRadius: "12px",
+                  fontWeight: 600,
+                  bgcolor: "maroon",
+                  px: 3,
+                }}
+              >
+                Register User
+              </Button>
+            </RenderWhenRole>
           </div>
 
           {/* Title and Stats */}

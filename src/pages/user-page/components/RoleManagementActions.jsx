@@ -54,6 +54,11 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
     if (currentIndex === 0) return;
     const newRole = ROLE_ORDER[currentIndex - 1];
 
+    if (newRole === "master_scheduler" && role !== "admin") {
+      alert("Only an admin can demote someone to master scheduler.");
+      return;
+    }
+
     // if (confirm(`Demote ${user.username} to ${newRole}?`)) {
     //   updateRole({ user_id: user.id, newRole });
     // }

@@ -1,10 +1,10 @@
-import { Card, CardContent, Stepper, Step, StepLabel } from "@mui/material";
+import { Stepper, Step, StepLabel } from "@mui/material";
 import { CheckCircle } from "lucide-react";
 
 export default function SemesterProgress({ steps, currentStep }) {
   return (
-    <Card className="shadow-lg mb-6">
-      <CardContent className="p-6">
+    <div className="bg-white rounded-md shadow-md mb-6">
+      <div className="p-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Academic Progress
         </h2>
@@ -54,7 +54,7 @@ export default function SemesterProgress({ steps, currentStep }) {
         <div className="mt-4 text-center text-sm text-gray-600">
           Completed {currentStep} of {steps.length} academic periods
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -2,7 +2,7 @@ import { CheckCircle, Clock, ArrowRight } from "lucide-react";
 
 export default function PhaseProgressIndicator({ phases, currentPhase }) {
   return (
-    <div className="bg-white rounded-xl shadow-lg p-8 mb-6">
+    <div className="bg-white h-full rounded-md shadow-md p-8 mb-6">
       <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
         Phase Progress
       </h2>

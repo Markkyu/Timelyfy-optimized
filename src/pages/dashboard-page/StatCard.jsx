@@ -18,6 +18,13 @@
 //   );
 // }
 
+const spanClasses = {
+  1: "col-span-1",
+  2: "col-span-2",
+  3: "col-span-3",
+  4: "col-span-4",
+};
+
 export default function StatCard({
   label,
   Icon,
@@ -30,7 +37,9 @@ export default function StatCard({
 }) {
   return (
     <div
-      className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow col-span-${colSpan}`}
+      className={`bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow 
+        ${spanClasses[colSpan] || ""}
+        `}
     >
       <div className="flex items-center justify-between mb-3">
         <div

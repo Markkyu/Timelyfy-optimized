@@ -72,7 +72,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
             variant="contained"
             sx={{
               mt: 3,
-              paddingY: 1.5,
+              paddingY: 1,
               bgcolor: "maroon",
               fontWeight: 600,
               borderRadius: "12px",
@@ -87,7 +87,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
             variant="contained"
             sx={{
               mt: 1.5,
-              paddingY: 1.5,
+              paddingY: 1,
               bgcolor: "gray",
               fontWeight: 600,
               borderRadius: "12px",

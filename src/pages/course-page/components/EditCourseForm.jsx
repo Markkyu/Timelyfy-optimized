@@ -65,7 +65,6 @@ export default function EditCourseForm({
       courseId: course.course_surrogate_id,
       updates: {
         course_id: newCourseId,
-        course_code: courseCode,
         course_name: courseName,
         hours_week: hoursWeek,
         course_year: course?.course_year,
@@ -109,17 +108,9 @@ export default function EditCourseForm({
         </DialogTitle>
 
         <DialogContent>
-          {error && <Alert severity={errorType}>{error}</Alert>}
-          <form onSubmit={handleEdit}>
-            <TextField
-              label="Course Code"
-              value={courseCode}
-              onChange={(e) => setCourseCode(e.target.value)}
-              fullWidth
-              margin="normal"
-              required
-            />
+          {error && <Alert severity="success">{error}</Alert>}
 
+          <form onSubmit={handleEdit}>
             <TextField
               label="Course Name"
               value={courseName}

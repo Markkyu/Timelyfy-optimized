@@ -16,7 +16,7 @@ export default function createPhaseQueryOptions() {
   return queryOptions({
     queryKey: ["phase"],
     queryFn: getPhase,
-    staleTime: Infinity,
-    cacheTime: Infinity,
+    staleTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 60,
   });
 }

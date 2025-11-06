@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -83,7 +83,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       label: `${t.first_name} ${t.last_name}`,
     })) || [];
 
-  teacherOptions.unshift({ value: 0, label: "TBA" });
+  teacherOptions.unshift({ value: null, label: "TBA" });
 
   // Convert rooms to select options
   const roomOptions =
@@ -92,7 +92,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
       label: r.room_name,
     })) || [];
 
-  roomOptions.unshift({ value: 0, label: "TBA" });
+  roomOptions.unshift({ value: null, label: "TBA" });
 
   return (
     <Dialog
@@ -121,6 +121,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
           component="span"
           align="center"
           display="block"
+          fontWeight="bold"
         >
           Assign Teacher + Room
         </Typography>
@@ -128,10 +129,11 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
 
       <DialogContent>
         {error && <Alert severity="error">{error}</Alert>}
+
         <form onSubmit={handleSubmit}>
           <section className="flex gap-6 w-full">
             <div className="mt-6 flex-1">
-              <Typography variant="h6" sx={{ mb: 1 }}>
+              <Typography variant="h6" marginBottom={1}>
                 Select Teacher
               </Typography>
               <Select
@@ -151,7 +153,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
             </div>
 
             <div className="mt-6 flex-1">
-              <Typography variant="h6" sx={{ mb: 1 }}>
+              <Typography variant="h6" marginBottom={1}>
                 Select Room
               </Typography>
 
@@ -160,12 +162,7 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
                 isLoading={roomsLoading}
                 value={selectedRoom}
                 onChange={(option) => setSelectedRoom(option)}
-                // placeholder={
-                //   !selectedTeacher
-                //     ? "Select teacher first..."
-                //     : "Choose a room..."
-                // }
-                // isDisabled={!selectedTeacher}
+                placeholder="Choose a room..."
                 isClearable
                 menuPosition="fixed"
                 menuShouldScrollIntoView={false}

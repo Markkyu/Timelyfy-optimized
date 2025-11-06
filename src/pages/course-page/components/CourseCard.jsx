@@ -21,17 +21,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCourse } from "@api/coursesAPI";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
+import RenderOnUser from "@components/RenderOnUser";
 
 export default function CourseCard({ course, collegeName, collegeMajor }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [teacherAssign, setTeacherAssign] = useState(false);
 
-  // console.log(course?.course_college);
-
   const { college_id } = useParams();
-
-  // const deleteCourseMutation = useDeleteCourse();
 
   const assignedTeacher = `${course?.first_name} ${course?.last_name}`;
 
@@ -43,25 +40,10 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
     mutationFn: (courseId) => deleteCourse(courseId),
 
     onSuccess: (data, courseId) => {
-      // queryClient.setQueryData(["course", course.course_college], (old) => {
-      //   if (!old) return [];
-      //   return old.filter((c) => c.course_id !== courseId);
-      // });
-
-      // queryClient.invalidateQueries({
-      //   queryKey: ["course"],
-      // });
-
-      // console.log(course);
-      // console.log(courseId);
-
       queryClient.setQueryData(["course", college_id], (old) => {
         if (!old) return [];
 
         return old.filter((c) => c.course_id != data.id);
-
-        // if (!old) return [];
-        // return old.filter((c) => data.id != course.course_id);
       });
 
       setDeleteOpen(false);
@@ -115,7 +97,7 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
       </div>
 
       {/* Course Actions */}
-      {/* Course Actions */}
+
       <Stack direction="row" className="bg-gray-100 shadow-md rounded-xl">
         {isPlotted && (
           <Tooltip title="This course is scheduled. Remove it from the timetable first.">
@@ -128,45 +110,46 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
             />
           </Tooltip>
         )}
+        <RenderOnUser createdBy={course.created_by}>
+          <Tooltip
+            title={isPlotted ? "Remove from scheduler first" : "Assign Teacher"}
+          >
+            <span>
+              <IconButton
+                onClick={() => !isPlotted && setTeacherAssign(true)}
+                disabled={isPlotted}
+              >
+                <AssignmentIndIcon color={isPlotted ? "disabled" : "success"} />
+              </IconButton>
+            </span>
+          </Tooltip>
 
-        <Tooltip
-          title={isPlotted ? "Remove from scheduler first" : "Assign Teacher"}
-        >
-          <span>
-            <IconButton
-              onClick={() => !isPlotted && setTeacherAssign(true)}
-              disabled={isPlotted}
-            >
-              <AssignmentIndIcon color={isPlotted ? "disabled" : "success"} />
-            </IconButton>
-          </span>
-        </Tooltip>
+          <Tooltip
+            title={isPlotted ? "Remove from scheduler first" : "Edit Course"}
+          >
+            <span>
+              <IconButton
+                onClick={() => !isPlotted && setEditOpen(true)}
+                disabled={isPlotted}
+              >
+                <EditSquareIcon color={isPlotted ? "disabled" : "info"} />
+              </IconButton>
+            </span>
+          </Tooltip>
 
-        <Tooltip
-          title={isPlotted ? "Remove from scheduler first" : "Edit Course"}
-        >
-          <span>
-            <IconButton
-              onClick={() => !isPlotted && setEditOpen(true)}
-              disabled={isPlotted}
-            >
-              <EditSquareIcon color={isPlotted ? "disabled" : "info"} />
-            </IconButton>
-          </span>
-        </Tooltip>
-
-        <Tooltip
-          title={isPlotted ? "Remove from scheduler first" : "Delete Course"}
-        >
-          <span>
-            <IconButton
-              onClick={() => !isPlotted && setDeleteOpen(true)}
-              disabled={isPlotted}
-            >
-              <DeleteIcon color={isPlotted ? "disabled" : "error"} />
-            </IconButton>
-          </span>
-        </Tooltip>
+          <Tooltip
+            title={isPlotted ? "Remove from scheduler first" : "Delete Course"}
+          >
+            <span>
+              <IconButton
+                onClick={() => !isPlotted && setDeleteOpen(true)}
+                disabled={isPlotted}
+              >
+                <DeleteIcon color={isPlotted ? "disabled" : "error"} />
+              </IconButton>
+            </span>
+          </Tooltip>
+        </RenderOnUser>
       </Stack>
 
       <DeleteConfirmDialog

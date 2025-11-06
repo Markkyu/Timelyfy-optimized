@@ -8,7 +8,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LockIcon from "@mui/icons-material/Lock";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import UploadIcon from "@mui/icons-material/Upload";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CloudFog } from "lucide-react";
 
 // Components
 import ToastNotification from "@components/ToastNotification";
@@ -28,12 +28,15 @@ import uploadSchedule from "./api/uploadSchedule";
 import { getCourses } from "./api/getCourses";
 import createSchedulesQueryOptions from "./api/createSchedulesQueryOptions";
 import createCoursesQueryOptions from "./api/createCoursesQueryOptions";
-import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
+import createCollegeQueryOptions, {
+  useCollegeQueryById,
+} from "@hooks/createCollegeQueryOptions";
+import classGroupSchedQuery from "./api/classGroupSchedQuery";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 export default function SchedulerApp() {
-  const { college } = useParams();
+  const { college, class_group } = useParams();
   const [searchParams] = useSearchParams();
 
   const year = searchParams.get("year");
@@ -44,6 +47,27 @@ export default function SchedulerApp() {
   const college_sem = sem;
 
   const navigate = useNavigate();
+
+  // const [collegeCode, setCollegeCode] = useState(null);
+
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     try {
+  //       const data = await getCollegeById(college);
+  //       setCollegeCode(data);
+  //     } catch (err) {
+  //       console.error(err);
+  //     }
+  //   };
+
+  //   loadData();
+  // }, []);
+
+  // const { data: thisClassSchedule } = useQuery(
+  //   classGroupSchedQuery(class_code_year)
+  // );
+
+  // console.log(thisClassSchedule);
 
   const { data: collegeList } = useQuery(createCollegeQueryOptions());
 
@@ -79,14 +103,31 @@ export default function SchedulerApp() {
     createCoursesQueryOptions(college_group, college_year, college_sem)
   );
 
+  // const {
+  //   data: getInitialSchedules,
+  //   isPending: schedules_loading,
+  //   error: schedules_error,
+  // } = useQuery(
+  //   createSchedulesQueryOptions(college_group, college_year, college_sem)
+  // );
+
   const {
     data: getInitialSchedules,
     isPending: schedules_loading,
     error: schedules_error,
-  } = useQuery(
-    createSchedulesQueryOptions(college_group, college_year, college_sem)
-  );
+  } = useQuery(classGroupSchedQuery(class_group));
 
+  // const getInitialSchedules = [
+  //   {
+  //     slot_day: 0,
+  //     slot_time: 0,
+  //     slot_course: "TEST",
+  //   },
+  // ];
+  // const schedules_loading = false;
+  // const schedules_error = null;
+
+  console.log(getInitialSchedules);
   const allSchedules = useMemo(() => {
     return [...existingSchedules, ...newSchedules];
   }, [existingSchedules, newSchedules]);
@@ -163,6 +204,7 @@ export default function SchedulerApp() {
     let slotsNeeded = duration === 1 ? 2 : duration === 1.5 ? 3 : 1;
 
     const newEntries = Array.from({ length: slotsNeeded }, (_, i) => ({
+      class_id: class_group,
       slot_course: selectedCourse.course_id,
       teacher_id: selectedCourse.assigned_teacher,
       room_ID: selectedCourse.assigned_room,
@@ -250,11 +292,14 @@ export default function SchedulerApp() {
       )
       .map((s) => ({
         course_ID: s.course_id,
-        teacher_ID: s.assigned_teacher?.toString() || "0",
-        room_ID: s.assigned_room?.toString() || "0",
+        teacher_ID: s.assigned_teacher?.toString() || null,
+        room_ID: s.assigned_room?.toString() || null,
+        class_ID: class_group,
       }));
 
-    // console.log(slots);
+    console.log(slots);
+
+    // console.log(newSchedules);
 
     // wait for how many ms
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -340,7 +385,9 @@ export default function SchedulerApp() {
 
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    uploadScheduleMutate(newSchedules);
+    // uploadScheduleMutate(newSchedules);
+
+    console.log(newSchedules);
   };
 
   const handleResetTable = () => {
@@ -611,54 +658,3 @@ export default function SchedulerApp() {
     </div>
   );
 }
-
-// const handleAutoAllocate = async () => {
-//   // Only send schedule that has the complete hours remove the schedules with 0 hours
-
-//   // const slots = queueSubjects
-//   //   .filter((subject) => subject.hours_week !== 0)
-//   //   .map((subject) => ({
-//   //     course_ID: subject.course_id,
-//   //     teacher_ID: subject.assigned_teacher.toString(),
-//   //     room_ID: subject.assigned_room.toString(),
-//   //   }));
-
-//   // // Update all queued subjects at once (turn to 0)
-//   // setQueueSubjects((prevSubjects) =>
-//   //   prevSubjects.map((subject) =>
-//   //     subject.hours_week !== 0 ? { ...subject, hours_week: 0 } : subject
-//   //   )
-//   // );
-
-//   const slots = [];
-
-//   queueSubjects.forEach((element) => {
-//     if (element.hours_week !== 0) {
-//       slots.push({
-//         course_ID: element.course_id,
-//         teacher_ID: element.assigned_teacher.toString(),
-//         room_ID: element.assigned_room.toString(),
-//       });
-
-//       setQueueSubjects((prevSubjects) =>
-//         prevSubjects.map((subject) =>
-//           subject.course_code === element.course_code
-//             ? { ...subject, hours_week: 0 }
-//             : subject
-//         )
-//       );
-//     }
-//   });
-
-//   try {
-//     const assigningSchedules = await autoAllocate(slots);
-//     const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-//     for (let i = 0; i < assigningSchedules.length; i++) {
-//       setNewSchedules((prev) => [...prev, assigningSchedules[i]]);
-//       await sleep(44);
-//     }
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };

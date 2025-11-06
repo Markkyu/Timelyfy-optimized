@@ -73,15 +73,15 @@ export default function UserDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-200 p-4 md:p-6 lg:p-8">
-      <div className="max-w-7xl mx-auto">
+    <section className="min-h-screen bg-gray-200 p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto">
         {/* Back Button */}
         <Button
           variant="outlined"
           startIcon={<ArrowBackIcon />}
           onClick={handleBack}
           sx={{
-            mb: 3,
+            mb: 2,
             fontWeight: 600,
             border: 2,
             borderRadius: "12px",
@@ -119,17 +119,17 @@ export default function UserDetails() {
 
             <RenderWhenRole role={["admin"]}>
               {/* Danger Zone - Now handles its own dialog and deletion */}
-              <Divider sx={{ my: 2 }} />
-              <DangerZoneSection user={user} />
-
               <ApprovePasswordRequest
                 userId={userId}
                 passwordRequestStatus={user.change_password}
               />
+              <Divider sx={{ my: 2 }} />
+
+              <DangerZoneSection user={user} />
             </RenderWhenRole>
           </CardContent>
         </Card>
       </div>
-    </div>
+    </section>
   );
 }

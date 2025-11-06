@@ -3,8 +3,8 @@ import { Calendar, BookOpen } from "lucide-react";
 
 export default function PhaseHeader({ year, sem, currentPhaseDesc }) {
   return (
-    <Card className="shadow-xl border-t-4 border-red-800 mb-6">
-      <CardContent className="p-8">
+    <div className="shadow-md bg-white rounded-md border-t-6 border-red-800 mb-6">
+      <div className="p-8">
         <div className="text-center mb-4">
           <h1 className="text-5xl font-bold text-gray-800 mb-2">
             Academic Year {year}
@@ -28,7 +28,7 @@ export default function PhaseHeader({ year, sem, currentPhaseDesc }) {
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

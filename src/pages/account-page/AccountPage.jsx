@@ -6,9 +6,14 @@ import AccountProfileHeader from "./components/AccountProfileHeader";
 import ChangePasswordCard from "./components/ChangePasswordCard";
 import DeleteAccountCard from "./components/DeleteAccountCard";
 import AccountInfoCard from "./components/AccountInfoCard";
+import { useEffect } from "react";
 
 export default function AccountPage() {
-  const { user } = useAuthStore();
+  const { user, refreshUser } = useAuthStore();
+
+  useEffect(() => {
+    refreshUser();
+  }, []);
 
   return (
     <div className="bg-gradient-to-r from-gray-200 to-gray-300 p-4 md:p-6 lg:p-8">

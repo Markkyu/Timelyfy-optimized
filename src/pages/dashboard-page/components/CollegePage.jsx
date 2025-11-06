@@ -18,6 +18,8 @@ export default function CollegePage() {
   const { college_id } = useParams();
   const navigate = useNavigate();
 
+  console.log(college_id);
+
   // const { data: college, isLoading, error } = useCollegeById(college_id);
   const { data: college, isLoading, error } = useCollegeQueryById(college_id);
 
@@ -66,7 +68,7 @@ export default function CollegePage() {
         <CollegeDetailsHeader college={college} />
 
         {/* Navigation Cards - Main Actions */}
-        <NavigationCards collegeId={college_id} />
+        <NavigationCards college={college} collegeId={college_id} />
       </Container>
     </div>
   );

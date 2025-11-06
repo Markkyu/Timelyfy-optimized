@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, forwardRef, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,19 +6,19 @@ import {
   TextField,
   Button,
   IconButton,
-  Slide,
   Typography,
   Grow,
+  Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAddCourse } from "@hooks/useCourses";
+// import { useAddCourse } from "@hooks/useCourses";
 import useAuthStore from "@stores/useAuthStore";
 import { addCourse } from "@api/coursesAPI";
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import recentCourseQuery from "@hooks/recentCourseQuery";
-import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
+// import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
 import { formatCode } from "./formatCode";
 
 export default function AddCourseForm({
@@ -33,12 +33,13 @@ export default function AddCourseForm({
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
   const [hoursWeek, setHoursWeek] = useState(3);
-  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // useref
+  const firstInputRef = useRef(null);
 
   const { user } = useAuthStore();
 
-  // const addCourseMutation = useAddCourse();
   const queryClient = useQueryClient();
 
   const { mutate, isPending: loading } = useMutation({
@@ -57,10 +58,6 @@ export default function AddCourseForm({
       setCourseName("");
       setHoursWeek(3);
       onClose();
-
-      // queryClient.invalidateQueries({
-      //   queryKey: ["course", college_id],
-      // });
     },
 
     onError: (error) => {
@@ -75,23 +72,6 @@ export default function AddCourseForm({
 
   // const { data: currSubjects } = useQuery(createCourseQueryOptions());
   const recentCourses = currSubjects?.reverse();
-
-  // function formatCode(college, major, code) {
-  //   const getInitials = (str) =>
-  //     str
-  //       .split(" ")
-  //       .map((word) => word[0])
-  //       .join("")
-  //       .toUpperCase();
-
-  //   const collegeInitials = getInitials(college);
-  //   const majorInitials = major ? getInitials(major) : null;
-  //   const normalizedCode = code.replace(/\s+/g, "").toUpperCase(); // remove spaces
-
-  //   return majorInitials
-  //     ? `${collegeInitials}-${majorInitials}_${normalizedCode}`
-  //     : `${collegeInitials}_${normalizedCode}`;
-  // }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -121,15 +101,21 @@ export default function AddCourseForm({
     setHoursWeek(0);
   };
 
+  useEffect(() => {
+    if (open && firstInputRef.current) {
+      firstInputRef.current.focus();
+    }
+  }, [open]);
+
   return (
     <Dialog
       open={open}
       TransitionComponent={Grow}
       keepMounted
       onClose={() => {
+        onClose();
         setCourseName("");
         setCourseCode("");
-        onClose();
       }}
       fullWidth
       maxWidth="sm"
@@ -157,28 +143,25 @@ export default function AddCourseForm({
         </Typography>
       </DialogTitle>
       <DialogContent>
-        {error && (
-          <div className="flex justify-center bg-red-100 rounded py-1 text-red-500 text-xl">
-            {error}
-          </div>
-        )}
+        {error && <Alert severity="error">{error}</Alert>}
 
         <div style={{ display: "flex", gap: "1rem" }}>
           {/* LEFT: FORM */}
           <form onSubmit={handleSubmit} style={{ flex: 1 }}>
             <TextField
-              label="Subject Code"
-              value={courseCode}
-              onChange={(e) => setCourseCode(e.target.value)}
+              inputRef={firstInputRef}
+              label="Subject Name"
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
               fullWidth
               margin="normal"
               required
             />
 
             <TextField
-              label="Subject Name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
+              label="Subject Code"
+              value={courseCode}
+              onChange={(e) => setCourseCode(e.target.value)}
               fullWidth
               margin="normal"
               required
