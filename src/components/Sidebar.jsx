@@ -50,7 +50,7 @@ export const SidebarItem = ({ icon, text, path, onClick }) => {
       {icon}
       <span
         className={`whitespace-nowrap duration-300 overflow-hidden transition-all ${
-          expanded ? "w-52 ml-3" : "w-0"
+          expanded ? "w-45 ml-3" : "w-0"
         }`}
       >
         {text}

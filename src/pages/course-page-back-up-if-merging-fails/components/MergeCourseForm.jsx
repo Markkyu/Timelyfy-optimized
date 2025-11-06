@@ -1,0 +1,177 @@
+import { useState } from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Grow,
+} from "@mui/material";
+import Select from "react-select";
+import ToastNotification from "@components/ToastNotification";
+import useColleges from "@hooks/useColleges"; // fetches all programs
+import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
+
+export default function MergeCourseForm({ open, onClose, courseCollege }) {
+  const [selectedPrograms, setSelectedPrograms] = useState([]);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+  const [toastType, setToastType] = useState("error");
+
+  const userId = 1;
+
+  const { data: colleges, isLoading } = useColleges();
+
+  // console.log(colleges?.filter((c) => c.college_id != courseCollege));
+
+  const queryClient = useQueryClient();
+
+  // handle react select submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const program_ids = selectedPrograms.map((p) => p.value);
+
+    // await axios.post(
+    //   `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`,
+    //   { program_ids }
+    // );
+
+    // queryClient.invalidateQueries(["assigned-colleges", userId]);
+
+    setToastMessage("[TEST] Course Merged");
+    setToastType("success");
+    setToastTrigger((prev) => prev + 1);
+
+    setSelectedPrograms([]);
+    onClose();
+  };
+
+  // handle clear assignment
+  const handleClearAssign = async (e) => {
+    e.preventDefault();
+
+    // await axios.delete(
+    //   `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`
+    // );
+
+    // queryClient.invalidateQueries(["assigned-colleges", userId]);
+    setToastMessage("[TEST] Course Cleared");
+    setToastType("error");
+    setToastTrigger((prev) => prev + 1);
+
+    setSelectedPrograms([]);
+    onClose();
+  };
+
+  const filterThisCollege = colleges?.filter(
+    (c) => c.college_id != courseCollege
+  );
+
+  const options =
+    filterThisCollege?.map((c) => ({
+      value: c.college_id,
+      label: `${c.college_name} ${c.college_major}`,
+    })) || [];
+
+  return (
+    <>
+      <Dialog
+        TransitionComponent={Grow}
+        open={open}
+        onClose={onClose}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogTitle style={{ fontWeight: 600 }}>
+          Merge Course to Colleges
+        </DialogTitle>
+        <DialogContent>
+          <form onSubmit={handleSubmit}>
+            {/* <Select
+            isMulti
+            options={options}
+            isLoading={isLoading}
+            onChange={(val) => setSelectedPrograms(val)}
+            placeholder="Select college programs..."
+            menuPortalTarget={document.body}
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+            }}
+          /> */}
+
+            <Select
+              isMulti
+              options={options}
+              isLoading={isLoading}
+              onChange={(val) => setSelectedPrograms(val)}
+              placeholder="Select college programs..."
+              menuPortalTarget={document.body}
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                control: (base, state) => ({
+                  ...base,
+                  minHeight: "55px", // adjust overall height
+                  padding: "4px 6px", // inner padding
+                  borderRadius: "12px", // optional, make it match MUI look
+                  borderColor: state.isFocused ? "maroon" : base.borderColor,
+                  boxShadow: state.isFocused
+                    ? "0 0 0 2px rgba(128,0,0,0.2)"
+                    : base.boxShadow,
+                  "&:hover": {
+                    borderColor: "maroon",
+                  },
+                }),
+                valueContainer: (base) => ({
+                  ...base,
+                  padding: "0 8px", // padding inside the value area
+                }),
+                multiValue: (base) => ({
+                  ...base,
+                  backgroundColor: "#f3e5e5", // light maroon tint
+                  borderRadius: "8px",
+                }),
+              }}
+            />
+
+            <Button
+              type="submit"
+              variant="contained"
+              sx={{
+                mt: 3,
+                paddingY: 1,
+                bgcolor: "maroon",
+                fontWeight: 600,
+                borderRadius: "12px",
+              }}
+              // disableElevation
+              fullWidth
+            >
+              Save Merges
+            </Button>
+            <Button
+              type="button"
+              variant="contained"
+              sx={{
+                mt: 1.5,
+                paddingY: 1,
+                bgcolor: "gray",
+                fontWeight: 600,
+                borderRadius: "12px",
+              }}
+              // disableElevation
+              fullWidth
+              onClick={handleClearAssign}
+            >
+              Clear Merges
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+      <ToastNotification
+        message={toastMessage}
+        type={toastType}
+        trigger={toastTrigger}
+      />
+    </>
+  );
+}

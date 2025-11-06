@@ -144,7 +144,13 @@ const LockCourseCard = ({ course }) => {
         </p>
         <p className="flex items-center gap-2">
           <CoPresentIcon fontSize="small" />
-          {teacherFullName || "No Teacher"} → {assignedRoom || "No Room"}
+          <span className={`${teacherFullName ? "" : "text-red-500"}`}>
+            {teacherFullName || "No Teacher"}
+          </span>
+          <span>→</span>
+          <span className={`${assignedRoom ? "" : "text-red-500"}`}>
+            {assignedRoom || "No Room"}
+          </span>
         </p>
       </div>
 
@@ -204,9 +210,23 @@ const CourseCard = ({ course, isSelected, onClick }) => {
             <>
               <CoPresentIcon
                 fontSize="small"
-                className={teacherFullName ? "text-sky-500" : "text-rose-500"}
+                className={
+                  teacherFullName && assignedRoom
+                    ? "text-sky-500"
+                    : "text-rose-500"
+                }
               />
-              {teacherFullName || "No teacher"} → {assignedRoom || "No room"}
+              <span
+                className={`${teacherFullName ? "underline font-bold text-green-500" : "font-bold text-red-500"}`}
+              >
+                {teacherFullName || "No Teacher"}
+              </span>
+              <span>→</span>
+              <span
+                className={`${assignedRoom ? "underline font-bold text-green-500" : "font-bold  text-red-500"}`}
+              >
+                {assignedRoom || "No Room"}
+              </span>
             </>
           )}
         </p>

@@ -77,7 +77,7 @@
 //   );
 // }
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Fab } from "@mui/material";
 import AssignmentAddIcon from "@mui/icons-material/AssignmentAdd";
@@ -86,7 +86,6 @@ import CourseSkeletonLoader from "./CourseSkeletonLoader";
 import AddCourseForm from "./AddCourseForm";
 import { CalendarIcon } from "lucide-react";
 import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
-import { getCollegeById } from "@api/collegesAPI";
 
 export default function SemesterSection({
   sem,
@@ -98,22 +97,6 @@ export default function SemesterSection({
   collegeMajor,
 }) {
   const [addOpen, setAddOpen] = useState(false);
-
-  // !!! THIS IS A TEST
-  const [currentCollegeCode, setCurrentCollegeCode] = useState(0);
-
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await getCollegeById(college_id);
-
-      const collegecode = data.college_code;
-
-      setCurrentCollegeCode(data.college_code);
-    };
-
-    loadData();
-  }, []);
-  /// REMOVE THIS SOON - TEMPORARY SCHEDULE REDIRECT
 
   const navigate = useNavigate();
 
@@ -177,9 +160,7 @@ export default function SemesterSection({
             }}
             startIcon={<CalendarIcon />}
             onClick={() =>
-              navigate(
-                `/${currentCollegeCode}${year}/schedule/${college_id}?year=${year}&sem=${sem}`
-              )
+              navigate(`/bscs1/schedule/${college_id}?year=${year}&sem=${sem}`)
             }
           >
             Schedule

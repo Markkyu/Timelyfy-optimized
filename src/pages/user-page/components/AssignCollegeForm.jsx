@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, Button } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Button,
+  Grow,
+} from "@mui/material";
 import Select from "react-select";
 import useColleges from "@hooks/useColleges"; // fetches all programs
 import axios from "axios";
@@ -49,7 +55,13 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
     })) || [];
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="xs">
+    <Dialog
+      TransitionComponent={Grow}
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth="xs"
+    >
       <DialogTitle style={{ fontWeight: 600 }}>
         Assign College Programs
       </DialogTitle>
@@ -77,7 +89,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
               fontWeight: 600,
               borderRadius: "12px",
             }}
-            disableElevation
+            // disableElevation
             fullWidth
           >
             Save Assignments
@@ -92,7 +104,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
               fontWeight: 600,
               borderRadius: "12px",
             }}
-            disableElevation
+            // disableElevation
             fullWidth
             onClick={handleClearAssign}
           >

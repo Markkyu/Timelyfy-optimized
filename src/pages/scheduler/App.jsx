@@ -32,6 +32,7 @@ import createCollegeQueryOptions, {
   useCollegeQueryById,
 } from "@hooks/createCollegeQueryOptions";
 import classGroupSchedQuery from "./api/classGroupSchedQuery";
+import uploadSchedulePython from "./api/uploadSchedulePython";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -116,6 +117,8 @@ export default function SchedulerApp() {
     isPending: schedules_loading,
     error: schedules_error,
   } = useQuery(classGroupSchedQuery(class_group));
+
+  console.log(getInitialSchedules);
 
   // const getInitialSchedules = [
   //   {
@@ -204,10 +207,14 @@ export default function SchedulerApp() {
     let slotsNeeded = duration === 1 ? 2 : duration === 1.5 ? 3 : 1;
 
     const newEntries = Array.from({ length: slotsNeeded }, (_, i) => ({
+      // course_id = not in the original course
+      course_id: selectedCourse.course_id, // not in the original course
       class_id: class_group,
       slot_course: selectedCourse.course_id,
-      teacher_id: selectedCourse.assigned_teacher,
-      room_ID: selectedCourse.assigned_room,
+      // teacher_id: selectedCourse.assigned_teacher, // original
+      teacher_id: selectedCourse.assigned_teacher.toString(),
+      // room_ID: selectedCourse.assigned_room, // original
+      room_id: selectedCourse.assigned_room.toString(),
       slot_day: dayIndex,
       slot_time: timeIndex + i,
     }));
@@ -383,11 +390,82 @@ export default function SchedulerApp() {
       },
     });
 
+  const { mutate: uploadSchedPythonMutate, isPending: pendingScheduleCheck } =
+    useMutation({
+      mutationFn: (newSchedules) => uploadSchedulePython(newSchedules),
+
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["courses"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["schedules"],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["course", college],
+        });
+
+        console.log("Succesful Schedule!");
+
+        setSelectedCourse(null);
+        setNewSchedules([]);
+
+        setToastMessage("No Conflicts Found");
+        setToastType("success");
+        setToastTrigger((prev) => prev + 1);
+
+        const jsonString = JSON.stringify(newSchedules, null, 2);
+        const blob = new Blob([jsonString], { type: "application/json" });
+        const filename = "myJson";
+        const a = document.createElement("a");
+        a.download = filename;
+        a.href = window.URL.createObjectURL(blob);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(a.href);
+      },
+
+      onError: (error) => {
+        console.error(error);
+        // setToastMessage(`Error saving schedules: ${error?.message}`);
+        // setToastType("error");
+        // setToastTrigger((prev) => prev + 1);
+      },
+    });
+
+  const lockSchedule = async (newSchedules) => {
+    try {
+      const result = await uploadSchedulePython(newSchedules);
+
+      console.log(result);
+
+      if (result.status === 409) {
+        console.warn("Conflict detected:", result.conflicts);
+        // You can show a modal, toast, or highlight cells in UI
+        setToastMessage("Conflict Found");
+        setToastType("warning");
+        setToastTrigger((prev) => prev + 1);
+      } else {
+        console.log("Schedules uploaded successfully:", result);
+
+        setToastMessage("No Conflicts Found");
+        setToastType("success");
+        setToastTrigger((prev) => prev + 1);
+      }
+    } catch (error) {
+      console.error("Unexpected error:", error);
+    }
+  };
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    // uploadScheduleMutate(newSchedules);
-
     console.log(newSchedules);
+
+    lockSchedule(newSchedules);
+
+    // uploadSchedPythonMutate(newSchedules);
+
+    // uploadScheduleMutate(newSchedules);
   };
 
   const handleResetTable = () => {

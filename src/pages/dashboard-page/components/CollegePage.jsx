@@ -50,7 +50,7 @@ export default function CollegePage() {
         {/* Back Button */}
         <Button
           variant="outlined"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           startIcon={<ArrowLeft size={18} />}
           sx={{
             mb: 2,
