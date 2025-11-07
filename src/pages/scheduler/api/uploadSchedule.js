@@ -15,19 +15,17 @@
 // }
 
 import axios from "axios";
+import API from "@api/axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default async function uploadSchedule(sched) {
   const schedules = sched;
 
-  console.log(schedules);
+  // console.log(schedules);
 
   try {
-    const { data } = await axios.post(
-      `${API_URL}/api/schedules/plot`,
-      schedules
-    );
+    const { data } = await API.post(`${API_URL}/api/schedules/plot`, schedules);
 
     return data;
   } catch (error) {

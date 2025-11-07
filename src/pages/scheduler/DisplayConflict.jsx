@@ -22,12 +22,13 @@ export default function DisplayConflict({
   attemptResolution,
   conflictDetails,
   onCancel,
+  open,
 }) {
   const deets = conflictDetails?.conflicts || [];
 
   return (
     <Dialog
-      open={true}
+      open={open}
       onClose={onCancel}
       maxWidth="sm"
       fullWidth

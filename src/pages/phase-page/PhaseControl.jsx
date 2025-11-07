@@ -14,6 +14,7 @@ import ErrorContent from "@components/ErrorContent";
 // Utils
 import { PHASES, STEPS } from "./components/phaseConstants";
 import { getPhase, updatePhase } from "./components/phaseApi";
+import ToastNotification from "@components/ToastNotification";
 
 export default function PhaseControl() {
   const queryClient = useQueryClient();
@@ -39,6 +40,10 @@ export default function PhaseControl() {
 
   const [currentStep, setCurrentStep] = useState(0);
   const [currentPhase, setCurrentPhase] = useState(0);
+
+  const [toastTrigger, setToastTrigger] = useState(0);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("success");
 
   useEffect(() => {
     if (phaseData) {

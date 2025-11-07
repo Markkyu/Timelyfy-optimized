@@ -10,6 +10,7 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import RenderOnUser from "@components/RenderOnUser";
 
 export default function RemoveLockSchedules({
   lockedSchedules,
@@ -42,15 +43,33 @@ export default function RemoveLockSchedules({
     },
   });
 
+  // const getUniqueSchedules = (schedules) => {
+  //   return [...new Set(schedules.map((item) => item.created_by))].map(
+  //     (course) => ({ slot_course: course })
+  //   );
+  // };
+
+  // get unique schedules based on slot_course and created_by
   const getUniqueSchedules = (schedules) => {
-    return [...new Set(schedules.map((item) => item.slot_course))].map(
-      (course) => ({ slot_course: course })
-    );
+    const uniqueMap = new Map();
+
+    schedules.forEach((item) => {
+      if (!uniqueMap.has(item.slot_course)) {
+        uniqueMap.set(item.slot_course, {
+          slot_course: item.slot_course,
+          created_by: item.created_by,
+        });
+      }
+    });
+
+    return Array.from(uniqueMap.values());
   };
 
   const uniqueSchedules = getUniqueSchedules(lockedSchedules);
 
-  // console.log(uniqueSchedules);
+  console.log(uniqueSchedules);
+
+  // I want it to return [{slot_course: 'Course 1', created_by: 1}, {slot_course: 'Course 2', created_by: 2}]
 
   const handleDeleteClick = (courseName) => {
     setSelectedSchedule(courseName);
@@ -88,11 +107,15 @@ export default function RemoveLockSchedules({
     (groupSched) => groupSched.slot_course
   );
 
+  console.log(groupLockedSchedules);
+
   // Get unique course names with counts
   const uniqueCourses = Object.keys(groupLockedSchedules).map((courseName) => ({
     slot_course: courseName,
     count: groupLockedSchedules[courseName].length,
   }));
+
+  console.log(uniqueCourses);
 
   if (schedules_loading) return <SchedulesLoading />;
   if (schedules_error) return <SchedulesError />;
@@ -116,10 +139,10 @@ export default function RemoveLockSchedules({
                 </p>
               </div>
             </div>
-            {uniqueCourses.length > 0 && (
+            {uniqueSchedules.length > 0 && (
               <Chip
-                label={`${uniqueCourses.length} ${
-                  uniqueCourses.length === 1 ? "Course" : "Courses"
+                label={`${uniqueSchedules.length} ${
+                  uniqueSchedules.length === 1 ? "Course" : "Courses"
                 }`}
                 sx={{
                   backgroundColor: "rgba(255, 255, 255, 0.2)",
@@ -152,11 +175,11 @@ export default function RemoveLockSchedules({
 
         {/* Content Section */}
         <div className="p-6">
-          {uniqueCourses.length === 0 ? (
+          {uniqueSchedules.length === 0 ? (
             <EmptyState />
           ) : (
             <div className="space-y-3">
-              {uniqueCourses.map((course, i) => (
+              {uniqueSchedules.map((course, i) => (
                 <ScheduleCard
                   key={i}
                   course={course}
@@ -195,43 +218,32 @@ const ScheduleCard = ({ course, onDelete, isLoading }) => {
 
           {/* Course Details */}
           <div>
-            <h3 className="font-bold text-gray-900 text-lg mb-1">
+            <h3 className="font-bold text-gray-900 text-xl mb-1">
               {course.slot_course}
             </h3>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600 font-medium">
-                {course.count} time slot{course.count > 1 ? "s" : ""}
-              </span>
-              <span className="text-gray-400">•</span>
-              <span className="text-xs text-gray-500">
-                {(course.count * 0.5).toFixed(1)} hours per week
-              </span>
-            </div>
           </div>
         </div>
 
         {/* Delete Button */}
-        <Button
-          variant="contained"
-          color="error"
-          size="medium"
-          endIcon={<DeleteIcon />}
-          onClick={() => onDelete(course.slot_course)}
-          disabled={isLoading}
-          sx={{
-            textTransform: "none",
-            fontWeight: 600,
-            borderRadius: "10px",
-            px: 3,
-            py: 1.5,
-            boxShadow: "0 4px 12px rgba(220, 38, 38, 0.2)",
-            "&:hover": {
-              boxShadow: "0 6px 16px rgba(220, 38, 38, 0.3)",
-            },
-          }}
-        >
-          Remove
-        </Button>
+        <RenderOnUser createdBy={course.created_by}>
+          <Button
+            variant="contained"
+            color="error"
+            size="medium"
+            endIcon={<DeleteIcon />}
+            onClick={() => onDelete(course.slot_course)}
+            disabled={isLoading}
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+              borderRadius: "10px",
+              px: 3,
+              py: 1.5,
+            }}
+          >
+            Remove
+          </Button>
+        </RenderOnUser>
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 import axios from "axios";
+import API from "./axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getTeacherSchedules = async (teacherId) => {
   try {
-    const { data } = await axios.get(
+    const { data } = await API.get(
       `${API_URL}/api/schedules/teacher/${teacherId}`
     );
 
@@ -15,7 +16,7 @@ export const getTeacherSchedules = async (teacherId) => {
 };
 export const getRoomSchedules = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/schedules/room/:room_id`);
+    const { data } = await API.get(`${API_URL}/api/schedules/room/:room_id`);
 
     return data;
   } catch (error) {

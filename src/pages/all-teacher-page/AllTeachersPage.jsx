@@ -135,8 +135,8 @@ export default function AllTeachersPage() {
                 Manage and monitor all teachers in the system
               </p>
               <Alert severity="info">
-                If you believe that your teacher is missing. Search first and
-                add them with caution.
+                If you believe that your teacher is missing. Contact the
+                administrator or master scheduler to add them.
               </Alert>
             </div>
 

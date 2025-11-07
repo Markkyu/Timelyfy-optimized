@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import API from "./axios";
 const API_URL = import.meta.env.VITE_API_URL;
 
 // export const getTeachers = async () => {
@@ -13,7 +13,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 export const assignTeacherCourse = async (courseData) => {
   try {
-    const { data } = await axios.put(
+    const { data } = await API.put(
       `${API_URL}/api/courses/assign/${courseData.course_id}`,
       courseData
     );
@@ -25,7 +25,7 @@ export const assignTeacherCourse = async (courseData) => {
 
 export const getTeachers = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/teachers`);
+    const { data } = await API.get(`${API_URL}/api/teachers`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -34,7 +34,7 @@ export const getTeachers = async () => {
 
 export const getTeacherById = async (teacherId) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/teachers/${teacherId}`);
+    const { data } = await API.get(`${API_URL}/api/teachers/${teacherId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -43,7 +43,7 @@ export const getTeacherById = async (teacherId) => {
 
 export const createTeacher = async (teacherData) => {
   try {
-    const { data } = await axios.post(`${API_URL}/api/teachers`, teacherData);
+    const { data } = await API.post(`${API_URL}/api/teachers`, teacherData);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -54,7 +54,7 @@ export const updateTeacher = async (teacherId, updates) => {
   console.log(`inside`, updates);
 
   try {
-    const { data } = await axios.put(
+    const { data } = await API.put(
       `${API_URL}/api/teachers/${teacherId}`,
       updates
     );
@@ -66,7 +66,7 @@ export const updateTeacher = async (teacherId, updates) => {
 
 export const deleteTeacher = async (teacherId) => {
   try {
-    const { data } = await axios.delete(`${API_URL}/api/teachers/${teacherId}`);
+    const { data } = await API.delete(`${API_URL}/api/teachers/${teacherId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

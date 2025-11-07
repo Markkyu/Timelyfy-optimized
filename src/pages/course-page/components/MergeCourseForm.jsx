@@ -87,24 +87,19 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
         </DialogTitle>
         <DialogContent>
           <form onSubmit={handleSubmit}>
-            {/* <Select
-            isMulti
-            options={options}
-            isLoading={isLoading}
-            onChange={(val) => setSelectedPrograms(val)}
-            placeholder="Select college programs..."
-            menuPortalTarget={document.body}
-            styles={{
-              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-            }}
-          /> */}
-
+            <ol className="mb-3 rounded-md w-full border-2 p-4 border-gray-200 bg-gray-50">
+              {selectedPrograms?.map((p, i) => (
+                <li key={i} className="px-2 py-1 font-semibold">
+                  {i + 1}. {p.label}
+                </li>
+              ))}
+            </ol>
             <Select
               isMulti
               options={options}
               isLoading={isLoading}
               onChange={(val) => setSelectedPrograms(val)}
-              placeholder="Select college programs..."
+              placeholder="Select college to merge to..."
               menuPortalTarget={document.body}
               styles={{
                 menuPortal: (base) => ({ ...base, zIndex: 9999 }),
@@ -113,13 +108,6 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
                   minHeight: "55px", // adjust overall height
                   padding: "4px 6px", // inner padding
                   borderRadius: "12px", // optional, make it match MUI look
-                  borderColor: state.isFocused ? "maroon" : base.borderColor,
-                  boxShadow: state.isFocused
-                    ? "0 0 0 2px rgba(128,0,0,0.2)"
-                    : base.boxShadow,
-                  "&:hover": {
-                    borderColor: "maroon",
-                  },
                 }),
                 valueContainer: (base) => ({
                   ...base,
@@ -132,7 +120,6 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
                 }),
               }}
             />
-
             <Button
               type="submit"
               variant="contained"
@@ -143,7 +130,6 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
                 fontWeight: 600,
                 borderRadius: "12px",
               }}
-              // disableElevation
               fullWidth
             >
               Save Merges
@@ -158,7 +144,6 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
                 fontWeight: 600,
                 borderRadius: "12px",
               }}
-              // disableElevation
               fullWidth
               onClick={handleClearAssign}
             >

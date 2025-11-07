@@ -61,12 +61,14 @@ export default function EditCourseForm({
 
     const newCourseId = formatCode(collegeName, collegeMajor, courseCode);
 
-    console.log("Course: ", course);
+    // console.log("Course: ", course);
+    console.log(newCourseId);
 
     updateCourseMutation({
-      courseId: course.course_surrogate_id,
+      // courseId: course.course_surrogate_id,
+      courseId: newCourseId,
       updates: {
-        course_id: newCourseId,
+        // course_id: newCourseId,
         course_code: courseCode,
         course_name: courseName,
         hours_week: hoursWeek,
@@ -83,7 +85,10 @@ export default function EditCourseForm({
         open={open}
         TransitionComponent={Grow}
         keepMounted
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+          setError(null);
+        }}
         fullWidth
         maxWidth="xs"
       >
@@ -132,7 +137,6 @@ export default function EditCourseForm({
               fullWidth
               margin="normal"
               required
-              disabled
             />
 
             <TextField

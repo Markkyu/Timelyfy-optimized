@@ -1,19 +1,14 @@
 import axios from "axios";
+import API from "@api/axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export default async function deleteSchedules(schedules) {
   const courses = schedules;
 
-  console.log(courses);
-
   try {
-    const { data } = await axios.post(
-      `${API_URL}/api/schedules/unplot`,
-      courses
-    );
+    const { data } = await API.post(`${API_URL}/api/schedules/unplot`, courses);
 
-    // console.log(data);
     return data;
   } catch (err) {
     throw new Error(error.response?.data?.message || error.message);

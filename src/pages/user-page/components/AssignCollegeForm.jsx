@@ -10,6 +10,7 @@ import Select from "react-select";
 import useColleges from "@hooks/useColleges"; // fetches all programs
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import API from "@api/axios";
 
 export default function AssignCollegeForm({ open, onClose, userId }) {
   const [selectedPrograms, setSelectedPrograms] = useState([]);
@@ -23,7 +24,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
     e.preventDefault();
     const program_ids = selectedPrograms.map((p) => p.value);
 
-    await axios.post(
+    await API.post(
       `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`,
       { program_ids }
     );
@@ -38,7 +39,7 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
   const handleClearAssign = async (e) => {
     e.preventDefault();
 
-    await axios.delete(
+    await API.delete(
       `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`
     );
 
@@ -89,7 +90,6 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
               fontWeight: 600,
               borderRadius: "12px",
             }}
-            // disableElevation
             fullWidth
           >
             Save Assignments
@@ -104,7 +104,6 @@ export default function AssignCollegeForm({ open, onClose, userId }) {
               fontWeight: 600,
               borderRadius: "12px",
             }}
-            // disableElevation
             fullWidth
             onClick={handleClearAssign}
           >

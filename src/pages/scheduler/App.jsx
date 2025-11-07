@@ -36,12 +36,13 @@ import uploadSchedulePython from "./api/uploadSchedulePython";
 import useAuthStore from "@stores/useAuthStore";
 import checkSchedulesJS from "./api/checkSchedulesJS";
 import DisplayConflict from "./displayConflict";
+import UploadConfirm from "./UploadConfirm";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 export default function SchedulerApp() {
-  const { college, class_group } = useParams();
   const [searchParams] = useSearchParams();
+  const { college, class_group } = useParams();
   const { user } = useAuthStore();
 
   const year = searchParams.get("year");
@@ -94,6 +95,8 @@ export default function SchedulerApp() {
   const [showConflictState, setShowConflictState] = useState(false);
   const [conflictDetails, setConflictDetails] = useState(null);
 
+  const [uploadConfirmOpen, setUploadConfirmOpen] = useState(false);
+
   // from DB schedules' state
   const [existingSchedules, setExistingSchedules] = useState([]);
   const [queueSubjects, setQueueSubjects] = useState([]);
@@ -126,7 +129,7 @@ export default function SchedulerApp() {
     error: schedules_error,
   } = useQuery(classGroupSchedQuery(class_group));
 
-  console.log(getInitialSchedules);
+  // console.log(getInitialSchedules);
 
   // const getInitialSchedules = [
   //   {
@@ -138,13 +141,11 @@ export default function SchedulerApp() {
   // const schedules_loading = false;
   // const schedules_error = null;
 
-  console.log(getInitialSchedules);
+  // console.log(getInitialSchedules);
+
   const allSchedules = useMemo(() => {
     return [...existingSchedules, ...newSchedules];
   }, [existingSchedules, newSchedules]);
-
-  // state for disable lock
-  // const disabledLockButton = selectedCourse && selectedCourse?.hours_week != 0;
 
   // Check if any course is partially scheduled
   const hasPartiallyScheduledCourses = useMemo(() => {
@@ -298,6 +299,7 @@ export default function SchedulerApp() {
   };
 
   const handleAutoAllocate = async () => {
+    // Filter the subjects based on the user
     const slots = queueSubjects
       .filter(
         (s) =>
@@ -313,10 +315,6 @@ export default function SchedulerApp() {
         class_ID: class_group,
       }));
 
-    console.log(slots);
-
-    // console.log(newSchedules);
-
     // wait for how many ms
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -330,7 +328,6 @@ export default function SchedulerApp() {
 
       if (!assigningSchedules || assigningSchedules.length === 0) {
         setAllocatingStatus("empty");
-        // await sleep(0);
         return;
       }
 
@@ -359,7 +356,7 @@ export default function SchedulerApp() {
       setAllocatingError(err.message);
       setAllocatingStatus("error");
     } finally {
-      await sleep(850);
+      await sleep(750);
       setAllocating(false);
       setSelectedCourse(null);
     }
@@ -381,8 +378,6 @@ export default function SchedulerApp() {
           queryKey: ["course", college],
         });
 
-        console.log("Succesful Schedule!");
-
         setSelectedCourse(null);
         setNewSchedules([]);
 
@@ -399,19 +394,19 @@ export default function SchedulerApp() {
       },
     });
 
-  const { mutate: uploadSchedPythonMutate, isPending: pendingScheduleCheck } =
+  const { mutate: uploadScheduleMutation, isPending: pendingScheduleCheck } =
     useMutation({
-      mutationFn: (newSchedules) => uploadSchedulePython(newSchedules),
+      mutationFn: (newSchedules) => uploadSchedule(newSchedules),
 
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: ["courses"],
         });
+        // queryClient.invalidateQueries({
+        //   queryKey: ["schedules"],
+        // });
         queryClient.invalidateQueries({
-          queryKey: ["schedules"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["course", college],
+          queryKey: ["class-schedules"],
         });
 
         console.log("Succesful Schedule!");
@@ -419,62 +414,37 @@ export default function SchedulerApp() {
         setSelectedCourse(null);
         setNewSchedules([]);
 
-        setToastMessage("No Conflicts Found");
+        setToastMessage("Schedules successfully saved!");
         setToastType("success");
         setToastTrigger((prev) => prev + 1);
-
-        const jsonString = JSON.stringify(newSchedules, null, 2);
-        const blob = new Blob([jsonString], { type: "application/json" });
-        const filename = "myJson";
-        const a = document.createElement("a");
-        a.download = filename;
-        a.href = window.URL.createObjectURL(blob);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(a.href);
       },
 
       onError: (error) => {
         console.error(error);
-        // setToastMessage(`Error saving schedules: ${error?.message}`);
-        // setToastType("error");
-        // setToastTrigger((prev) => prev + 1);
+        setToastMessage(`Error saving schedules: ${error?.message}`);
+        setToastType("error");
+        setToastTrigger((prev) => prev + 1);
       },
     });
 
-  const conflictCheck = async (newSchedules) => {
+  const conflictCheckB4Sched = async (newSchedules) => {
     try {
-      // const result = await uploadSchedulePython(newSchedules);
       const result = await checkSchedulesJS(newSchedules);
 
-      console.log(result);
-
       if (result.status === 409) {
-        // console.warn("Conflict detected:", result.conflicts);
-        // setToastMessage("Conflict Found");
-        // setToastType("warning");
-        // setToastTrigger((prev) => prev + 1);
-
         setConflictDetails(result?.conflicts);
         setShowConflictState(true);
       } else {
-        console.log("Schedules uploaded successfully:", result);
-
-        setToastMessage("No Conflicts Found");
-        setToastType("success");
-        setToastTrigger((prev) => prev + 1);
+        uploadScheduleMutation(newSchedules);
       }
     } catch (error) {
       console.error("Unexpected error:", error.message);
     }
   };
+
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    // console.log(newSchedules);
-
-    conflictCheck(newSchedules);
-    // downloadAsJson(newSchedules);
+    conflictCheckB4Sched(newSchedules);
   };
 
   const handleResetTable = () => {
@@ -595,21 +565,12 @@ export default function SchedulerApp() {
         {/* Title */}
         <div className="text-center flex flex-col">
           <h1 className="text-4xl font-extrabold tracking-tight">
-            {/* {collegeId?.college_name || "Loading..."} */}
             {currCollege?.college_name || "Loading..."}
           </h1>
-
-          {/* {collegeId?.college_major && (
-            <span className="text-sm text-gray-500 font-medium">
-              {collegeId.college_major}
-            </span>
-          )} */}
 
           <p className="text-gray-700 text-lg font-semibold mt-1">
             Schedule: Year {year} / Semester {sem}
           </p>
-          {/* <p className="text-gray-500 text-xl font-semibold"> */}
-          {/* </p> */}
         </div>
 
         {/* Course Navigation */}
@@ -650,7 +611,7 @@ export default function SchedulerApp() {
         </div>
       </header>
       <main className="flex flex-col gap-4 p-6">
-        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col 2xl:flex-row justify-center gap-4">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col 2xl:flex-row gap-4">
           <section className="flex-1">
             <CourseList
               courses={queueSubjects}
@@ -684,12 +645,6 @@ export default function SchedulerApp() {
               selectedCourse={selectedCourse}
               onRemoveSchedule={handleRemoveSchedule}
             >
-              <button
-                onClick={() => setShowConflictState(true)}
-                className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200`}
-              >
-                <span>{"Test Message Conflict Dialog"}</span>
-              </button>
               {/* Auto Allocate */}
               <button
                 onClick={handleAutoAllocate}
@@ -757,31 +712,35 @@ export default function SchedulerApp() {
           trigger={toastTrigger}
         />
       </main>
-      {showConflictState && (
-        <DisplayConflict
-          conflictDetails={conflictDetails}
-          onCancel={() => setShowConflictState(false)}
-          attemptResolution={() => {
-            setShowConflictState(false);
-            handleResetTable();
-            handleAutoAllocate();
-            // uploadScheduleMutate(newSchedules);
-          }}
-        />
-      )}
+
+      <DisplayConflict
+        open={showConflictState}
+        conflictDetails={conflictDetails}
+        onCancel={() => setShowConflictState(false)}
+        attemptResolution={() => {
+          setShowConflictState(false);
+          handleResetTable();
+          handleAutoAllocate();
+        }}
+      />
+
+      <UploadConfirm
+        open={uploadConfirmOpen}
+        onClose={() => setUploadConfirmOpen(false)}
+        desc={"Schedules will be locked to database."}
+        title={"Lock Schedules"}
+      />
     </div>
   );
 }
 
-const downloadAsJson = (newSchedules) => {
-  const jsonString = JSON.stringify(newSchedules, null, 2);
-  const blob = new Blob([jsonString], { type: "application/json" });
-  const filename = "myJson";
-  const a = document.createElement("a");
-  a.download = filename;
-  a.href = window.URL.createObjectURL(blob);
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(a.href);
-};
+// const jsonString = JSON.stringify(newSchedules, null, 2);
+// const blob = new Blob([jsonString], { type: "application/json" });
+// const filename = "myJson";
+// const a = document.createElement("a");
+// a.download = filename;
+// a.href = window.URL.createObjectURL(blob);
+// document.body.appendChild(a);
+// a.click();
+// document.body.removeChild(a);
+// window.URL.revokeObjectURL(a.href);

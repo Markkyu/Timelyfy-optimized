@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import API from "@api/axios";
 
 const getAssignedColleges = async (userId) => {
-  const { data } = await axios.get(
+  const { data } = await API.get(
     `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`
   );
   return data;

@@ -45,10 +45,11 @@ export default function AddCourseForm({
   const { mutate, isPending: loading } = useMutation({
     mutationFn: (courseData) => addCourse(courseData),
 
-    onSuccess: (data, newCourse) => {
+    onSuccess: (data, newCourse, context) => {
       queryClient.setQueryData(["course", college_id], (old) => {
         console.log(old);
         console.log(newCourse);
+        console.log(context);
 
         if (!old) return [newCourse];
         return [...old, newCourse];
@@ -116,6 +117,7 @@ export default function AddCourseForm({
         onClose();
         setCourseName("");
         setCourseCode("");
+        setError(null);
       }}
       fullWidth
       maxWidth="sm"
@@ -250,60 +252,3 @@ export default function AddCourseForm({
     </Dialog>
   );
 }
-
-// <DialogContent>
-//   {error && (
-//     <div className="flex justify-center bg-red-100 rounded py-1 text-red-500 text-xl">
-//       {error}
-//     </div>
-//   )}
-//   <form onSubmit={handleSubmit}>
-//     <TextField
-//       label="Subject Code"
-//       value={courseCode}
-//       onChange={(e) => setCourseCode(e.target.value)}
-//       fullWidth
-//       margin="normal"
-//       required
-//     />
-
-//     <TextField
-//       label="Subject Name"
-//       value={courseName}
-//       onChange={(e) => setCourseName(e.target.value)}
-//       fullWidth
-//       margin="normal"
-//       required
-//     />
-
-//     <TextField
-//       label="Hours/ Week"
-//       value={hoursWeek}
-//       onChange={(e) => setHoursWeek(e.target.value)}
-//       fullWidth
-//       margin="normal"
-//       type="number"
-//       inputProps={{
-//         min: 0,
-//         max: 10,
-//       }}
-//       required
-//     />
-
-//     <Button
-//       type="submit"
-//       variant="contained"
-//       loading={loading}
-//       loadingPosition="end"
-//       fullWidth
-//       sx={{
-//         bgcolor: "maroon",
-//         marginTop: 1,
-//         fontWeight: 600,
-//         paddingY: 1.5,
-//       }}
-//     >
-//       Add Course
-//     </Button>
-//   </form>
-// </DialogContent>

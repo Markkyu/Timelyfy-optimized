@@ -1,6 +1,6 @@
 // React Dom Hooks
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Custom Hooks
 import ErrorContent from "@components/ErrorContent";
@@ -25,26 +25,22 @@ export default function CourseList() {
   const navigate = useNavigate();
   const { college_id } = useParams();
 
-  console.log(college_id);
-
-  // custom Hook fetch + cache
-  // const {
-  //   data: courses,
-  //   isFetching: courses_loading,
-  //   error: courses_error,
-  // } = useCourses(college_id);
+  // const [collegeId, setCollegeId] = useState(null);
 
   const { data: collegeId } = useQuery(useCollegeQueryById(college_id));
-  const { data: collegeList } = useQuery(createCollegeQueryOptions());
+  const { data: collegeList, isPending: collegeLoading } = useQuery(
+    createCollegeQueryOptions()
+  );
 
-  // const { college_name: collegeName, college_major: collegeMajor } = collegeId;
+  // useEffect(() => {
+  //   const collegeId = collegeLoading
+  //     ? collegeList?.filter((c) => c.college_id == college_id)
+  //     : [];
 
-  // console.log(collegeName, collegeMajor);
+  //   setCollegeId(collegeId);
+  // }, [collegeId]);
 
-  // const collegeName = collegeId?.college_name;
-  // const collegeMajor = collegeId?.college_major;
-
-  // console.log(collegeId?.college_name);
+  // console.log(collegeId);
 
   const {
     data: courses,
@@ -121,7 +117,7 @@ export default function CourseList() {
             </option>
             {collegeList?.map((c) => (
               <option key={c.college_id} value={c.college_id}>
-                {c.college_name} {c.college_major}
+                {c.college_name} - {c.college_major}
               </option>
             ))}
           </select>

@@ -99,22 +99,6 @@ export default function SemesterSection({
 }) {
   const [addOpen, setAddOpen] = useState(false);
 
-  // !!! THIS IS A TEST
-  // const [currentCollegeCode, setCurrentCollegeCode] = useState(0);
-
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     const data = await getCollegeById(college_id);
-
-  //     const collegecode = data.college_code;
-
-  //     setCurrentCollegeCode(data.college_code);
-  //   };
-
-  //   loadData();
-  // }, []);
-  /// REMOVE THIS SOON - TEMPORARY SCHEDULE REDIRECT
-
   const navigate = useNavigate();
 
   // Memoize filtered courses to avoid re-filtering every render
@@ -165,24 +149,6 @@ export default function SemesterSection({
             onClick={() => setAddOpen(true)}
           >
             Add Subject
-          </Button>
-
-          <Button
-            variant="contained"
-            sx={{
-              background: "#7f1d1d",
-              borderRadius: "12px",
-              textTransform: "none",
-              fontWeight: 600,
-            }}
-            startIcon={<CalendarIcon />}
-            onClick={() =>
-              navigate(
-                `/${currentCollegeCode}${year}/schedule/${college_id}?year=${year}&sem=${sem}`
-              )
-            }
-          >
-            Schedule
           </Button>
         </div>
       </div>

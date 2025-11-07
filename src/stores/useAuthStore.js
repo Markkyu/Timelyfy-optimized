@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import API from "../api/axios";
+import API from "@api/axios";
 
 const useAuthStore = create((set) => ({
   user: JSON.parse(localStorage.getItem("user")) || null,

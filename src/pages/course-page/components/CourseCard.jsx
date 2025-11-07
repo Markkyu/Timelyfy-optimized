@@ -112,7 +112,6 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
               color="warning"
               label="Plotted"
               icon={<LockIcon sx={{ fontSize: 18 }} />}
-              className="mr-2"
             />
           </Tooltip>
         )}

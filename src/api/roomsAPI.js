@@ -1,10 +1,11 @@
 import axios from "axios";
+import API from "./axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 export const getRooms = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/rooms`);
+    const { data } = await API.get(`${API_URL}/api/rooms`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -14,9 +15,7 @@ export const getRooms = async () => {
 // GET ROOMS FOR SELECTED TEACHER
 export const getRoomsByTeacher = async (teacherId) => {
   try {
-    const { data } = await axios.get(
-      `${API_URL}/api/rooms/teacher/${teacherId}`
-    );
+    const { data } = await API.get(`${API_URL}/api/rooms/teacher/${teacherId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -25,7 +24,7 @@ export const getRoomsByTeacher = async (teacherId) => {
 
 export const getRoomById = async (roomId) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/rooms${roomId}`);
+    const { data } = await API.get(`${API_URL}/api/rooms${roomId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -34,7 +33,7 @@ export const getRoomById = async (roomId) => {
 
 export const addRoom = async (details) => {
   try {
-    const { data } = await axios.post(`${API_URL}/api/rooms`, details);
+    const { data } = await API.post(`${API_URL}/api/rooms`, details);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -43,7 +42,7 @@ export const addRoom = async (details) => {
 
 export const updateRoom = async (roomId, updates) => {
   try {
-    const { data } = await axios.put(`${API_URL}/api/rooms/${roomId}`, updates);
+    const { data } = await API.put(`${API_URL}/api/rooms/${roomId}`, updates);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -54,7 +53,7 @@ export const deleteRoom = async (roomId) => {
   console.log(roomId);
 
   try {
-    const { data } = await axios.delete(`${API_URL}/api/rooms/${roomId}`);
+    const { data } = await API.delete(`${API_URL}/api/rooms/${roomId}`);
 
     return data;
   } catch (error) {

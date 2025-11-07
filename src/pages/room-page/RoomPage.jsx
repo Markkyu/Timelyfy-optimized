@@ -145,8 +145,8 @@ export default function RoomPage() {
                   View and manage all rooms and their schedules
                 </p>
                 <Alert severity="info">
-                  If you believe that your room is missing. Search first and add
-                  them with caution.
+                  If you believe that your room is missing. Contact system
+                  administrator or master scheduler to add it.
                 </Alert>
               </div>
 

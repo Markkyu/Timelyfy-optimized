@@ -1,4 +1,4 @@
-// import axios from "axios";
+// import API from "axios";
 
 // export const getCourses = async () => {
 //   const { data, error } = await axios.get(
@@ -18,13 +18,14 @@
 // };
 
 import axios from "axios";
+import API from "./axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 // GET COURSE
 export const getCourses = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/courses`);
+    const { data } = await API.get(`${API_URL}/api/courses`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -33,7 +34,7 @@ export const getCourses = async () => {
 
 export const getRecentCourses = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/courses/recent`);
+    const { data } = await API.get(`${API_URL}/api/courses/recent`);
 
     return data;
   } catch (error) {
@@ -44,7 +45,7 @@ export const getRecentCourses = async () => {
 // GET COURSE BY ID => college group
 export const getCourseById = async (courseId) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/courses/${courseId}`);
+    const { data } = await API.get(`${API_URL}/api/courses/${courseId}`);
 
     return data;
   } catch (error) {
@@ -55,7 +56,7 @@ export const getCourseById = async (courseId) => {
 // GET 5 RECENT COURSES
 // export const getCurrentAddedCourse = async () => {
 //   try {
-//     const { data } = await axios.get(`${API_URL}/api/courses/recent`);
+//     const { data } = await API.get(`${API_URL}/api/courses/recent`);
 //     return data;
 //   } catch (error) {
 //     throw new Error(error.response?.data?.message || error.message);
@@ -67,7 +68,7 @@ export const assignTeacherCourse = async (courseData) => {
   console.log(courseData);
 
   try {
-    const { data } = await axios.put(
+    const { data } = await API.put(
       `${API_URL}/api/courses/assign/${courseData.course_id}`,
       courseData
     );
@@ -80,7 +81,7 @@ export const assignTeacherCourse = async (courseData) => {
 // ADD COURSE
 export const addCourse = async (details) => {
   try {
-    const { data } = await axios.post(`${API_URL}/api/courses`, details);
+    const { data } = await API.post(`${API_URL}/api/courses`, details);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -90,7 +91,7 @@ export const addCourse = async (details) => {
 // UPDATE COURSE
 export const updateCourse = async ({ courseId, updates }) => {
   try {
-    const { data } = await axios.put(
+    const { data } = await API.put(
       `${API_URL}/api/courses/${courseId}`,
       updates
     );
@@ -103,7 +104,7 @@ export const updateCourse = async ({ courseId, updates }) => {
 // DELETE COURSE
 export const deleteCourse = async (courseId) => {
   try {
-    const { data } = await axios.delete(`${API_URL}/api/courses/${courseId}`);
+    const { data } = await API.delete(`${API_URL}/api/courses/${courseId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

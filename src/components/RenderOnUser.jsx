@@ -11,7 +11,7 @@ export default function RenderOnUser({ createdBy, children }) {
     <>{children}</>
   ) : (
     <div className="px-2 text-gray-500 text-sm italic">
-      Created by user Id {createdBy}
+      Created by ID: {createdBy}
     </div>
   );
 }

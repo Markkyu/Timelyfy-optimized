@@ -1,9 +1,10 @@
 // src/api/deleteUser.js
 import axios from "axios";
+import API from "./axios";
 
 export const getUserById = async (user_id) => {
   try {
-    const { data } = await axios.get(
+    const { data } = await API.get(
       `${import.meta.env.VITE_API_URL}/api/users/${user_id}`
     );
     return data;
@@ -17,7 +18,7 @@ export const getUserById = async (user_id) => {
 
 export const deleteUser = async (user_id) => {
   try {
-    const { data } = await axios.delete(
+    const { data } = await API.delete(
       `${import.meta.env.VITE_API_URL}/api/users/${user_id}`
     );
     return data;

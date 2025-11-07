@@ -91,11 +91,14 @@ export default function EditCollegeForm({ open, onClose, college }) {
 
       onClose();
     } catch (err) {
+      console.log(err);
       setError(
         error.response?.data?.message ||
           error.message ||
           "Something went wrong."
       );
+      setToastType("error");
+      setToastTrigger((prev) => prev + 1);
     } finally {
       setLoading(false);
     }

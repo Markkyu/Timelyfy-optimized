@@ -43,7 +43,7 @@ export const updateCollege = async (collegeId, updates) => {
   console.log(`inside`, updates);
 
   try {
-    const { data } = await axios.put(
+    const { data } = await API.put(
       `${API_URL}/api/colleges/${collegeId}`,
       updates
     );

@@ -164,9 +164,6 @@ export default function CollegeCard({ college }) {
                 <BookOpen size={16} className="text-gray-400" />
                 <span>Courses</span>
               </div>
-              <span className="font-semibold text-gray-900">
-                {college?.courses_count || 0}
-              </span>
             </div>
 
             <div className="flex items-center justify-between text-sm">
@@ -174,9 +171,6 @@ export default function CollegeCard({ college }) {
                 <Calendar size={16} className="text-gray-400" />
                 <span>Schedules</span>
               </div>
-              <span className="font-semibold text-gray-900">
-                {college?.schedules_count || 0}
-              </span>
             </div>
           </div>
 

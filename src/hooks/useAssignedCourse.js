@@ -1,8 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import API from "@api/axios";
 
 const putAssignedCourse = async (userId) => {
-  const { data, error } = await axios.put(
+  const { data, error } = await API.put(
     `${import.meta.env.VITE_API_URL}/api/courses/assign/${userId}`,
     updates
   );
