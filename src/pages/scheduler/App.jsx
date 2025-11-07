@@ -34,6 +34,8 @@ import createCollegeQueryOptions, {
 import classGroupSchedQuery from "./api/classGroupSchedQuery";
 import uploadSchedulePython from "./api/uploadSchedulePython";
 import useAuthStore from "@stores/useAuthStore";
+import checkSchedulesJS from "./api/checkSchedulesJS";
+import DisplayConflict from "./displayConflict";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -87,6 +89,10 @@ export default function SchedulerApp() {
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("error");
   const [toastTrigger, setToastTrigger] = useState(0);
+
+  // State about CONFLICTS
+  const [showConflictState, setShowConflictState] = useState(false);
+  const [conflictDetails, setConflictDetails] = useState(null);
 
   // from DB schedules' state
   const [existingSchedules, setExistingSchedules] = useState([]);
@@ -437,18 +443,21 @@ export default function SchedulerApp() {
       },
     });
 
-  const lockSchedule = async (newSchedules) => {
+  const conflictCheck = async (newSchedules) => {
     try {
-      const result = await uploadSchedulePython(newSchedules);
+      // const result = await uploadSchedulePython(newSchedules);
+      const result = await checkSchedulesJS(newSchedules);
 
       console.log(result);
 
       if (result.status === 409) {
-        console.warn("Conflict detected:", result.conflicts);
-        // You can show a modal, toast, or highlight cells in UI
-        setToastMessage("Conflict Found");
-        setToastType("warning");
-        setToastTrigger((prev) => prev + 1);
+        // console.warn("Conflict detected:", result.conflicts);
+        // setToastMessage("Conflict Found");
+        // setToastType("warning");
+        // setToastTrigger((prev) => prev + 1);
+
+        setConflictDetails(result?.conflicts);
+        setShowConflictState(true);
       } else {
         console.log("Schedules uploaded successfully:", result);
 
@@ -457,29 +466,15 @@ export default function SchedulerApp() {
         setToastTrigger((prev) => prev + 1);
       }
     } catch (error) {
-      console.error("Unexpected error:", error);
+      console.error("Unexpected error:", error.message);
     }
   };
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    console.log(newSchedules);
+    // console.log(newSchedules);
 
-    // lockSchedule(newSchedules);
-
-    const jsonString = JSON.stringify(newSchedules, null, 2);
-    const blob = new Blob([jsonString], { type: "application/json" });
-    const filename = "myJson";
-    const a = document.createElement("a");
-    a.download = filename;
-    a.href = window.URL.createObjectURL(blob);
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    window.URL.revokeObjectURL(a.href);
-
-    // uploadSchedPythonMutate(newSchedules);
-
-    // uploadScheduleMutate(newSchedules);
+    conflictCheck(newSchedules);
+    // downloadAsJson(newSchedules);
   };
 
   const handleResetTable = () => {
@@ -689,6 +684,12 @@ export default function SchedulerApp() {
               selectedCourse={selectedCourse}
               onRemoveSchedule={handleRemoveSchedule}
             >
+              <button
+                onClick={() => setShowConflictState(true)}
+                className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200`}
+              >
+                <span>{"Test Message Conflict Dialog"}</span>
+              </button>
               {/* Auto Allocate */}
               <button
                 onClick={handleAutoAllocate}
@@ -756,6 +757,31 @@ export default function SchedulerApp() {
           trigger={toastTrigger}
         />
       </main>
+      {showConflictState && (
+        <DisplayConflict
+          conflictDetails={conflictDetails}
+          onCancel={() => setShowConflictState(false)}
+          attemptResolution={() => {
+            setShowConflictState(false);
+            handleResetTable();
+            handleAutoAllocate();
+            // uploadScheduleMutate(newSchedules);
+          }}
+        />
+      )}
     </div>
   );
 }
+
+const downloadAsJson = (newSchedules) => {
+  const jsonString = JSON.stringify(newSchedules, null, 2);
+  const blob = new Blob([jsonString], { type: "application/json" });
+  const filename = "myJson";
+  const a = document.createElement("a");
+  a.download = filename;
+  a.href = window.URL.createObjectURL(blob);
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(a.href);
+};

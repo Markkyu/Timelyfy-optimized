@@ -45,6 +45,7 @@ export const getRecentCourses = async () => {
 export const getCourseById = async (courseId) => {
   try {
     const { data } = await axios.get(`${API_URL}/api/courses/${courseId}`);
+
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

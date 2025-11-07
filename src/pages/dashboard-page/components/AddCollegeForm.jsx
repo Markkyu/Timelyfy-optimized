@@ -1,4 +1,4 @@
-import { useState, forwardRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Slide,
   Typography,
   Grow,
   Alert,
@@ -19,16 +18,10 @@ import { createCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ToastNotification from "@components/ToastNotification";
 
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
-
 export default function AddCollegeForm({ open, onClose }) {
   const [collegeName, setCollegeName] = useState("");
   const [collegeCode, setCollegeCode] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
-  // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [toastMessage, setToastMessage] = useState("");
@@ -36,6 +29,14 @@ export default function AddCollegeForm({ open, onClose }) {
   const [toastType, setToastType] = useState("error");
 
   const queryClient = useQueryClient();
+
+  const firstInputRef = useRef(null);
+
+  useEffect(() => {
+    if (open && firstInputRef.current) {
+      firstInputRef.current.focus();
+    }
+  }, [open]);
 
   // Mutation function
   const { mutate, isPending: loading } = useMutation({
@@ -88,6 +89,7 @@ export default function AddCollegeForm({ open, onClose }) {
           onClose();
           setCollegeName("");
           setCollegeMajor("");
+          setCollegeCode("");
           setError(null);
         }}
         fullWidth
@@ -131,7 +133,9 @@ export default function AddCollegeForm({ open, onClose }) {
               margin="normal"
               required
               autoComplete="off"
-              placeholder="ex. BSEd"
+              placeholder="BSEd-Math"
+              helperText="Must be unique*"
+              inputRef={firstInputRef}
             />
 
             <TextField

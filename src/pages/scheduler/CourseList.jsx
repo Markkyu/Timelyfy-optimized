@@ -249,7 +249,7 @@ const CourseCard = ({ course, isSelected, onClick }) => {
           {nRNTA ? (
             <div className="flex items-start gap-2 bg-red-100 border border-red-300 rounded-lg p-2">
               <span className="text-red-700 font-semibold text-xs leading-tight">
-                ⚠️ Missing: Either a teacher or room must be assigned
+                ⚠️ Either a teacher or room must be assigned
               </span>
             </div>
           ) : (

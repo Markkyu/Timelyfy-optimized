@@ -61,6 +61,8 @@ export default function EditCourseForm({
 
     const newCourseId = formatCode(collegeName, collegeMajor, courseCode);
 
+    console.log("Course: ", course);
+
     updateCourseMutation({
       courseId: course.course_surrogate_id,
       updates: {

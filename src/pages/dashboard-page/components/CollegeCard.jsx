@@ -145,19 +145,17 @@ export default function CollegeCard({ college }) {
           </h3>
 
           {/* Department */}
-          {college?.college_major && (
-            <Chip
-              label={college?.college_major}
-              size="small"
-              sx={{
-                bgcolor: "#f3f4f6",
-                color: "#374151",
-                fontWeight: 600,
-                fontSize: "0.75rem",
-                mb: 3,
-              }}
-            />
-          )}
+          <Chip
+            label={college?.college_major}
+            size="small"
+            sx={{
+              bgcolor: `${college?.college_major ? "#f3f4f6" : "#fff"} `,
+              color: "#374151",
+              fontWeight: 600,
+              fontSize: "0.75rem",
+              mb: 3,
+            }}
+          />
 
           {/* Stats */}
           <div className="space-y-3 mb-4">

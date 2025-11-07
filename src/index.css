@@ -9,6 +9,8 @@
     --font-custom-font: "SUSE Mono", sans-serif;
 }
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Custom Animations */
 @keyframes shimmer {
   0% {

@@ -83,7 +83,7 @@ export default function PhaseActionButtons({
         open: true,
         type: "completion-reset",
         message:
-          "All phases completed! This will perform a COMPLETE SCHEDULE WIPEOUT and reset the entire system to Year 1 - Semester 1.",
+          "All phases completed! This will perform a COMPLETE TIMETABLE RESET and reset the phase to Year 1 - Semester 1.",
         action: "next",
       });
     } else if (isLastPhaseInSemester && !isLastSemester) {
@@ -93,8 +93,8 @@ export default function PhaseActionButtons({
       if (isSemesterTransition(currentSem, nextSem)) {
         const message =
           currentSem === 1
-            ? "All departments completed Semester 1. This will perform a COMPLETE SCHEDULE WIPEOUT and reset all system data before proceeding to Semester 2."
-            : "All departments completed Semester 2. This will perform a COMPLETE SCHEDULE WIPEOUT and reset all system data before proceeding to next School Year.";
+            ? "All departments completed Semester 1. This will perform a COMPLETE TIMETABLE RESET and reset all system data before proceeding to Semester 2."
+            : "All departments completed Semester 2. This will perform a COMPLETE TIMETABLE RESET and reset all system data before proceeding to next School Year.";
 
         setConfirmDialog({
           open: true,
@@ -280,9 +280,9 @@ export default function PhaseActionButtons({
             <AlertTriangle className="text-orange-600" size={28} />
           )}
           {confirmDialog.type === "completion-reset"
-            ? "CRITICAL: System Completion Reset"
+            ? "WARNING: System Completion Reset"
             : confirmDialog.type === "semester-reset"
-              ? "CRITICAL: Semester Transition"
+              ? "WARNING: Semester Transition"
               : confirmDialog.action === "back"
                 ? "Confirm Go Back"
                 : "Confirm Phase Transition"}
@@ -309,12 +309,12 @@ export default function PhaseActionButtons({
               <div className="p-4 bg-red-50 rounded-lg border-2 border-red-500">
                 <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2">
                   <AlertTriangle size={20} />
-                  DANGER: Complete System Reset
+                  Complete System Reset
                 </h4>
                 <ul className="list-disc list-inside space-y-1 text-sm text-red-900">
-                  <li>ALL schedule data will be permanently deleted</li>
-                  <li>System will reset to Year 1 - Semester 1</li>
-                  <li>ALL department schedules will be reset</li>
+                  <li>ALL scheduled data will be deleted</li>
+                  <li>Phase will reset to Year 1 - Semester 1</li>
+                  <li>Assigned teachers and room will remain the same</li>
                   <li>Master Scheduler phase will be activated</li>
                   <li>This action CANNOT be undone</li>
                 </ul>
@@ -374,12 +374,12 @@ export default function PhaseActionButtons({
               <div className="p-4 bg-red-50 rounded-lg border-2 border-red-500">
                 <h4 className="font-bold text-red-800 mb-2 flex items-center gap-2">
                   <AlertTriangle size={20} />
-                  DANGER: Schedule Wipeout
+                  Schedule Timetable Reset. Proceed with caution!
                 </h4>
                 <ul className="list-disc list-inside space-y-1 text-sm text-red-900">
-                  <li>ALL schedule data will be permanently deleted</li>
-                  <li>ALL department schedules will be reset</li>
-                  <li>ALL course assignments will be cleared</li>
+                  <li>Only the timetable will be wiped out</li>
+                  <li>Subject Courses will remain the same</li>
+                  <li>ALL course assignments will remain assigned</li>
                   <li>This action CANNOT be undone</li>
                 </ul>
               </div>
@@ -404,6 +404,7 @@ export default function PhaseActionButtons({
                   variant="outlined"
                   disabled={isResetting}
                   autoFocus
+                  autoComplete="off"
                   onKeyPress={(e) => {
                     if (
                       e.key === "Enter" &&
@@ -491,7 +492,7 @@ export default function PhaseActionButtons({
               : confirmDialog.type === "completion-reset"
                 ? "Complete & Reset System"
                 : confirmDialog.type === "semester-reset"
-                  ? "Proceed with Wipeout"
+                  ? "Proceed with Timetable Reset"
                   : confirmDialog.action === "back"
                     ? "Go Back"
                     : "Confirm"}

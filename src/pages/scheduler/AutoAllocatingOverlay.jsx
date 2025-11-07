@@ -52,7 +52,7 @@ export default function AutoAllocatingOverlay({
               <div className="size-3 rounded-full bg-green-500" />
             </div>
             <span className="text-gray-400 text-sm ml-4 font-mono">
-              Timelyfy schedule-allocator v1.0
+              Timelyfy schedule-allocator v4.0
             </span>
           </div>
 

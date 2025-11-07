@@ -50,7 +50,7 @@ export default function RemoveLockSchedules({
 
   const uniqueSchedules = getUniqueSchedules(lockedSchedules);
 
-  console.log(uniqueSchedules);
+  // console.log(uniqueSchedules);
 
   const handleDeleteClick = (courseName) => {
     setSelectedSchedule(courseName);
@@ -185,7 +185,7 @@ export default function RemoveLockSchedules({
 // Schedule Card Component
 const ScheduleCard = ({ course, onDelete, isLoading }) => {
   return (
-    <div className="group relative bg-gradient-to-r from-gray-50 to-gray-100 hover:from-red-50 hover:to-red-100 rounded-xl p-4 border border-gray-200 hover:border-red-300 transition-all duration-300 hover:shadow-md">
+    <div className="group relative bg-gradient-to-r from-gray-200 via-gray-100 to-gray-200 hover:from-red-50 hover:to-red-100 rounded-xl p-4 border border-gray-200 hover:border-red-300 transition-all duration-300 hover:shadow-md">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           {/* Course Icon */}
@@ -373,7 +373,7 @@ const ConfirmationModal = ({
   isLoading,
 }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-xs z-50 p-4">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in">
         {/* Modal Header */}
         <div className="bg-gradient-to-r from-red-600 to-red-700 px-6 py-5">
