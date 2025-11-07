@@ -100,19 +100,19 @@ export default function SemesterSection({
   const [addOpen, setAddOpen] = useState(false);
 
   // !!! THIS IS A TEST
-  const [currentCollegeCode, setCurrentCollegeCode] = useState(0);
+  // const [currentCollegeCode, setCurrentCollegeCode] = useState(0);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const data = await getCollegeById(college_id);
+  // useEffect(() => {
+  //   const loadData = async () => {
+  //     const data = await getCollegeById(college_id);
 
-      const collegecode = data.college_code;
+  //     const collegecode = data.college_code;
 
-      setCurrentCollegeCode(data.college_code);
-    };
+  //     setCurrentCollegeCode(data.college_code);
+  //   };
 
-    loadData();
-  }, []);
+  //   loadData();
+  // }, []);
   /// REMOVE THIS SOON - TEMPORARY SCHEDULE REDIRECT
 
   const navigate = useNavigate();

@@ -15,12 +15,15 @@ export default function Login() {
         <div className="absolute -bottom-32 -right-32 w-[28rem] h-[28rem] bg-red-800 opacity-40 rounded-full blur-3xl" />
 
         {/* Wrapper */}
-        <div className="max-w-6xl w-full grid lg:grid-cols-2 grid-cols-1 items-center gap-12 px-6 sm:px-10 lg:px-16 ">
+        <div className="max-w-6xl w-full grid lg:grid-cols-2 grid-cols-1 items-center gap-12 px-6 sm:px-10 lg:px-16">
           {/* Left: Text */}
           <div className="space-y-6 text-center lg:text-left">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-gray-800 leading-tight tracking-tight">
               Automate Scheduling with{" "}
-              <span className="text-red-800">Timelyfy</span> for MSEUF-CI
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800">
+                Timelyfy
+              </span>{" "}
+              <span className="text-nowrap">MSEUF-CI</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-gray-700 max-w-lg mx-auto lg:mx-0">

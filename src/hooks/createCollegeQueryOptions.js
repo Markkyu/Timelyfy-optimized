@@ -3,7 +3,7 @@ import { getCollegeById, getColleges } from "@api/collegesAPI";
 
 export default function createCollegeQueryOptions() {
   return queryOptions({
-    queryKey: ["college"],
+    queryKey: ["colleges"],
     queryFn: () => getColleges(),
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 60,
@@ -11,11 +11,12 @@ export default function createCollegeQueryOptions() {
 }
 
 export function useCollegeQueryById(collegeId) {
-  return useQuery({
+  return queryOptions({
     queryKey: ["college", collegeId],
     queryFn: () => getCollegeById(collegeId),
+    enabled: !!collegeId,
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 60,
-    retry: 2,
+    retry: 0,
   });
 }

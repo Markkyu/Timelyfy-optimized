@@ -13,15 +13,26 @@ import NavigationCards from "./college-page-components/NavigationCards";
 import CollegeStatsGrid from "./college-page-components/CollegeStatsGrid";
 import CollegeInfoPanel from "./college-page-components/CollegeInfoPanel";
 import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
+import useAuthStore from "@stores/useAuthStore";
+import { useQuery } from "@tanstack/react-query";
 
 export default function CollegePage() {
   const { college_id } = useParams();
   const navigate = useNavigate();
 
+  const { user } = useAuthStore();
+  const currUserRole = user.role;
+
   console.log(college_id);
 
   // const { data: college, isLoading, error } = useCollegeById(college_id);
-  const { data: college, isLoading, error } = useCollegeQueryById(college_id);
+  const {
+    data: college,
+    isLoading,
+    error,
+  } = useQuery(useCollegeQueryById(college_id));
+
+  console.log(college);
 
   // Loading state
   if (isLoading) {
@@ -68,7 +79,11 @@ export default function CollegePage() {
         <CollegeDetailsHeader college={college} />
 
         {/* Navigation Cards - Main Actions */}
-        <NavigationCards college={college} collegeId={college_id} />
+        <NavigationCards
+          college={college}
+          collegeId={college_id}
+          currentUserRole={currUserRole}
+        />
       </Container>
     </div>
   );

@@ -114,21 +114,23 @@ export default function EditCourseForm({
 
           <form onSubmit={handleEdit}>
             <TextField
-              label="Course Name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
-              fullWidth
-              margin="normal"
-              required
-            />
-
-            <TextField
               label="Course Code"
               value={courseCode}
               onChange={(e) => setCourseCode(e.target.value)}
               fullWidth
               margin="normal"
               required
+              disabled
+            />
+
+            <TextField
+              label="Course Name"
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
+              fullWidth
+              margin="normal"
+              required
+              disabled
             />
 
             <TextField

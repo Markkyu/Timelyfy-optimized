@@ -7,7 +7,6 @@ import {
   IconButton,
   Checkbox,
   FormControlLabel,
-  Slide,
   Typography,
   Zoom,
   Grow,
@@ -19,12 +18,6 @@ import { useNavigate } from "react-router-dom";
 import useAuthStore from "@stores/useAuthStore";
 
 // import Zoom from "@mui/material/Zoom";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  // return <Slide direction="up" ref={ref} {...props} />;
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function LoginForm({ showLogin, setShowLogin }) {
   const [username, setUsername] = useState("");

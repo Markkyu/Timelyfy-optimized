@@ -20,10 +20,13 @@ export default function ApprovePasswordRequest({
     mutationFn: () => approvePasswordRequest(userId),
 
     onSuccess: () => {
+      refreshUser(); // should automatically refresh the user
+
       setToastMessage("Password request approved");
       setToastType("success");
       setToastTrigger((prev) => prev + 1);
-      refreshUser();
+
+      setCanApprove(false);
     },
 
     onError: (err) => {
@@ -39,7 +42,9 @@ export default function ApprovePasswordRequest({
     no: "No password change request at this time.",
   };
 
-  const canApprove = passwordRequestStatus === "pending";
+  const canApproveToState = passwordRequestStatus === "pending";
+
+  const [canApprove, setCanApprove] = useState(canApproveToState);
 
   return (
     <Card className="shadow-md mt-6 border-t border-gray-300">

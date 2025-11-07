@@ -159,6 +159,7 @@ export default function EditCollegeForm({ open, onClose, college }) {
               margin="normal"
               required
               autoComplete="off"
+              disabled
             />
 
             <TextField

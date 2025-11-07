@@ -1,10 +1,16 @@
-import { Button, useScrollTrigger } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Typography,
+} from "@mui/material";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 import KeyboardDoubleArrowDownIcon from "@mui/icons-material/KeyboardDoubleArrowDown";
 import RenderWhenRole from "@components/RenderWhenRole";
 import { useUpdateUserRole } from "@hooks/useUpdateUserRole";
 import useAuthStore from "@stores/useAuthStore";
-import ConfirmDialog from "@components/ConfirmDialog";
 import { useState } from "react";
 
 const ROLE_ORDER = ["user", "super_user", "master_scheduler", "admin"];
@@ -17,9 +23,7 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
 
   const { mutate: updateRole, isPending: isUpdatingRole } = useUpdateUserRole();
   const currentIndex = ROLE_ORDER.indexOf(user?.role);
-
   const { user: getUserStore } = useAuthStore();
-
   const { role } = getUserStore;
 
   const handlePromote = () => {
@@ -31,24 +35,11 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
       return;
     }
 
-    // if (confirm(`Promote ${user.username} to ${newRole}?`)) {
-    //   updateRole({ user_id: user.id, newRole });
-    // }
-
     setTitle(`Promote ${user.username}?`);
-    setDesc(`Promote ${user.username} to ${newRole}?`);
+    setDesc(`Are you sure you want to promote ${user.username} to ${newRole}?`);
     setTargetRole(newRole);
     setOpen(true);
   };
-
-  // const handlePromote = () => {
-  //   if (currentIndex === ROLE_ORDER.length - 1) return;
-  //   const newRole = ROLE_ORDER[currentIndex + 1];
-
-  //   if (confirm(`Promote ${user.username} to ${newRole}?`)) {
-  //     updateRole({ user_id: user.id, newRole });
-  //   }
-  // };
 
   const handleDemote = () => {
     if (currentIndex === 0) return;
@@ -59,19 +50,14 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
       return;
     }
 
-    // if (confirm(`Demote ${user.username} to ${newRole}?`)) {
-    //   updateRole({ user_id: user.id, newRole });
-    // }
-
     setTitle(`Demote ${user.username}?`);
-    setDesc(`Demote ${user.username} to ${newRole}?`);
+    setDesc(`Are you sure you want to demote ${user.username} to ${newRole}?`);
     setTargetRole(newRole);
     setOpen(true);
   };
 
   const handleConfirm = () => {
     if (!targetRole) return;
-
     updateRole({ user_id: user.id, newRole: targetRole });
     setOpen(false);
   };
@@ -85,7 +71,6 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
             currentIndex === ROLE_ORDER.length - 1 ||
             isUpdatingRole ||
             isDeletingUser ||
-            // Only admin can promote someone to admin
             (ROLE_ORDER[currentIndex + 1] === "admin" && role !== "admin")
           }
           variant="contained"
@@ -114,13 +99,26 @@ export default function RoleManagementActions({ user, isDeletingUser }) {
         </Button>
       </RenderWhenRole>
 
-      <ConfirmDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        title={title}
-        desc={desc}
-        handleConfirm={handleConfirm}
-      />
+      {/* Custom confirmation dialog */}
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>{title}</DialogTitle>
+        <DialogContent>
+          <Typography>{desc}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            color="primary"
+            variant="contained"
+            disabled={isUpdatingRole}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }

@@ -15,6 +15,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 
+import FormatListBulletedAddIcon from "@mui/icons-material/FormatListBulletedAdd";
 import CollegeCard from "./components/CollegeCard";
 import CollegeListView from "./components/CollegeListView";
 import EmptyContent from "@components/EmptyContent";
@@ -27,6 +28,7 @@ import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
 
 import { PHASES, STEPS } from "@pages/phase-page/components/phaseConstants";
 import StatCard from "./StatCard";
+import useAuthStore from "@stores/useAuthStore";
 
 export default function GlobalDashboard({ role }) {
   const [openCollege, setOpenCollege] = useState(false);
@@ -43,6 +45,8 @@ export default function GlobalDashboard({ role }) {
 
   const listType = searchParams.get("view-mode");
   const [mode, setMode] = useState(listType);
+
+  const { user } = useAuthStore();
 
   // Sync page with URL
   useEffect(() => {
@@ -140,9 +144,9 @@ export default function GlobalDashboard({ role }) {
   // Empty state
   if (colleges?.length === 0)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-16">
+      <div className="min-h-screen flex p-4 sm:p-6 lg:p-8">
+        <div className="max-w-7xl m-auto bg-gray-200 rounded-2xl shadow-sm border border-gray-400">
+          <div className="rounded-2xl p-16">
             <div className="flex flex-col items-center justify-center text-center">
               <div className="bg-gray-100 rounded-full p-8 mb-6">
                 <School size={64} className="text-gray-400" />
@@ -150,11 +154,28 @@ export default function GlobalDashboard({ role }) {
               <h3 className="text-3xl font-bold text-gray-900 mb-3">
                 No Academic Programs Yet
               </h3>
-              <p className="text-gray-600 max-w-md mb-8">
-                Get started by requesting the admin or master scheduler to
-                assign you a college program. You can manage courses, teachers,
-                and schedules once a program is assigned to you.
-              </p>
+              <RenderWhenRole role={["user"]}>
+                <>
+                  <p className="text-gray-600 max-w-md mb-8">
+                    To get started, please contact the admin or master scheduler
+                    to have a college program assigned to you. Once assigned,
+                    you will be able to manage courses, teachers, and schedules.
+                  </p>
+                  <p className="mt-2 underline text-gray-500">
+                    If you think you have been promoted. You can try logging in
+                    again.
+                  </p>
+                </>
+              </RenderWhenRole>
+
+              <RenderWhenRole role={["super_user"]}>
+                <p className="text-gray-600 max-w-md mb-8">
+                  There are no college programs yet. Please coordinate with the
+                  master_scheduler or admin to set up the academic programs for
+                  your institution.
+                </p>
+              </RenderWhenRole>
+
               <RenderWhenRole role={["admin", "master_scheduler"]}>
                 <Button
                   variant="contained"
@@ -189,7 +210,7 @@ export default function GlobalDashboard({ role }) {
         {/* Header Section */}
         <header className="space-y-4">
           {/* Title and Action Button */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex  justify-between items-start sm:items-center gap-4">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Academic Programs
@@ -203,7 +224,7 @@ export default function GlobalDashboard({ role }) {
               <Button
                 variant="contained"
                 onClick={() => setOpenCollege(true)}
-                startIcon={<Plus size={20} />}
+                startIcon={<FormatListBulletedAddIcon size={20} />}
                 sx={{
                   bgcolor: "maroon",
                   fontWeight: 600,
@@ -213,7 +234,7 @@ export default function GlobalDashboard({ role }) {
                   textTransform: "none",
                 }}
               >
-                Add Program
+                Add College Program
               </Button>
             </RenderWhenRole>
           </div>
@@ -302,7 +323,6 @@ export default function GlobalDashboard({ role }) {
           </div>
         </header>
 
-        {/* Main Content */}
         <main className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
           <div className="space-y-6">
             {/* Results Info */}

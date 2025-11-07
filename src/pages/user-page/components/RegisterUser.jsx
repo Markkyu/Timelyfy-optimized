@@ -34,7 +34,7 @@ export default function RegisterUser({ open, onClose }) {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["username"],
+        queryKey: ["users"],
       });
       setUsername("");
       setPassword("");
@@ -124,6 +124,7 @@ export default function RegisterUser({ open, onClose }) {
 
             <TextField
               label="Password"
+              type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               fullWidth

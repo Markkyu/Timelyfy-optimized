@@ -25,6 +25,8 @@ export default function CourseList() {
   const navigate = useNavigate();
   const { college_id } = useParams();
 
+  console.log(college_id);
+
   // custom Hook fetch + cache
   // const {
   //   data: courses,
@@ -32,7 +34,7 @@ export default function CourseList() {
   //   error: courses_error,
   // } = useCourses(college_id);
 
-  const { data: collegeId } = useCollegeQueryById(college_id);
+  const { data: collegeId } = useQuery(useCollegeQueryById(college_id));
   const { data: collegeList } = useQuery(createCollegeQueryOptions());
 
   // const { college_name: collegeName, college_major: collegeMajor } = collegeId;

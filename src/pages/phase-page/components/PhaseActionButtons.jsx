@@ -280,9 +280,9 @@ export default function PhaseActionButtons({
             <AlertTriangle className="text-orange-600" size={28} />
           )}
           {confirmDialog.type === "completion-reset"
-            ? "⚠️ CRITICAL: System Completion Reset"
+            ? "CRITICAL: System Completion Reset"
             : confirmDialog.type === "semester-reset"
-              ? "⚠️ CRITICAL: Semester Transition"
+              ? "CRITICAL: Semester Transition"
               : confirmDialog.action === "back"
                 ? "Confirm Go Back"
                 : "Confirm Phase Transition"}
@@ -315,7 +315,6 @@ export default function PhaseActionButtons({
                   <li>ALL schedule data will be permanently deleted</li>
                   <li>System will reset to Year 1 - Semester 1</li>
                   <li>ALL department schedules will be reset</li>
-                  <li>ALL course assignments will be cleared</li>
                   <li>Master Scheduler phase will be activated</li>
                   <li>This action CANNOT be undone</li>
                 </ul>
@@ -341,6 +340,7 @@ export default function PhaseActionButtons({
                   variant="outlined"
                   disabled={isResetting}
                   autoFocus
+                  autoComplete="off"
                   onKeyPress={(e) => {
                     if (
                       e.key === "Enter" &&

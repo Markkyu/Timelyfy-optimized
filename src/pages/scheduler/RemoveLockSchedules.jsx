@@ -50,6 +50,8 @@ export default function RemoveLockSchedules({
 
   const uniqueSchedules = getUniqueSchedules(lockedSchedules);
 
+  console.log(uniqueSchedules);
+
   const handleDeleteClick = (courseName) => {
     setSelectedSchedule(courseName);
     setConfirmOpen(true);

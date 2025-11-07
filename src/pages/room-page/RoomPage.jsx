@@ -1,7 +1,7 @@
 // RoomPage.jsx
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pagination, Button } from "@mui/material";
+import { Pagination, Button, Alert } from "@mui/material";
 import {
   Grid,
   List,
@@ -96,7 +96,7 @@ export default function RoomPage() {
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header Section */}
         <header className="space-y-4">
@@ -141,9 +141,13 @@ export default function RoomPage() {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   Room Management
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 mb-2">
                   View and manage all rooms and their schedules
                 </p>
+                <Alert severity="info">
+                  If you believe that your room is missing. Search first and add
+                  them with caution.
+                </Alert>
               </div>
 
               {/* Stats Cards */}

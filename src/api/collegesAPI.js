@@ -23,7 +23,7 @@ export const getColleges = async () => {
 
 export const getCollegeById = async (collegeId) => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/colleges/${collegeId}`);
+    const { data } = await API.get(`${API_URL}/api/colleges/${collegeId}`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -32,7 +32,7 @@ export const getCollegeById = async (collegeId) => {
 
 export const createCollege = async (collegeData) => {
   try {
-    const { data } = await axios.post(`${API_URL}/api/colleges`, collegeData);
+    const { data } = await API.post(`${API_URL}/api/colleges`, collegeData);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);

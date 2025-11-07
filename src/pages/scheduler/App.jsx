@@ -33,12 +33,14 @@ import createCollegeQueryOptions, {
 } from "@hooks/createCollegeQueryOptions";
 import classGroupSchedQuery from "./api/classGroupSchedQuery";
 import uploadSchedulePython from "./api/uploadSchedulePython";
+import useAuthStore from "@stores/useAuthStore";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
 export default function SchedulerApp() {
   const { college, class_group } = useParams();
   const [searchParams] = useSearchParams();
+  const { user } = useAuthStore();
 
   const year = searchParams.get("year");
   const sem = searchParams.get("sem");
@@ -295,7 +297,8 @@ export default function SchedulerApp() {
         (s) =>
           s.hours_week > 0 &&
           s.is_plotted !== 1 &&
-          (Number(s.assigned_teacher) > 0 || Number(s.assigned_room) > 0)
+          (Number(s.assigned_teacher) > 0 || Number(s.assigned_room) > 0) &&
+          s.created_by == user.id
       )
       .map((s) => ({
         course_ID: s.course_id,
@@ -461,7 +464,18 @@ export default function SchedulerApp() {
   const uploadScheduleToDatabase = async () => {
     console.log(newSchedules);
 
-    lockSchedule(newSchedules);
+    // lockSchedule(newSchedules);
+
+    const jsonString = JSON.stringify(newSchedules, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const filename = "myJson";
+    const a = document.createElement("a");
+    a.download = filename;
+    a.href = window.URL.createObjectURL(blob);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(a.href);
 
     // uploadSchedPythonMutate(newSchedules);
 
@@ -537,6 +551,7 @@ export default function SchedulerApp() {
     );
   };
 
+  // Tracks incomplete hours if changed
   const getLockButtonTooltip = () => {
     if (newSchedules.length === 0) {
       return "No schedules to lock";
@@ -559,7 +574,6 @@ export default function SchedulerApp() {
         .join(", ");
       return `Complete these courses first: ${names}`;
     }
-
     return "Lock schedules to database";
   };
 
@@ -570,7 +584,7 @@ export default function SchedulerApp() {
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
-          onClick={() => navigate(`/course-list/${college_group}`)}
+          onClick={() => navigate(`/college/${college_group}`)}
           sx={{
             borderRadius: "10px",
             color: "#800000",
@@ -609,25 +623,34 @@ export default function SchedulerApp() {
             htmlFor="course-colleges"
             className="text-gray-600 mb-1 font-medium"
           >
-            Jump to Course
+            Jump to College Program
           </label>
           <select
             id="course-colleges"
             className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
             defaultValue=""
             onChange={(e) => {
-              if (e.target.value)
-                navigate(`/schedule/${e.target.value}?year=${year}&sem=${sem}`);
+              const selectedValue = e.target.value;
+              const values = selectedValue.split(",");
+              if (selectedValue)
+                navigate(
+                  `/${values[1]}${year}/schedule/${values[0]}?year=${year}&sem=${sem}` //if it works it works
+                );
             }}
           >
             <option value="" disabled>
               Select a College
             </option>
-            {collegeList?.map((c) => (
-              <option key={c.college_id} value={c.college_id}>
-                {c.college_name} {c.college_major}
-              </option>
-            ))}
+            {collegeList?.map((c) => {
+              return (
+                <option
+                  key={c.college_id}
+                  value={`${c.college_id},${c.college_code}`}
+                >
+                  {c.college_name} {c.college_major}
+                </option>
+              );
+            })}
           </select>
         </div>
       </header>

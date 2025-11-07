@@ -1,7 +1,10 @@
+// React imports and router
 import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { Pagination, Button } from "@mui/material";
+// Icons and components
+import { Pagination, Button, Alert } from "@mui/material";
 import { Search, ArrowLeft } from "lucide-react";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import PersonIcon from "@mui/icons-material/Person";
 import useTeachers from "@hooks/useTeachers";
 import TeacherCard from "./components/TeacherCard";
@@ -9,10 +12,10 @@ import LoadingContent from "@components/LoadingContent";
 import ErrorContent from "@components/ErrorContent";
 import RenderWhenRole from "@components/RenderWhenRole";
 import AddTeacherForm from "./components/AddTeacherForm";
-import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
-import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
-import { useQuery } from "@tanstack/react-query";
 import StatCard from "@pages/dashboard-page/StatCard";
+// Hooks and queries
+import { useQuery } from "@tanstack/react-query";
+import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 
 export default function AllTeachersPage() {
   const [open, setOpen] = useState(false);
@@ -128,9 +131,13 @@ export default function AllTeachersPage() {
               <h1 className="text-3xl font-bold text-gray-900 mb-2">
                 Teaching Staff
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 mb-2">
                 Manage and monitor all teachers in the system
               </p>
+              <Alert severity="info">
+                If you believe that your teacher is missing. Search first and
+                add them with caution.
+              </Alert>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 min-w-[120px]">

@@ -84,7 +84,7 @@ export default function AddCourseForm({
       course_name: courseName,
       hours_week: hoursWeek,
       course_year: year,
-      course_college: college_id,
+      course_college: Number(college_id),
       semester: sem,
       created_by: user.id,
       assigned_teacher: null,
@@ -150,18 +150,18 @@ export default function AddCourseForm({
           <form onSubmit={handleSubmit} style={{ flex: 1 }}>
             <TextField
               inputRef={firstInputRef}
-              label="Subject Name"
-              value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
+              label="Subject Code"
+              value={courseCode}
+              onChange={(e) => setCourseCode(e.target.value)}
               fullWidth
               margin="normal"
               required
             />
 
             <TextField
-              label="Subject Code"
-              value={courseCode}
-              onChange={(e) => setCourseCode(e.target.value)}
+              label="Subject Name"
+              value={courseName}
+              onChange={(e) => setCourseName(e.target.value)}
               fullWidth
               margin="normal"
               required

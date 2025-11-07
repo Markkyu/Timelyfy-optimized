@@ -30,6 +30,10 @@ export default function ChangePasswordCard({ changePasswordStatus, userId }) {
       setToastMessage("Password request successful");
       setToastType("success");
       setToastTrigger((prev) => prev + 1);
+
+      setNewPassword("");
+      setConfirmPassword("");
+
       refreshUser();
     },
 
