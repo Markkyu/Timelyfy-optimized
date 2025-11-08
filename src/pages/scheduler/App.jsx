@@ -37,6 +37,9 @@ import useAuthStore from "@stores/useAuthStore";
 import checkSchedulesJS from "./api/checkSchedulesJS";
 import DisplayConflict from "./displayConflict";
 import UploadConfirm from "./UploadConfirm";
+import ScheduleDetailsDialog from "./ScheduleDetailDialog";
+import RenderWhenPhase from "@components/RenderWhenPhase";
+import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -52,30 +55,18 @@ export default function SchedulerApp() {
   const college_year = year;
   const college_sem = sem;
 
+  console.log(class_group);
+
   const navigate = useNavigate();
 
-  // const [collegeCode, setCollegeCode] = useState(null);
-
-  // useEffect(() => {
-  //   const loadData = async () => {
-  //     try {
-  //       const data = await getCollegeById(college);
-  //       setCollegeCode(data);
-  //     } catch (err) {
-  //       console.error(err);
-  //     }
-  //   };
-
-  //   loadData();
-  // }, []);
-
-  // const { data: thisClassSchedule } = useQuery(
-  //   classGroupSchedQuery(class_code_year)
-  // );
-
-  // console.log(thisClassSchedule);
-
   const { data: collegeList } = useQuery(createCollegeQueryOptions());
+
+  const { data: phase, isPending: phaseLoading } = useQuery(
+    createPhaseQueryOptions()
+  );
+
+  const isCurrentPhase =
+    phase?.phase_year == college_year && phase?.phase_sem == college_sem;
 
   // to display the current college
   const currCollege = collegeList?.find((c) => c.college_id == college_group);
@@ -115,33 +106,11 @@ export default function SchedulerApp() {
     createCoursesQueryOptions(college_group, college_year, college_sem)
   );
 
-  // const {
-  //   data: getInitialSchedules,
-  //   isPending: schedules_loading,
-  //   error: schedules_error,
-  // } = useQuery(
-  //   createSchedulesQueryOptions(college_group, college_year, college_sem)
-  // );
-
   const {
     data: getInitialSchedules,
     isPending: schedules_loading,
     error: schedules_error,
   } = useQuery(classGroupSchedQuery(class_group));
-
-  // console.log(getInitialSchedules);
-
-  // const getInitialSchedules = [
-  //   {
-  //     slot_day: 0,
-  //     slot_time: 0,
-  //     slot_course: "TEST",
-  //   },
-  // ];
-  // const schedules_loading = false;
-  // const schedules_error = null;
-
-  // console.log(getInitialSchedules);
 
   const allSchedules = useMemo(() => {
     return [...existingSchedules, ...newSchedules];
@@ -315,7 +284,7 @@ export default function SchedulerApp() {
         class_ID: class_group,
       }));
 
-    // wait for how many ms
+    // wait for how many ms - simulate
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     try {
@@ -356,43 +325,43 @@ export default function SchedulerApp() {
       setAllocatingError(err.message);
       setAllocatingStatus("error");
     } finally {
-      await sleep(750);
+      await sleep(1000);
       setAllocating(false);
       setSelectedCourse(null);
     }
   };
 
   // Mutation of uploading schedules
-  const { mutate: uploadScheduleMutate, isPending: postScheduleLoading } =
-    useMutation({
-      mutationFn: (newSchedules) => uploadSchedule(newSchedules),
+  // const { mutate: uploadScheduleMutate, isPending: postScheduleLoading } =
+  //   useMutation({
+  //     mutationFn: (newSchedules) => uploadSchedule(newSchedules),
 
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: ["courses"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["schedules"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["course", college],
-        });
+  //     onSuccess: () => {
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["courses"],
+  //       });
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["schedules"],
+  //       });
+  //       queryClient.invalidateQueries({
+  //         queryKey: ["course", college],
+  //       });
 
-        setSelectedCourse(null);
-        setNewSchedules([]);
+  //       setSelectedCourse(null);
+  //       setNewSchedules([]);
 
-        setToastMessage("New schedules successfully saved!");
-        setToastType("success");
-        setToastTrigger((prev) => prev + 1);
-      },
+  //       setToastMessage("New schedules successfully saved!");
+  //       setToastType("success");
+  //       setToastTrigger((prev) => prev + 1);
+  //     },
 
-      onError: (error) => {
-        console.error(error?.message);
-        setToastMessage(`Error saving schedules: ${error?.message}`);
-        setToastType("error");
-        setToastTrigger((prev) => prev + 1);
-      },
-    });
+  //     onError: (error) => {
+  //       console.error(error?.message);
+  //       setToastMessage(`Error saving schedules: ${error?.message}`);
+  //       setToastType("error");
+  //       setToastTrigger((prev) => prev + 1);
+  //     },
+  //   });
 
   const { mutate: uploadScheduleMutation, isPending: pendingScheduleCheck } =
     useMutation({
@@ -402,12 +371,19 @@ export default function SchedulerApp() {
         queryClient.invalidateQueries({
           queryKey: ["courses"],
         });
+
         // queryClient.invalidateQueries({
         //   queryKey: ["schedules"],
         // });
-        queryClient.invalidateQueries({
-          queryKey: ["class-schedules"],
-        });
+        // queryClient.invalidateQueries({
+        //   queryKey: ["class-schedules"],
+        // });
+
+        // queryClient.setQueryData(["class-schedules"], () => {
+        //   return [...existingSchedules, ...newSchedules];
+        // });
+
+        existingSchedules.push(...newSchedules);
 
         console.log("Succesful Schedule!");
 
@@ -435,7 +411,7 @@ export default function SchedulerApp() {
         setConflictDetails(result?.conflicts);
         setShowConflictState(true);
       } else {
-        uploadScheduleMutation(newSchedules);
+        setUploadConfirmOpen(true);
       }
     } catch (error) {
       console.error("Unexpected error:", error.message);
@@ -445,6 +421,11 @@ export default function SchedulerApp() {
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
     conflictCheckB4Sched(newSchedules);
+  };
+
+  // upload for real
+  const uploadForReal = () => {
+    uploadScheduleMutation(newSchedules);
   };
 
   const handleResetTable = () => {
@@ -568,6 +549,10 @@ export default function SchedulerApp() {
             {currCollege?.college_name || "Loading..."}
           </h1>
 
+          <h1 className="text-xl font-semibold text-gray-600 tracking-tight">
+            {currCollege?.college_major}
+          </h1>
+
           <p className="text-gray-700 text-lg font-semibold mt-1">
             Schedule: Year {year} / Semester {sem}
           </p>
@@ -590,7 +575,7 @@ export default function SchedulerApp() {
               const values = selectedValue.split(",");
               if (selectedValue)
                 navigate(
-                  `/${values[1]}${year}/schedule/${values[0]}?year=${year}&sem=${sem}` //if it works it works
+                  `/${values[1]}${year}/schedule/${values[0]}?year=${year}&sem=${sem}` //if it works, it works
                 );
             }}
           >
@@ -612,6 +597,7 @@ export default function SchedulerApp() {
       </header>
       <main className="flex flex-col gap-4 p-6">
         <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col 2xl:flex-row gap-4">
+          {/* <RenderWhenPhase year={college_year} sem={college_sem}> */}
           <section className="flex-1">
             <CourseList
               courses={queueSubjects}
@@ -634,6 +620,7 @@ export default function SchedulerApp() {
               />
             </CourseList>
           </section>
+          {/* </RenderWhenPhase> */}
 
           <div className="flex-4">
             <ScheduleTable
@@ -690,6 +677,20 @@ export default function SchedulerApp() {
 
         <hr className="my-6 border-gray-400" />
 
+        {/* <RenderWhenPhase year={college_year} sem={college_sem}> */}
+
+        {phaseLoading ? null : isCurrentPhase ? (
+          <p className="text-center text-green-700 font-semibold">
+            You are currently in the active phase. You can remove locked
+            schedules below.
+          </p>
+        ) : (
+          <p className="text-center text-red-700 font-semibold">
+            You are not in the active phase. Removing locked schedules is
+            disabled.
+          </p>
+        )}
+
         <div className="w-full flex justify-center">
           <RemoveLockSchedules
             lockedSchedules={existingSchedules}
@@ -698,6 +699,7 @@ export default function SchedulerApp() {
             schedules_error={schedules_error}
           />
         </div>
+        {/* </RenderWhenPhase> */}
 
         <AutoAllocatingOverlay
           visible={allocating}
@@ -717,30 +719,18 @@ export default function SchedulerApp() {
         open={showConflictState}
         conflictDetails={conflictDetails}
         onCancel={() => setShowConflictState(false)}
-        attemptResolution={() => {
-          setShowConflictState(false);
-          handleResetTable();
-          handleAutoAllocate();
-        }}
       />
 
       <UploadConfirm
         open={uploadConfirmOpen}
         onClose={() => setUploadConfirmOpen(false)}
-        desc={"Schedules will be locked to database."}
+        desc={"Are you sure you want to lock these schedules to the database?"}
         title={"Lock Schedules"}
+        onConfirm={() => {
+          uploadForReal();
+          setUploadConfirmOpen(false);
+        }}
       />
     </div>
   );
 }
-
-// const jsonString = JSON.stringify(newSchedules, null, 2);
-// const blob = new Blob([jsonString], { type: "application/json" });
-// const filename = "myJson";
-// const a = document.createElement("a");
-// a.download = filename;
-// a.href = window.URL.createObjectURL(blob);
-// document.body.appendChild(a);
-// a.click();
-// document.body.removeChild(a);
-// window.URL.revokeObjectURL(a.href);

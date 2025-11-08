@@ -12,7 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 
-export default function DeleteConfirmDialog({
+export default function UploadConfirm({
   open,
   onClose,
   title,
@@ -49,7 +49,7 @@ export default function DeleteConfirmDialog({
           sx={{ fontWeight: 600 }}
           disableElevation
         >
-          Plot Now
+          Yes, Lock Now
         </Button>
       </DialogActions>
     </Dialog>

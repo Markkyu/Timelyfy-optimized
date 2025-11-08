@@ -14,9 +14,9 @@ export const getTeacherSchedules = async (teacherId) => {
     throw new Error(error.response?.data?.message || error.message);
   }
 };
-export const getRoomSchedules = async () => {
+export const getRoomSchedules = async (roomId) => {
   try {
-    const { data } = await API.get(`${API_URL}/api/schedules/room/:room_id`);
+    const { data } = await API.get(`${API_URL}/api/schedules/room/${roomId}`);
 
     return data;
   } catch (error) {

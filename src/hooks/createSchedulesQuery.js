@@ -6,8 +6,7 @@ export function teacherSchedulesQuery(teacherId) {
     queryKey: ["teacher-schedule", teacherId],
     queryFn: () => getTeacherSchedules(teacherId),
     enabled: !!teacherId,
-    staleTime: 1000 * 60 * 2, // 10 minutes
-    gcTime: 1000 * 60 * 5, // 20 minutes
+    gcTime: 1000 * 60 * 5, // 5 minutes
   });
 }
 
@@ -16,7 +15,6 @@ export function roomSchedulesQuery(roomId) {
     queryKey: ["room-schedule", roomId],
     queryFn: () => getRoomSchedules(roomId),
     enabled: !!roomId,
-    staleTime: 1000 * 60 * 2, // 10 minutes
-    gcTime: 1000 * 60 * 5, // 20 minutes
+    gcTime: 1000 * 60 * 5, // 5 minutes
   });
 }

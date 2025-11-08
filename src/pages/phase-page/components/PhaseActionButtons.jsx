@@ -18,6 +18,7 @@ import {
   CheckCircle,
 } from "lucide-react";
 import axios from "axios";
+import API from "@api/axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -65,7 +66,7 @@ export default function PhaseActionButtons({
     setResetError("");
 
     try {
-      await axios.delete(`${API_URL}/api/schedules/reset-all`);
+      await API.delete(`${API_URL}/api/schedules/reset-all`);
       // After successful reset, proceed with the phase transition
       handleConfirm(confirmDialog.action);
     } catch (error) {

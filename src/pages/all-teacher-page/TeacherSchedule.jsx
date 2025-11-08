@@ -1,45 +1,36 @@
-// react router
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-// Tanstack
-import { useTeacherQueryById } from "@hooks/createTeacherQueryOptions";
 import { useQuery } from "@tanstack/react-query";
-
-// Components
 import { Button } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
 import ScheduleTableRead from "@components/ScheduleTableRead";
+import ScheduleDetailsDialog from "@components/ScheduleDetailsDialog";
 import ErrorContent from "@components/ErrorContent";
+import LoadingContent from "@components/LoadingContent";
 import { teacherSchedulesQuery } from "@hooks/createSchedulesQuery";
+import { useTeacherQueryById } from "@hooks/createTeacherQueryOptions";
 
 export default function TeacherSchedule() {
   const { teacher_id } = useParams();
   const navigate = useNavigate();
 
-  const { data: teacher, isPending, error } = useTeacherQueryById(teacher_id);
-
+  const { data: teacher } = useTeacherQueryById(teacher_id);
   const {
     data: schedules_teacher,
-    isPending: schedules_loading,
-    error: schedules_error,
+    isPending,
+    error,
   } = useQuery(teacherSchedulesQuery(teacher_id));
+
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const handleCellClick = (course, dayIndex, timeIndex) => {
+    if (course) setSelectedCourse({ ...course, dayIndex, timeIndex });
+  };
 
   console.log(schedules_teacher);
 
-  const teacherFullName = teacher
-    ? `${teacher?.first_name} ${teacher?.last_name}`
-    : `loading`;
-
-  //   const schedules = [
-  //     {
-  //       slot_course: "CS",
-  //       slot_day: 0,
-  //       slot_time: 0,
-  //     },
-  //   ];
+  const handleCloseDialog = () => setSelectedCourse(null);
 
   if (error) {
-    const { message } = error;
     return (
       <div className="w-full h-full flex justify-center items-center">
         <ErrorContent errorTitle="Teacher Schedules Error" error={error} />
@@ -47,10 +38,21 @@ export default function TeacherSchedule() {
     );
   }
 
+  if (isPending) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <LoadingContent message="Loading Teacher Schedules..." />
+      </div>
+    );
+  }
+
+  const teacherFullName = teacher
+    ? `${teacher.first_name} ${teacher.last_name}`
+    : "Loading...";
+
   return (
     <main className="flex flex-col bg-gradient-to-br from-gray-200 to-gray-300 p-8 font-sans ">
-      <header className="flex items-center justify-evenly w-full mb-6 max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        {/* Back Button */}
+      <header className="flex items-center justify-evenly w-full mb-6 max-w-7xl mx-auto">
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
@@ -69,12 +71,21 @@ export default function TeacherSchedule() {
         <h1 className="text-4xl font-extrabold tracking-tight whitespace-nowrap">
           {teacherFullName}'s Schedule
         </h1>
-        <div className="w-[150px]">
-          {/* empty spacer same width as button */}
-        </div>
+
+        <div className="w-[150px]" />
       </header>
 
-      {schedules_teacher && <ScheduleTableRead schedules={schedules_teacher} />}
+      <ScheduleTableRead
+        schedules={schedules_teacher}
+        onCellClick={handleCellClick}
+      />
+
+      <ScheduleDetailsDialog
+        open={!!selectedCourse}
+        onClose={handleCloseDialog}
+        data={selectedCourse}
+        context="teacher"
+      />
     </main>
   );
 }

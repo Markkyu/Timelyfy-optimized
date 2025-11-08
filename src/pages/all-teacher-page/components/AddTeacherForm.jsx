@@ -6,7 +6,6 @@ import {
   TextField,
   Button,
   IconButton,
-  Slide,
   Typography,
   Grow,
 } from "@mui/material";
@@ -17,11 +16,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createTeacher } from "@api/teachersAPI";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 import ToastNotification from "@components/ToastNotification";
-
-// Slide transition for dialog
-const Transition = forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
 
 export default function TeacherForm({ open, onClose, department, teacher }) {
   const [firstName, setFirstName] = useState("");
@@ -71,35 +65,14 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
     };
 
     mutate(teacherData);
-
-    // try {
-    //   addTeacherMutation.mutate({
-    //     department: department,
-    //     teacher: {
-    //       first_name: firstName,
-    //       last_name: lastName,
-    //     },
-    //   });
-    // } catch (err) {
-    //   setError(err.message || "An error occurred");
-    // } finally {
-    //   setLoading(false);
-    //   setFirstName("");
-    //   setLastName("");
-    //   onClose();
-    // }
   };
 
-  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
 
   // Focus username when dialog opens
   useEffect(() => {
-    // if (open) {
-    if (firstNameRef.current) {
-      // setTimeout(() => {
-      firstNameRef.current.focus();
-      // }, 100);
-      // }
+    if (lastNameRef.current) {
+      lastNameRef.current.focus();
     }
   }, [open]);
 
@@ -144,19 +117,19 @@ export default function TeacherForm({ open, onClose, department, teacher }) {
         <DialogContent>
           <form onSubmit={handleSubmit}>
             <TextField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              inputRef={firstNameRef}
+              inputRef={lastNameRef}
+              label="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               fullWidth
               margin="normal"
               required
             />
 
             <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              label="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               fullWidth
               margin="normal"
               required

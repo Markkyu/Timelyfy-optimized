@@ -1,73 +1,57 @@
-// react router
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-
-// Tanstack
-import { useTeacherQueryById } from "@hooks/createTeacherQueryOptions";
 import { useQuery } from "@tanstack/react-query";
-
-// Components
 import { Button } from "@mui/material";
 import { ArrowLeft } from "lucide-react";
 import ScheduleTableRead from "@components/ScheduleTableRead";
+import ScheduleDetailsDialog from "@components/ScheduleDetailsDialog";
+import { roomSchedulesQuery } from "@hooks/createSchedulesQuery";
 import ErrorContent from "@components/ErrorContent";
-import {
-  roomSchedulesQuery,
-  teacherSchedulesQuery,
-} from "@hooks/createSchedulesQuery";
+import LoadingContent from "@components/LoadingContent";
 
 export default function RoomSchedule() {
   const { room_id } = useParams();
   const navigate = useNavigate();
-
-  console.log(room_id);
-
   const {
-    data: rooms,
-    isPending: loading,
+    data: roomSchedules,
+    isPending,
     error,
-  } = roomSchedulesQuery(room_id);
+  } = useQuery(roomSchedulesQuery(room_id));
 
-  console.log(rooms);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const handleCellClick = (course, dayIndex, timeIndex) => {
+    if (course) setSelectedCourse({ ...course, dayIndex, timeIndex });
+  };
 
-  //   const { data: teacher, isPending, error } = useTeacherQueryById(teacher_id);
+  const handleCloseDialog = () => setSelectedCourse(null);
 
-  //   const {
-  //     data: schedules_teacher,
-  //     isPending: schedules_loading,
-  //     error: schedules_error,
-  //   } = useQuery(teacherSchedulesQuery(teacher_id));
+  console.log(roomSchedules);
 
-  //   console.log(schedules_teacher);
+  if (error) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <ErrorContent errorTitle="Room Schedules Error" error={error} />
+      </div>
+    );
+  }
 
-  //   const teacherFullName = teacher
-  //     ? `${teacher?.first_name} ${teacher?.last_name}`
-  //     : `loading`;
+  if (isPending) {
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <LoadingContent message="Loading Room Schedules..." />
+      </div>
+    );
+  }
 
-  //   const schedules = [
-  //     {
-  //       slot_course: "CS",
-  //       slot_day: 0,
-  //       slot_time: 0,
-  //     },
-  //   ];
-
-  //   if (error) {
-  //     const { message } = error;
-  //     return (
-  //       <div className="w-full h-full flex justify-center items-center">
-  //         <ErrorContent errorTitle="Teacher Schedules Error" error={error} />
-  //       </div>
-  //     );
-  //   }
+  const roomName = roomSchedules?.[0]?.room_name || "Room";
 
   return (
-    <main className="flex flex-col bg-gradient-to-br from-gray-200 to-gray-300 p-8 font-sans ">
-      <header className="flex items-center justify-evenly w-full mb-6 max-w-7xl 2xl:max-w-[1600px] mx-auto">
-        {/* Back Button */}
+    <main className="flex flex-col bg-gradient-to-br from-gray-200 to-gray-300 p-8 font-sans">
+      <header className="flex items-center justify-evenly w-full mb-6 max-w-7xl mx-auto">
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
-          onClick={() => navigate("/teachers")}
+          onClick={() => navigate("/rooms")}
           sx={{
             borderRadius: "10px",
             color: "#800000",
@@ -76,18 +60,27 @@ export default function RoomSchedule() {
             borderWidth: 2,
           }}
         >
-          Back to Teachers
+          Back to Rooms
         </Button>
 
         <h1 className="text-4xl font-extrabold tracking-tight whitespace-nowrap">
-          Schedule
+          {roomName} Schedule
         </h1>
-        <div className="w-[150px]">
-          {/* empty spacer same width as button */}
-        </div>
+
+        <div className="w-[150px]" />
       </header>
 
-      {/* {schedules_teacher && <ScheduleTableRead schedules={schedules_teacher} />} */}
+      <ScheduleTableRead
+        schedules={roomSchedules}
+        onCellClick={handleCellClick}
+      />
+
+      <ScheduleDetailsDialog
+        open={!!selectedCourse}
+        onClose={handleCloseDialog}
+        data={selectedCourse}
+        context="room"
+      />
     </main>
   );
 }

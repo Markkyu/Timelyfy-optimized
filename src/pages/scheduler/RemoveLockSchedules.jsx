@@ -67,7 +67,7 @@ export default function RemoveLockSchedules({
 
   const uniqueSchedules = getUniqueSchedules(lockedSchedules);
 
-  console.log(uniqueSchedules);
+  // console.log(uniqueSchedules);
 
   // I want it to return [{slot_course: 'Course 1', created_by: 1}, {slot_course: 'Course 2', created_by: 2}]
 
@@ -107,7 +107,7 @@ export default function RemoveLockSchedules({
     (groupSched) => groupSched.slot_course
   );
 
-  console.log(groupLockedSchedules);
+  // console.log(groupLockedSchedules);
 
   // Get unique course names with counts
   const uniqueCourses = Object.keys(groupLockedSchedules).map((courseName) => ({
@@ -115,7 +115,7 @@ export default function RemoveLockSchedules({
     count: groupLockedSchedules[courseName].length,
   }));
 
-  console.log(uniqueCourses);
+  // console.log(uniqueCourses);
 
   if (schedules_loading) return <SchedulesLoading />;
   if (schedules_error) return <SchedulesError />;

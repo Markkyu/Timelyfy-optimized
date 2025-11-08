@@ -25,22 +25,10 @@ export default function CourseList() {
   const navigate = useNavigate();
   const { college_id } = useParams();
 
-  // const [collegeId, setCollegeId] = useState(null);
-
   const { data: collegeId } = useQuery(useCollegeQueryById(college_id));
   const { data: collegeList, isPending: collegeLoading } = useQuery(
     createCollegeQueryOptions()
   );
-
-  // useEffect(() => {
-  //   const collegeId = collegeLoading
-  //     ? collegeList?.filter((c) => c.college_id == college_id)
-  //     : [];
-
-  //   setCollegeId(collegeId);
-  // }, [collegeId]);
-
-  // console.log(collegeId);
 
   const {
     data: courses,
@@ -124,36 +112,30 @@ export default function CourseList() {
         </div>
       </header>
 
-      {uniqueYears.map(
-        (
-          year // Chop up by year level
-        ) => (
-          <div
-            key={year}
-            className="mb-6 border border-gray-300 rounded-lg bg-gray-50 p-4 shadow-md"
-          >
-            <h2 className="text-3xl font-bold text-center mb-2">Year {year}</h2>
-            <div className="flex gap-4 justify-center">
-              {uniqueSemesters.map(
-                (
-                  sem // List by semester
-                ) => (
-                  <SemesterSection
-                    key={sem}
-                    sem={sem}
-                    year={year}
-                    college_id={college_id}
-                    courses={courses}
-                    loading={courses_loading}
-                    collegeName={collegeId?.college_name}
-                    collegeMajor={collegeId?.college_major}
-                  />
-                )
-              )}
-            </div>
+      {uniqueYears.map((year) => (
+        // Chopped up by year level
+        <div
+          key={year}
+          className="mb-6 border border-gray-300 rounded-lg bg-gray-50 p-4 shadow-md"
+        >
+          <h2 className="text-3xl font-bold text-center mb-2">Year {year}</h2>
+          <div className="flex gap-4 justify-center">
+            {uniqueSemesters.map((sem) => (
+              // List by semester
+              <SemesterSection
+                key={sem}
+                sem={sem}
+                year={year}
+                college_id={college_id}
+                courses={courses}
+                loading={courses_loading}
+                collegeName={collegeId?.college_name}
+                collegeMajor={collegeId?.college_major}
+              />
+            ))}
           </div>
-        )
-      )}
+        </div>
+      ))}
     </main>
   );
 }

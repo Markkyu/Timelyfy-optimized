@@ -25,7 +25,7 @@ function generateTimeSlots(start = 7, end = 20, step = 0.5) {
 }
 
 const ScheduleTable = ({ headers }) => {
-  const [collapsed, setCollapsed] = useState(true); // ✅ collapsed by default
+  const [collapsed, setCollapsed] = useState(true);
 
   const timeSlots = generateTimeSlots();
 

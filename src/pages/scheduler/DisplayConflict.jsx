@@ -251,7 +251,7 @@ export default function DisplayConflict({
           gap: 1.5,
         }}
       >
-        <Button
+        {/* <Button
           onClick={onCancel}
           variant="outlined"
           sx={{
@@ -266,8 +266,9 @@ export default function DisplayConflict({
           }}
         >
           Cancel
-        </Button>
+        </Button> */}
         <Button
+          onClick={onCancel}
           variant="contained"
           sx={{
             fontWeight: 600,
@@ -276,9 +277,8 @@ export default function DisplayConflict({
             py: 1,
             bgcolor: "#f59e0b",
           }}
-          onClick={attemptResolution}
         >
-          Attempt Resolution
+          Gotcha
         </Button>
       </DialogActions>
     </Dialog>

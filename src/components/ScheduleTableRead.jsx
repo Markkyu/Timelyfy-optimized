@@ -5,10 +5,7 @@ import generateTimeSlots from "./generateTimeSlots";
 import { colorPalette } from "./colorPalette";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function ScheduleTableRead({
-  schedules,
-  //  onCellClick
-}) {
+export default function ScheduleTableRead({ schedules, onCellClick }) {
   const timeSlots = generateTimeSlots();
 
   const headers = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
@@ -94,7 +91,9 @@ export default function ScheduleTableRead({
                   <td
                     key={`${dayIndex}-${timeIndex}`}
                     rowSpan={rowSpan}
-                    // onClick={() => onCellClick(course, dayIndex, timeIndex)}
+                    onClick={() =>
+                      onCellClick && onCellClick(course, dayIndex, timeIndex)
+                    }
                     className={`border-y border-gray-300 text-center font-medium cursor-pointer transition-all duration-200 ease-out ${
                       course
                         ? `${courseColor.bg} ${courseColor.border} shadow-md rounded-xl scale-95 hover:scale-104`
