@@ -26,9 +26,6 @@ export default function CourseList() {
   const { college_id } = useParams();
 
   const { data: collegeId } = useQuery(useCollegeQueryById(college_id));
-  const { data: collegeList, isPending: collegeLoading } = useQuery(
-    createCollegeQueryOptions()
-  );
 
   const {
     data: courses,
@@ -84,32 +81,7 @@ export default function CourseList() {
           </p>
         </div>
 
-        {/* Course Navigation */}
-        <div className="flex flex-col text-sm">
-          <label
-            htmlFor="course-colleges"
-            className="text-gray-600 mb-1 font-medium"
-          >
-            Jump to Course
-          </label>
-          <select
-            id="course-colleges"
-            className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
-            defaultValue=""
-            onChange={(e) => {
-              if (e.target.value) navigate(`/course-list/${e.target.value}`);
-            }}
-          >
-            <option value="" disabled>
-              Select a College
-            </option>
-            {collegeList?.map((c) => (
-              <option key={c.college_id} value={c.college_id}>
-                {c.college_name} - {c.college_major}
-              </option>
-            ))}
-          </select>
-        </div>
+        <div className="w-[200px]"></div>
       </header>
 
       {uniqueYears.map((year) => (

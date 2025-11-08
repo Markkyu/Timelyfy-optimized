@@ -24,11 +24,16 @@ import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import RenderOnUser from "@components/RenderOnUser";
 import MergeCourse from "./MergeCourseForm";
+import MergeCourseDialog from "./MergeCourseDialog";
 
-export default function CourseCard({ course, collegeName, collegeMajor }) {
+export default function CourseCard({
+  course,
+  collegeName,
+  collegeMajor,
+  openMerge,
+}) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const [mergeOpen, setMergeOpen] = useState(false);
   const [teacherAssign, setTeacherAssign] = useState(false);
 
   const { college_id } = useParams();
@@ -126,7 +131,8 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
           >
             <span>
               <IconButton
-                onClick={() => !isPlotted && setMergeOpen(true)}
+                // onClick={() => !isPlotted && setMergeOpen(true)}
+                onClick={() => !isPlotted && openMerge(course)}
                 disabled={isPlotted}
               >
                 <ShareIcon color={isPlotted ? "disabled" : "warning"} />
@@ -195,11 +201,18 @@ export default function CourseCard({ course, collegeName, collegeMajor }) {
         courseId={course.course_id}
       />
 
-      <MergeCourse
+      {/* <MergeCourse
         open={mergeOpen}
         onClose={() => setMergeOpen(false)}
         courseCollege={course.course_college}
-      />
+        course={course}
+      /> */}
+      {/* <MergeCourseDialog
+        open={mergeOpen}
+        onClose={() => setMergeOpen(false)}
+        course={course}
+        courseCollege={course.course_college}
+      /> */}
     </div>
   );
 }

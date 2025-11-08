@@ -65,7 +65,7 @@ export const getCourseById = async (courseId) => {
 
 // ASSIGN TEACHER TO COURSE
 export const assignTeacherCourse = async (courseData) => {
-  console.log(courseData);
+  // console.log(courseData);
 
   try {
     const { data } = await API.put(

@@ -18,7 +18,6 @@ import LoadingContent from "@components/LoadingContent";
 import EmptyContent from "@components/EmptyContent";
 import ErrorContent from "@components/ErrorContent";
 import UserCard from "./components/UserCard";
-// import UserListView from "./components/UserListView";
 import RegisterUser from "./components/RegisterUser";
 import useUsers from "@hooks/useUsers";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
@@ -316,14 +315,6 @@ export default function UserPage() {
                       ))}
                     </div>
                   )}
-
-                  {/* {viewMode === "list" && (
-                    <div className="space-y-4">
-                      {paginatedData.map((user) => (
-                        <UserListView key={user.id} user={user} />
-                      ))}
-                    </div>
-                  )} */}
                 </>
               ) : (
                 <div className="text-center py-16">

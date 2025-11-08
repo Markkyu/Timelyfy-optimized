@@ -70,14 +70,6 @@ import { ROLES } from "@routes/roles";
 import PublicRoutes from "@routes/PublicRoutes";
 import SkeletonGlobalDashboard from "@components/loader/SkeletonGlobalDashboard";
 
-// export const ROLES = {
-//   ADMIN: "admin",
-//   SUPER: "super_user",
-//   USER: "user",
-//   SCHEDULER: "master_scheduler",
-//   ALL: "*",
-// };
-
 export default function App() {
   return (
     <>
@@ -98,33 +90,6 @@ export default function App() {
                 </Suspense>
               }
             />
-
-            {/* <Route
-              path="/*"
-              element={
-                <Suspense fallback={<LoadingComponent />}>
-                  <MasterSchedulerRoutes />
-                </Suspense>
-              }
-            />
-            
-            <Route
-              path="/*"
-              element={
-                <Suspense fallback={<LoadingComponent />}>
-                  <AdminRoutes />
-                </Suspense>
-              }
-            />
-
-            <Route
-              path="/*"
-              element={
-                <Suspense fallback={<LoadingComponent />}>
-                  <SuperUserRoutes />
-                </Suspense>
-              }
-            /> */}
           </Route>
         </Routes>
       </BrowserRouter>

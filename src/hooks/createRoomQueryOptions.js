@@ -7,7 +7,7 @@ export default function createRoomQueryOptions(teacherId) {
     queryFn: () => getRoomsByTeacher(teacherId),
     enabled: !!teacherId, // run only when teacher is selected
     staleTime: 1000 * 60 * 5, // 5 minutes
-    cacheTime: 1000 * 60 * 5, // 5 minutes
+    cacheTime: 1000 * 60 * 10, // 5 minutes
     retry: 0,
   });
 }
@@ -16,8 +16,8 @@ export function allRoomsQuery() {
   return queryOptions({
     queryKey: ["rooms"],
     queryFn: getRooms,
-    staleTime: 1000 * 60 * 2, // 5 minutes
-    gcTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    gcTime: 1000 * 60 * 10, // 5 minutes
     retry: 0,
   });
 }

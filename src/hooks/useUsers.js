@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import API from "@api/axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
 const getUsers = async () => {
   try {
-    const { data } = await axios.get(`${API_URL}/api/users`);
+    const { data } = await API.get(`${API_URL}/api/users`);
     return data;
   } catch (error) {
     throw new Error(error.response?.data?.message || error.message);
@@ -24,7 +25,7 @@ export default function useUsers() {
 
 const getUserById = async (userId) => {
   try {
-    const { data } = await axios.get(
+    const { data } = await API.get(
       `${import.meta.env.VITE_API_URL}/api/users/${userId}`
     );
     return data;

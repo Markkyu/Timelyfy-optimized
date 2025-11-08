@@ -113,42 +113,10 @@ export default function UserCard({ user }) {
               <RoleIcon size={16} style={{ color: roleConfig.textColor }} />
             </div>
           </div>
-
-          {/* <IconButton
-            size="small"
-            onClick={(e) => setAnchorEl(e.currentTarget)}
-            sx={{
-              opacity: 0,
-              transition: "opacity 0.2s",
-              ".group:hover &": { opacity: 1 },
-            }}
-          >
-            <MoreVertical size={20} />
-          </IconButton>
-
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={() => setAnchorEl(null)}
-          >
-            <MenuItem onClick={() => setAnchorEl(null)}>
-              <Settings size={16} className="mr-2" />
-              Edit User
-            </MenuItem>
-            <MenuItem onClick={() => setAnchorEl(null)}>
-              <Key size={16} className="mr-2" />
-              Change Role
-            </MenuItem>
-            <MenuItem onClick={handleDeleteUser} sx={{ color: "error.main" }}>
-              <Trash2 size={16} className="mr-2" />
-              Delete
-            </MenuItem>
-          </Menu> */}
         </div>
 
         {/* Name */}
         <h3 className="text-xl font-bold text-gray-900 group-hover:text-maroon transition-colors">
-          {/* {user.first_name} {user.last_name} */}
           {user.username}
         </h3>
         <p className="mb-1 text-gray-500">{user.full_name || "No full name"}</p>
@@ -178,29 +146,18 @@ export default function UserCard({ user }) {
             <Phone size={16} className="text-gray-400 flex-shrink-0" />
             <span>{user.phone || "No phone"}</span>
           </div>
-          {user.program && (
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <GraduationCap
-                size={16}
-                className="text-gray-400 flex-shrink-0"
-              />
-              <span className="truncate">{user.program}</span>
-            </div>
-          )}
         </div>
 
         {/* Action Button */}
         <Button
           fullWidth
           variant="contained"
-          endIcon={<Settings size={18} />}
-          disableElevation
+          startIcon={<Settings size={18} />}
           sx={{
             bgcolor: "maroon",
             borderRadius: "12px",
             fontWeight: 600,
             py: 1.5,
-            textTransform: "none",
           }}
           onClick={() => navigate(`/user-page/${user.id}`)}
         >

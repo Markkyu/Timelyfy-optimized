@@ -11,39 +11,54 @@ import ToastNotification from "@components/ToastNotification";
 import useColleges from "@hooks/useColleges"; // fetches all programs
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
+import API from "@api/axios";
 
-export default function MergeCourseForm({ open, onClose, courseCollege }) {
+export default function MergeCourseForm({
+  open,
+  onClose,
+  courseCollege,
+  course,
+}) {
   const [selectedPrograms, setSelectedPrograms] = useState([]);
   const [toastMessage, setToastMessage] = useState("");
   const [toastTrigger, setToastTrigger] = useState(null);
   const [toastType, setToastType] = useState("error");
 
-  const userId = 1;
-
   const { data: colleges, isLoading } = useColleges();
 
   // console.log(colleges?.filter((c) => c.college_id != courseCollege));
 
+  console.log(course);
+
   const queryClient = useQueryClient();
+
+  const API_URL = import.meta.env.VITE_API_URL;
 
   // handle react select submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     const program_ids = selectedPrograms.map((p) => p.value);
 
-    // await axios.post(
-    //   `${import.meta.env.VITE_API_URL}/api/assign-colleges/${userId}`,
-    //   { program_ids }
-    // );
+    console.log(program_ids);
+
+    try {
+      const { data } = await API.post(
+        `${API_URL}/api/courses/merge`,
+        selectedPrograms
+      );
+
+      setToastMessage("[TEST] Course Merged");
+      setToastType("success");
+      setToastTrigger((prev) => prev + 1);
+
+      setSelectedPrograms([]);
+      onClose();
+      return data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
 
     // queryClient.invalidateQueries(["assigned-colleges", userId]);
-
-    setToastMessage("[TEST] Course Merged");
-    setToastType("success");
-    setToastTrigger((prev) => prev + 1);
-
-    setSelectedPrograms([]);
-    onClose();
   };
 
   // handle clear assignment
@@ -67,11 +82,21 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
     (c) => c.college_id != courseCollege
   );
 
+  // console.log(filterThisCollege);
+
+  // console.log(
+  //   colleges?.map((c) => {
+  //     c: c.college_code;
+  //   })
+  // );
+
   const options =
     filterThisCollege?.map((c) => ({
-      value: c.college_id,
+      value: c.college_code,
       label: `${c.college_name} ${c.college_major}`,
     })) || [];
+
+  // console.log(selectedPrograms);
 
   return (
     <>
@@ -131,6 +156,7 @@ export default function MergeCourseForm({ open, onClose, courseCollege }) {
                 borderRadius: "12px",
               }}
               fullWidth
+              onClick={handleSubmit}
             >
               Save Merges
             </Button>

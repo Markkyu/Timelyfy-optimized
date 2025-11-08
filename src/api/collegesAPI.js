@@ -12,15 +12,6 @@ export const getColleges = async () => {
   }
 };
 
-// export const getColleges = async () => {
-//   try {
-//     const { data } = await axios.get(`${API_URL}/api/colleges`);
-//     return data;
-//   } catch (error) {
-//     throw new Error(error.response?.data?.message || error.message);
-//   }
-// };
-
 export const getCollegeById = async (collegeId) => {
   try {
     const { data } = await API.get(`${API_URL}/api/colleges/${collegeId}`);
@@ -40,8 +31,6 @@ export const createCollege = async (collegeData) => {
 };
 
 export const updateCollege = async (collegeId, updates) => {
-  console.log(`inside`, updates);
-
   try {
     const { data } = await API.put(
       `${API_URL}/api/colleges/${collegeId}`,

@@ -87,6 +87,7 @@ import AddCourseForm from "./AddCourseForm";
 import { CalendarIcon } from "lucide-react";
 import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
 import { getCollegeById } from "@api/collegesAPI";
+import MergeCourseDialog from "./MergeCourseDialog";
 
 export default function SemesterSection({
   sem,
@@ -98,8 +99,15 @@ export default function SemesterSection({
   collegeMajor,
 }) {
   const [addOpen, setAddOpen] = useState(false);
+  const [mergeOpen, setMergeOpen] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const navigate = useNavigate();
+
+  const handleOpenMerge = (course) => {
+    setSelectedCourse(course);
+    setMergeOpen(true);
+  };
 
   // Memoize filtered courses to avoid re-filtering every render
   const filteredCourses = useMemo(() => {
@@ -125,6 +133,7 @@ export default function SemesterSection({
         course={course}
         collegeName={collegeName}
         collegeMajor={collegeMajor}
+        openMerge={() => handleOpenMerge(course)}
       />
     ));
   };
@@ -163,6 +172,13 @@ export default function SemesterSection({
         year={year}
         collegeName={collegeName}
         collegeMajor={collegeMajor}
+      />
+
+      <MergeCourseDialog
+        open={mergeOpen}
+        onClose={() => setMergeOpen(false)}
+        course={selectedCourse}
+        courseCollege={selectedCourse?.course_college}
       />
     </section>
   );

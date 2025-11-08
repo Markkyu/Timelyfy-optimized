@@ -25,7 +25,7 @@ export default function DeleteConfirmDialog({
       TransitionComponent={Grow}
       keepMounted
     >
-      <DialogTitle>{title}</DialogTitle>
+      <DialogTitle fontWeight={600}>{title}</DialogTitle>
       <DialogContent>
         <DialogContentText>{desc}</DialogContentText>
       </DialogContent>
@@ -37,18 +37,16 @@ export default function DeleteConfirmDialog({
           onClick={onClose}
           sx={{ fontWeight: 600 }}
           // fullWidth
-          disableElevation
         >
           Cancel
         </Button>
         <Button
           color="error"
-          endIcon={<DeleteIcon />}
+          startIcon={<DeleteIcon />}
           onClick={handleDelete}
           variant="contained"
           sx={{ fontWeight: 600 }}
           // fullWidth
-          disableElevation
         >
           Delete
         </Button>

@@ -47,7 +47,7 @@ export default function RoomSchedule() {
 
   return (
     <main className="flex flex-col bg-gradient-to-br from-gray-200 to-gray-300 p-8 font-sans">
-      <header className="flex items-center justify-evenly w-full mb-6 max-w-7xl mx-auto">
+      <header className="flex items-center justify-between w-full mb-6 max-w-7xl 2xl:max-w-[1600px] mx-auto">
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
@@ -67,7 +67,7 @@ export default function RoomSchedule() {
           {roomName} Schedule
         </h1>
 
-        <div className="w-[150px]" />
+        <div className="w-[200px]" />
       </header>
 
       <ScheduleTableRead

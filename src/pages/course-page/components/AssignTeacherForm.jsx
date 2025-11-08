@@ -21,6 +21,7 @@ import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
 
 import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
+import { useParams } from "react-router-dom";
 
 export default function AssignTeacherForm({ open, onClose, courseId }) {
   const [courseCode, setCourseCode] = useState("");
@@ -28,6 +29,8 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedRoom, setSelectedRoom] = useState(null);
+
+  const { college_id } = useParams();
 
   // Fetch all teachers using TanStack Query
   // const { data: teachers, isLoading, isError } = useTeachers();
@@ -38,9 +41,6 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
   } = useQuery(createTeacherQueryOptions());
 
   const queryClient = useQueryClient();
-
-  // Fetch rooms when teacher selected
-  const teacherId = selectedTeacher?.value;
 
   const {
     data: rooms,
@@ -63,14 +63,14 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
         room_id: selectedRoom.value,
       });
       queryClient.invalidateQueries({
-        queryKey: createCourseQueryById.queryKey,
+        queryKey: ["course", college_id],
       });
 
-      // queryClient.setQueryData(['course'], (old) =>
-      //   console.log(old)
+      // queryClient.setQueryData(["course", college_id], (old) =>
+      // console.log(old, courseId, selectedTeacher.label, selectedRoom.label)
       // );
-      onClose();
       setError("");
+      onClose();
     } catch (err) {
       setError(`Error: ${err.message}`);
     } finally {

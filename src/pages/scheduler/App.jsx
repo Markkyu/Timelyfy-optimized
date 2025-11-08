@@ -40,6 +40,7 @@ import UploadConfirm from "./UploadConfirm";
 import ScheduleDetailsDialog from "./ScheduleDetailDialog";
 import RenderWhenPhase from "@components/RenderWhenPhase";
 import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
+import API from "@api/axios";
 
 const timeHeader = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -54,8 +55,6 @@ export default function SchedulerApp() {
   const college_group = college;
   const college_year = year;
   const college_sem = sem;
-
-  console.log(class_group);
 
   const navigate = useNavigate();
 
@@ -94,6 +93,7 @@ export default function SchedulerApp() {
 
   // newly plotted (temporary) state
   const [newSchedules, setNewSchedules] = useState([]);
+  const [expandedSchedules, SetExpandedSchedules] = useState([]); // to simulate merging
 
   const queryClient = useQueryClient();
 
@@ -111,6 +111,8 @@ export default function SchedulerApp() {
     isPending: schedules_loading,
     error: schedules_error,
   } = useQuery(classGroupSchedQuery(class_group));
+
+  console.log(newSchedules);
 
   const allSchedules = useMemo(() => {
     return [...existingSchedules, ...newSchedules];
@@ -215,8 +217,6 @@ export default function SchedulerApp() {
   };
 
   const handleRemoveSchedule = (day, startTime) => {
-    // setSelectedCourse(null);
-
     // Find course at clicked slot
     const target = newSchedules.find(
       (s) => s.slot_day === day && s.slot_time === startTime
@@ -420,12 +420,125 @@ export default function SchedulerApp() {
 
   // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    conflictCheckB4Sched(newSchedules);
+    // conflictCheckB4Sched(newSchedules);
+    try {
+      const mergeResponse = await API.get(
+        `${import.meta.env.VITE_API_URL}/api/schedules/merge-courses`
+      );
+      const { data: mergeCourses } = await mergeResponse;
+
+      console.log(mergeCourses);
+
+      // console.log(newSchedules);
+      // console.log(mergeCourses);
+
+      const mergeMap = new Map();
+
+      mergeCourses.forEach((merge) => {
+        if (!mergeMap.has(merge.course_origin)) {
+          mergeMap.set(merge.course_origin, []);
+        }
+        mergeMap.get(merge.course_origin).push(merge.merge_college);
+      });
+
+      const expandedSchedules = [];
+
+      for (const schedule of newSchedules) {
+        // Always add the original schedule
+        expandedSchedules.push(schedule);
+
+        // Check if this course has merged versions
+        const mergedColleges = mergeMap.get(schedule.course_id);
+
+        if (mergedColleges && mergedColleges.length > 0) {
+          // Create a copy for each merged college
+          mergedColleges.forEach((mergeCollege) => {
+            const mergedSchedule = {
+              ...schedule, // Copy everything
+              class_id: mergeCollege, // Just use merge_college directly (e.g., "BSCoE1")
+              slot_course: `${schedule.course_id}`, // Update slot_course
+            };
+
+            expandedSchedules.push(mergedSchedule);
+          });
+        }
+      }
+
+      // console.log("Original schedules:", newSchedules);
+      console.log("Expanded schedules:", expandedSchedules);
+      SetExpandedSchedules(expandedSchedules);
+      conflictCheckB4Sched(expandedSchedules);
+    } catch (error) {
+      console.error("Error uploading schedules", error);
+      setToastTrigger((prev) => prev + 1);
+      setToastMessage("Error uploading schedules");
+      setToastType("error");
+    }
+
+    // Now pass to conflict checker or upload
+    // conflictCheckB4Sched(expandedSchedules);
+    // for each new schedules, kung may 6 na schedules,
+    // hahanapin yung same course_id dun sa db tapos icocopy papaltan lang ang
+    // class id
+
+    // if may katulad sa new schedules => use the same sequence pero sa ibang class_id
+  };
+
+  const uploadScheduleTo = async () => {
+    try {
+      // Fetch merge relationships
+      const mergeResponse = await fetch("YOUR_API_ENDPOINT/merge-courses");
+      const mergeCourses = await mergeResponse.json();
+
+      // Create a map: course_origin -> array of merge_colleges
+      const mergeMap = new Map();
+      mergeCourses.forEach((merge) => {
+        if (!mergeMap.has(merge.course_origin)) {
+          mergeMap.set(merge.course_origin, []);
+        }
+        mergeMap.get(merge.course_origin).push(merge.merge_college);
+      });
+
+      // Expand schedules to include merged courses
+      const expandedSchedules = [];
+
+      for (const schedule of newSchedules) {
+        // Always add the original schedule
+        expandedSchedules.push(schedule);
+
+        // Check if this course has merged versions
+        const mergedColleges = mergeMap.get(schedule.course_id);
+
+        if (mergedColleges && mergedColleges.length > 0) {
+          // Create a copy for each merged college
+          mergedColleges.forEach((mergeCollege) => {
+            // Extract the year/section number from class_id (e.g., "BSCS1" -> "1")
+            const yearSection = schedule.class_id.match(/\d+$/)?.[0] || "1";
+
+            const mergedSchedule = {
+              ...schedule, // Copy everything
+              class_id: `${mergeCollege}${yearSection}`, // Change class_id
+              slot_course: `${mergeCollege}_${schedule.course_id.split("_")[1]}`, // Update slot_course
+            };
+
+            expandedSchedules.push(mergedSchedule);
+          });
+        }
+      }
+
+      console.log("Original schedules:", newSchedules);
+      console.log("Expanded schedules:", expandedSchedules);
+
+      // Now pass to your existing conflict checker
+      conflictCheckB4Sched(expandedSchedules);
+    } catch (error) {
+      console.error("Error expanding schedules:", error);
+    }
   };
 
   // upload for real
   const uploadForReal = () => {
-    uploadScheduleMutation(newSchedules);
+    uploadScheduleMutation(expandedSchedules);
   };
 
   const handleResetTable = () => {
@@ -568,16 +681,21 @@ export default function SchedulerApp() {
           </label>
           <select
             id="course-colleges"
-            className="w-50 border border-gray-300 rounded-lg p-2 bg-white text-gray-800 outline-0 focus:ring-2 focus:ring-red-800"
+            className={`w-50 border border-gray-300 rounded-lg p-2  
+              ${disableFillButton ? "bg-gray-300 text-gray-700" : "bg-white text-gray-800"}
+              outline-0 focus:ring-2 focus:ring-red-800`}
             defaultValue=""
             onChange={(e) => {
               const selectedValue = e.target.value;
               const values = selectedValue.split(",");
-              if (selectedValue)
+              if (selectedValue) {
                 navigate(
                   `/${values[1]}${year}/schedule/${values[0]}?year=${year}&sem=${sem}` //if it works, it works
                 );
+                setSelectedCourse(null);
+              }
             }}
+            disabled={disableFillButton}
           >
             <option value="" disabled>
               Select a College
@@ -678,19 +796,6 @@ export default function SchedulerApp() {
         <hr className="my-6 border-gray-400" />
 
         {/* <RenderWhenPhase year={college_year} sem={college_sem}> */}
-
-        {phaseLoading ? null : isCurrentPhase ? (
-          <p className="text-center text-green-700 font-semibold">
-            You are currently in the active phase. You can remove locked
-            schedules below.
-          </p>
-        ) : (
-          <p className="text-center text-red-700 font-semibold">
-            You are not in the active phase. Removing locked schedules is
-            disabled.
-          </p>
-        )}
-
         <div className="w-full flex justify-center">
           <RemoveLockSchedules
             lockedSchedules={existingSchedules}

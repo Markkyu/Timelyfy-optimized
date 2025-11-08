@@ -85,21 +85,11 @@ export default function CollegeListView({ college }) {
           <div className="flex flex-wrap gap-6 text-sm text-gray-600">
             <div className="flex items-center gap-2">
               <BookOpen size={16} className="text-gray-400" />
-              <span>
-                <span className="font-semibold text-gray-900">
-                  {college?.courses_count || 0}
-                </span>{" "}
-                Courses
-              </span>
+              <span>Courses</span>
             </div>
             <div className="flex items-center gap-2">
               <Calendar size={16} className="text-gray-400" />
-              <span>
-                <span className="font-semibold text-gray-900">
-                  {college?.schedules_count || 0}
-                </span>{" "}
-                Schedules
-              </span>
+              <span>Schedules</span>
             </div>
           </div>
         </div>

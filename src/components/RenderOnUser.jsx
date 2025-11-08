@@ -10,8 +10,8 @@ export default function RenderOnUser({ createdBy, children }) {
   return user.id === createdBy ? (
     <>{children}</>
   ) : (
-    <div className="px-2 text-gray-500 text-sm italic">
-      Created by ID: {createdBy}
+    <div className="px-2 text-gray-400 text-md italic">
+      by user id {createdBy}
     </div>
   );
 }
