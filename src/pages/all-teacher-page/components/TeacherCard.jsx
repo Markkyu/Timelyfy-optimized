@@ -143,10 +143,6 @@ export default function TeacherCard({ teacher }) {
             open={Boolean(anchorEl)}
             onClose={() => setAnchorEl(null)}
           >
-            <MenuItem onClick={() => setAnchorEl(null)}>
-              <Settings size={16} className="mr-2" />
-              Configure
-            </MenuItem>
             <MenuItem
               onClick={handleDeleteTeacher}
               sx={{ color: "error.main" }}

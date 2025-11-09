@@ -5,7 +5,9 @@ export default function createCourseQueryById(collegeId) {
   return queryOptions({
     queryKey: ["course", collegeId],
     queryFn: () => getCourseById(collegeId),
-    staleTime: 1000 * 60 * 10, // 10 minutes
-    cacheTime: 1000 * 60 * 20, // 20 minutes
+    staleTime: 1000 * 60 * 1, // 1 minute
+    gcTime: 1000 * 60 * 10, // 10 minutes
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }

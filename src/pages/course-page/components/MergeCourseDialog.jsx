@@ -32,7 +32,7 @@ export default function MergeCourseDialog({
 
   const { data: colleges, isLoading } = useQuery(createCollegeQueryOptions());
 
-  console.log(existingMerges);
+  // console.log(existingMerges);
 
   const collegeFiltered = colleges?.filter((c) => {
     const alreadyMerged = existingMerges.some(
@@ -43,7 +43,7 @@ export default function MergeCourseDialog({
     return c.college_id != college_id && !alreadyMerged;
   });
 
-  console.log(collegeFiltered);
+  // console.log(collegeFiltered);
 
   const collegeOptions = collegeFiltered?.map((c) => ({
     value: c.college_code,

@@ -123,7 +123,14 @@ export default function SemesterSection({
 
   // UI helper content
   const renderContent = () => {
-    if (loading) return <CourseSkeletonLoader />;
+    if (loading)
+      return (
+        <>
+          <CourseSkeletonLoader />
+          <CourseSkeletonLoader />
+          <CourseSkeletonLoader />
+        </>
+      );
 
     if (filteredCourses.length === 0) return <CourseCard course={null} />;
 

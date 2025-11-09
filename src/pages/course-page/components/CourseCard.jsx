@@ -42,6 +42,10 @@ export default function CourseCard({
 
   const isPlotted = !!course?.is_plotted; // translate to boolean
 
+  const isMerged = course?.merge_colleges;
+
+  console.log(isMerged);
+
   const queryClient = useQueryClient();
 
   const { mutate: courseDeleteMutation, isPending: loading } = useMutation({
@@ -79,8 +83,17 @@ export default function CourseCard({
   return (
     <div
       key={course.course_id}
-      className="p-2 border-b border-gray-200 flex justify-between items-center"
+      className={`relative p-2 
+        ${isMerged ? "rounded-md border-yellow-500 border-2 bg-amber-50" : "border-b"}  
+    border-gray-200 flex justify-between items-center`}
     >
+      {isMerged ? (
+        <div className="absolute -top-3 left-2 rounded-xl text-sm font-semibold text-gray-900 bg-amber-50 px-2 border-yellow-500 border-2">
+          Merged with {isMerged}
+        </div>
+      ) : (
+        ""
+      )}
       {/* Course Details */}
       <div>
         <p className="m-1 font-semibold">
@@ -200,19 +213,6 @@ export default function CourseCard({
         onClose={() => setTeacherAssign(false)}
         courseId={course.course_id}
       />
-
-      {/* <MergeCourse
-        open={mergeOpen}
-        onClose={() => setMergeOpen(false)}
-        courseCollege={course.course_college}
-        course={course}
-      /> */}
-      {/* <MergeCourseDialog
-        open={mergeOpen}
-        onClose={() => setMergeOpen(false)}
-        course={course}
-        courseCollege={course.course_college}
-      /> */}
     </div>
   );
 }

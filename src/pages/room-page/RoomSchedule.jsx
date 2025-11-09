@@ -12,6 +12,9 @@ import LoadingContent from "@components/LoadingContent";
 export default function RoomSchedule() {
   const { room_id } = useParams();
   const navigate = useNavigate();
+
+  console.log(room_id);
+
   const {
     data: roomSchedules,
     isPending,

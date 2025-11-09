@@ -4,6 +4,7 @@ import CoPresentIcon from "@mui/icons-material/CoPresent";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import useAuthStore from "@stores/useAuthStore";
+import ShareIcon from "@mui/icons-material/Share";
 
 export default function CourseList({
   courses,
@@ -171,7 +172,7 @@ const LockCourseCard = ({ course }) => {
         {/* Status Banner */}
         <div className="mt-2 pt-3 border-t border-amber-300">
           <p className="text-xs font-semibold text-amber-800 uppercase tracking-wide">
-            🔒 Already Plotted
+            Already Plotted
           </p>
         </div>
       </div>
@@ -186,6 +187,8 @@ const CourseCard = ({ course, isSelected, onClick }) => {
     : null;
 
   const { user } = useAuthStore();
+
+  const isMerged = course.merge_colleges;
 
   const assignedRoom = course.room_name;
 
@@ -209,9 +212,15 @@ const CourseCard = ({ course, isSelected, onClick }) => {
             : createdBy
               ? "border-blue-300 bg-gradient-to-br from-blue-50 to-cyan-50 hover:border-blue-400"
               : ""
-        }`}
+        }
+        `}
     >
       {/* Status Badges */}
+      {isMerged && !isSelected && (
+        <div className="absolute  min-w-[80%] left-1/2 -top-0 -translate-y-1/2 transform -translate-x-1/2 bg-green-300 border-2 border-green-400 text-center text-gray-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
+          Merged with {isMerged}
+        </div>
+      )}
       {isSelected && (
         <div className="absolute -top-3 -right-3 bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg">
           SELECTED

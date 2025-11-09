@@ -33,6 +33,8 @@ export default function CourseList() {
     error: courses_error,
   } = useQuery(createCourseQueryById(college_id));
 
+  // console.log(courses);
+
   // Error Content Display
   if (courses_error)
     return (

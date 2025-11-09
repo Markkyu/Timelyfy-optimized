@@ -192,9 +192,9 @@ export default function SchedulerApp() {
       class_id: class_group,
       slot_course: selectedCourse.course_id,
       // teacher_id: selectedCourse.assigned_teacher, // original
-      teacher_id: selectedCourse.assigned_teacher.toString(),
+      teacher_id: selectedCourse.assigned_teacher,
       // room_ID: selectedCourse.assigned_room, // original
-      room_id: selectedCourse.assigned_room.toString(),
+      room_id: selectedCourse.assigned_room,
       slot_day: dayIndex,
       slot_time: timeIndex + i,
     }));
