@@ -25,6 +25,7 @@ import createCourseQueryById from "@hooks/createCourseQueryById";
 import RenderOnUser from "@components/RenderOnUser";
 import MergeCourse from "./MergeCourseForm";
 import MergeCourseDialog from "./MergeCourseDialog";
+import RenderWhenRole from "@components/RenderWhenRole";
 
 export default function CourseCard({
   course,
@@ -36,15 +37,11 @@ export default function CourseCard({
   const [editOpen, setEditOpen] = useState(false);
   const [teacherAssign, setTeacherAssign] = useState(false);
 
-  const { college_id } = useParams();
-
-  const assignedTeacher = `${course?.first_name} ${course?.last_name}`;
-
+  const assignedTeacher = `${course?.first_name} ${course?.last_name}`; // concat teacher name
   const isPlotted = !!course?.is_plotted; // translate to boolean
+  const isMerged = course?.merge_colleges; // if there is merge (truthy)
 
-  const isMerged = course?.merge_colleges;
-
-  console.log(isMerged);
+  const { college_id } = useParams();
 
   const queryClient = useQueryClient();
 
@@ -135,23 +132,25 @@ export default function CourseCard({
         )}
         <RenderOnUser createdBy={course.created_by}>
           {/* Merging Check */}
-          <Tooltip
-            title={
-              isPlotted
-                ? "Remove from scheduler first"
-                : "Merge with Another College"
-            }
-          >
-            <span>
-              <IconButton
-                // onClick={() => !isPlotted && setMergeOpen(true)}
-                onClick={() => !isPlotted && openMerge(course)}
-                disabled={isPlotted}
-              >
-                <ShareIcon color={isPlotted ? "disabled" : "warning"} />
-              </IconButton>
-            </span>
-          </Tooltip>
+          <RenderWhenRole role={["admin", "master_scheduler"]}>
+            <Tooltip
+              title={
+                isPlotted
+                  ? "Remove from scheduler first"
+                  : "Merge with Another College"
+              }
+            >
+              <span>
+                <IconButton
+                  // onClick={() => !isPlotted && setMergeOpen(true)}
+                  onClick={() => !isPlotted && openMerge(course)}
+                  disabled={isPlotted}
+                >
+                  <ShareIcon color={isPlotted ? "disabled" : "warning"} />
+                </IconButton>
+              </span>
+            </Tooltip>
+          </RenderWhenRole>
 
           {/* Edit Course Button */}
           <Tooltip title={isPlotted ? "Remove from scheduler first" : "Edit"}>

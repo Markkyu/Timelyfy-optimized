@@ -403,15 +403,17 @@ export default function SchedulerApp() {
       },
     });
 
-  const conflictCheckB4Sched = async (newSchedules) => {
+  const conflictCheckB4Sched = async (mergedSchedule) => {
     try {
-      const result = await checkSchedulesJS(newSchedules);
+      const result = await checkSchedulesJS(mergedSchedule);
 
       if (result.status === 409) {
         setConflictDetails(result?.conflicts);
         setShowConflictState(true);
       } else {
-        setUploadConfirmOpen(true);
+        // setUploadConfirmOpen(true);
+        // console.log(mergedSchedule);
+        uploadScheduleMutation(mergedSchedule);
       }
     } catch (error) {
       console.error("Unexpected error:", error.message);
@@ -426,11 +428,6 @@ export default function SchedulerApp() {
         `${import.meta.env.VITE_API_URL}/api/schedules/merge-courses`
       );
       const { data: mergeCourses } = await mergeResponse;
-
-      console.log(mergeCourses);
-
-      // console.log(newSchedules);
-      // console.log(mergeCourses);
 
       const mergeMap = new Map();
 
@@ -464,8 +461,6 @@ export default function SchedulerApp() {
         }
       }
 
-      // console.log("Original schedules:", newSchedules);
-      console.log("Expanded schedules:", expandedSchedules);
       SetExpandedSchedules(expandedSchedules);
       conflictCheckB4Sched(expandedSchedules);
     } catch (error) {
@@ -474,66 +469,13 @@ export default function SchedulerApp() {
       setToastMessage("Error uploading schedules");
       setToastType("error");
     }
-
     // Now pass to conflict checker or upload
     // conflictCheckB4Sched(expandedSchedules);
     // for each new schedules, kung may 6 na schedules,
     // hahanapin yung same course_id dun sa db tapos icocopy papaltan lang ang
     // class id
 
-    // if may katulad sa new schedules => use the same sequence pero sa ibang class_id
-  };
-
-  const uploadScheduleTo = async () => {
-    try {
-      // Fetch merge relationships
-      const mergeResponse = await fetch("YOUR_API_ENDPOINT/merge-courses");
-      const mergeCourses = await mergeResponse.json();
-
-      // Create a map: course_origin -> array of merge_colleges
-      const mergeMap = new Map();
-      mergeCourses.forEach((merge) => {
-        if (!mergeMap.has(merge.course_origin)) {
-          mergeMap.set(merge.course_origin, []);
-        }
-        mergeMap.get(merge.course_origin).push(merge.merge_college);
-      });
-
-      // Expand schedules to include merged courses
-      const expandedSchedules = [];
-
-      for (const schedule of newSchedules) {
-        // Always add the original schedule
-        expandedSchedules.push(schedule);
-
-        // Check if this course has merged versions
-        const mergedColleges = mergeMap.get(schedule.course_id);
-
-        if (mergedColleges && mergedColleges.length > 0) {
-          // Create a copy for each merged college
-          mergedColleges.forEach((mergeCollege) => {
-            // Extract the year/section number from class_id (e.g., "BSCS1" -> "1")
-            const yearSection = schedule.class_id.match(/\d+$/)?.[0] || "1";
-
-            const mergedSchedule = {
-              ...schedule, // Copy everything
-              class_id: `${mergeCollege}${yearSection}`, // Change class_id
-              slot_course: `${mergeCollege}_${schedule.course_id.split("_")[1]}`, // Update slot_course
-            };
-
-            expandedSchedules.push(mergedSchedule);
-          });
-        }
-      }
-
-      console.log("Original schedules:", newSchedules);
-      console.log("Expanded schedules:", expandedSchedules);
-
-      // Now pass to your existing conflict checker
-      conflictCheckB4Sched(expandedSchedules);
-    } catch (error) {
-      console.error("Error expanding schedules:", error);
-    }
+    // if may katulad sa new schedules -> use the same sequence pero sa ibang class_id
   };
 
   // upload for real

@@ -81,10 +81,10 @@ export default function NavigationCards({
       <div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Courses</h2>
         <Card
-          className="shadow-lg hover:shadow-2xl cursor-pointer group transition-all"
+          className="cursor-pointer group transition-all"
           onClick={handleNavigateToCourses}
         >
-          <CardContent className="p-6">
+          <CardContent className="p-6 hover:-translate-y-1 duration-200 ease-out">
             <div className="flex items-center gap-4">
               <div className="bg-gradient-to-br from-blue-500 to-blue-700 p-4 rounded-xl shadow-md">
                 <BookOpen className="text-white" size={40} />
@@ -92,7 +92,7 @@ export default function NavigationCards({
               <div className="flex-1">
                 <h3 className="text-2xl flex items-center font-bold text-gray-800 mb-1 group-hover:text-red-800">
                   Course List
-                  <ChevronRight />
+                  <ChevronRight className="ml-1" />
                 </h3>
                 <p className="text-gray-600">
                   View and manage all courses and subjects for this program

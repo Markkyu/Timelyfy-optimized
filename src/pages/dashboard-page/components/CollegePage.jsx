@@ -23,16 +23,12 @@ export default function CollegePage() {
   const { user } = useAuthStore();
   const currUserRole = user.role;
 
-  console.log(college_id);
-
   // const { data: college, isLoading, error } = useCollegeById(college_id);
   const {
     data: college,
     isLoading,
     error,
   } = useQuery(useCollegeQueryById(college_id));
-
-  console.log(college);
 
   // Loading state
   if (isLoading) {

@@ -7,6 +7,7 @@ import {
   Button,
   Divider,
   Stack,
+  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -14,7 +15,13 @@ export default function ScheduleDetailsDialog({ open, onClose, schedule }) {
   if (!schedule) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      TransitionComponent={Grow}
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+    >
       <DialogTitle sx={{ fontWeight: 600 }}>
         {schedule?.course_name || "Schedule Details"}
       </DialogTitle>

@@ -47,7 +47,7 @@ export default function CourseList() {
     );
 
   return (
-    <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px] mx-auto">
+    <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px]  mx-auto">
       <header className="flex items-center justify-between mb-6">
         {/* Back Button */}
         <Button
@@ -60,7 +60,6 @@ export default function CourseList() {
             borderColor: "#800000",
             fontWeight: 600,
             borderWidth: 2,
-            textTransform: "none",
           }}
         >
           Back to College Info
