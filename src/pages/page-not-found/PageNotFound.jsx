@@ -57,11 +57,11 @@ export default function PageNotFound() {
             <Link to="/account" className="text-maroon hover:underline">
               Account
             </Link>
-            <Link to="/settings" className="text-maroon hover:underline">
-              Settings
+            <Link to="/rooms" className="text-maroon hover:underline">
+              Rooms
             </Link>
-            <Link to="/help" className="text-maroon hover:underline">
-              Help Center
+            <Link to="/teachers" className="text-maroon hover:underline">
+              Teachers
             </Link>
           </div>
         </div>

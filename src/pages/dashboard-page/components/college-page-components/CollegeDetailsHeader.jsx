@@ -15,9 +15,12 @@ export default function CollegeDetailsHeader({ college }) {
               <h1 className="text-4xl font-bold text-gray-800 mb-2">
                 {college?.college_name}
               </h1>
-              <p className="text-gray-600 max-w-2xl">
-                {college?.description ||
-                  "Manage courses, teachers, and schedules for this academic program."}
+              <p className="text-gray-600 text-xl font-semibold max-w-2xl">
+                {college?.college_major}
+              </p>
+              <p className="text-gray-600">
+                Manage courses, teachers, and schedules for this academic
+                program.
               </p>
             </div>
           </div>

@@ -16,6 +16,7 @@ import StatCard from "@pages/dashboard-page/StatCard";
 // Hooks and queries
 import { useQuery } from "@tanstack/react-query";
 import createTeacherQueryOptions from "@hooks/createTeacherQueryOptions";
+import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
 
 export default function AllTeachersPage() {
   const [open, setOpen] = useState(false);
@@ -79,18 +80,21 @@ export default function AllTeachersPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <LoadingContent
-          loadingTitle="Loading Teachers"
-          loadingDesc="Getting teachers information..."
-        />
-      </div>
+      // <div className="flex flex-col items-center justify-center h-full">
+      //   <LoadingContent
+      //     loadingTitle="Loading Teachers"
+      //     loadingDesc="Getting teachers information..."
+      //   />
+      // </div>
+      <>
+        <SkeletonLoaderManage />
+      </>
     );
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-8">
-      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
+      <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-5">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <Button

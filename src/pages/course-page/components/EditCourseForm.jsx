@@ -17,6 +17,7 @@ import { formatCode } from "./formatCode";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateCourse } from "@api/coursesAPI";
 import createCourseQueryById from "@hooks/createCourseQueryById";
+import { useParams } from "react-router-dom";
 
 export default function EditCourseForm({
   open,
@@ -25,12 +26,18 @@ export default function EditCourseForm({
   collegeName,
   collegeMajor,
 }) {
-  const [courseCode, setCourseCode] = useState(course?.course_code);
-  const [courseName, setCourseName] = useState(course?.course_name);
-  const [hoursWeek, setHoursWeek] = useState(course?.hours_week);
+  const [courseCode, setCourseCode] = useState(course?.course_code || "");
+  const [courseName, setCourseName] = useState(course?.course_name || "");
+  const [hoursWeek, setHoursWeek] = useState(course?.hours_week || "");
   // const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [errorType, setErrorType] = useState("error");
+
+  // const [toastMessage, setToastMessage] =
+
+  const { college_id } = useParams();
+
+  const newCourseId = formatCode(collegeName, collegeMajor, courseCode);
 
   const queryClient = useQueryClient();
 
@@ -38,12 +45,20 @@ export default function EditCourseForm({
     mutationFn: updateCourse,
 
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: createCourseQueryById.queryKey,
+      queryClient.setQueryData(["course", college_id], (oldData) => {
+        return oldData.map((course) =>
+          course.course_id === newCourseId
+            ? {
+                ...course,
+                course_name: courseName,
+                hours_week: hoursWeek,
+              }
+            : course
+        );
       });
 
-      setErrorType("success");
       setError("Updated successfully!");
+      setErrorType("success");
 
       onClose();
     },
@@ -59,10 +74,8 @@ export default function EditCourseForm({
   const handleEdit = (e) => {
     e.preventDefault();
 
-    const newCourseId = formatCode(collegeName, collegeMajor, courseCode);
-
     // console.log("Course: ", course);
-    console.log(newCourseId);
+    // console.log(newCourseId);
 
     updateCourseMutation({
       // courseId: course.course_surrogate_id,

@@ -4,15 +4,24 @@ import { Button } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import useDeleteUser from "@hooks/useDeleteUser";
 import DeleteUserDialog from "./DeleteUserDialog";
+import ToastNotification from "@components/ToastNotification";
 
 export default function DangerZoneSection({ user, isUpdatingRole }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { mutate: deleteUser, isPending: isDeletingUser } = useDeleteUser();
   const navigate = useNavigate();
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+
   const handleDeleteUser = () => {
     deleteUser(user.id, {
       onSuccess: () => {
+        setToastMessage("User deleted successfully!");
+        setToastType("success");
+        setToastTrigger((prev) => prev + 1);
+
         navigate("/user-page");
       },
     });
@@ -52,6 +61,12 @@ export default function DangerZoneSection({ user, isUpdatingRole }) {
         onConfirm={handleDeleteUser}
         username={user?.username}
         isDeletingUser={isDeletingUser}
+      />
+
+      <ToastNotification
+        message={toastMessage}
+        trigger={toastTrigger}
+        type={toastType}
       />
     </>
   );

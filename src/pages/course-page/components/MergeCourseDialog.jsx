@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Select from "react-select";
-import axios from "axios";
+import axios, { all } from "axios";
 import {
   Dialog,
   DialogTitle,
@@ -13,7 +13,7 @@ import {
   CircularProgress,
   Grow,
 } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
+import { useQueryClient, useQuery } from "@tanstack/react-query";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import API from "@api/axios";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -28,11 +28,11 @@ export default function MergeCourseDialog({
   const [selectedColleges, setSelectedColleges] = useState([]);
   const [existingMerges, setExistingMerges] = useState([]);
 
+  const queryClient = useQueryClient();
+
   const { college_id } = useParams();
 
   const { data: colleges, isLoading } = useQuery(createCollegeQueryOptions());
-
-  // console.log(existingMerges);
 
   const collegeFiltered = colleges?.filter((c) => {
     const alreadyMerged = existingMerges.some(
@@ -55,7 +55,6 @@ export default function MergeCourseDialog({
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
-    console.log(courseCollege);
     if (open) {
       // Replace this with GET /api/merge-courses/:course_id in production
       const loadData = async () => {
@@ -63,7 +62,7 @@ export default function MergeCourseDialog({
           const { data } = await API.get(
             `${API_URL}/api/courses/merged/${CourseId}`
           );
-          console.log(data);
+          // console.log(data);
           // console.log(data);
           setExistingMerges(data);
         } catch (err) {
@@ -87,6 +86,22 @@ export default function MergeCourseDialog({
       const { data } = await API.post(`${API_URL}/api/courses/merge`, payload);
       alert("Courses merged successfully!");
 
+      const container = [];
+      const allMerge = [...existingMerges, ...payload];
+      allMerge.map((merge, index) => container?.push(merge.merge_college)); // brute force reactivity
+      const containerJoined = container.join(", ");
+
+      queryClient.setQueryData(["course", college_id], (oldData) => {
+        return oldData.map((course) =>
+          course.course_id === CourseId
+            ? {
+                ...course,
+                merge_colleges: containerJoined,
+              }
+            : course
+        );
+      });
+
       existingMerges.push(payload);
 
       setSelectedColleges([]);
@@ -102,9 +117,17 @@ export default function MergeCourseDialog({
       const { data } = await API.delete(
         `${API_URL}/api/courses/merge/${CourseId}`
       );
-      // console.log(data);
-      // console.log(data);
-      // setExistingMerges(data);
+
+      queryClient.setQueryData(["course", college_id], (oldData) => {
+        return oldData.map((course) =>
+          course.course_id === CourseId
+            ? {
+                ...course,
+                merge_colleges: null,
+              }
+            : course
+        );
+      });
 
       alert("Clear successful");
       setExistingMerges([]);

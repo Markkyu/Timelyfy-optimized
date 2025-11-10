@@ -63,7 +63,7 @@ export default function AddCourseForm({
 
     onError: (error) => {
       console.error(error.message);
-      setError(error.message);
+      setError(error.response?.data?.message || error.message);
     },
   });
 
@@ -114,10 +114,10 @@ export default function AddCourseForm({
       TransitionComponent={Grow}
       keepMounted
       onClose={() => {
-        onClose();
         setCourseName("");
         setCourseCode("");
         setError(null);
+        onClose();
       }}
       fullWidth
       maxWidth="sm"
@@ -128,7 +128,6 @@ export default function AddCourseForm({
           position: "absolute",
           right: 12,
           top: 12,
-          color: "grey.500",
         }}
       >
         <CloseIcon />
@@ -140,6 +139,7 @@ export default function AddCourseForm({
           component="span"
           align="center"
           display="block"
+          fontWeight={600}
         >
           Add Subject
         </Typography>

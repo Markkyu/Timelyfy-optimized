@@ -19,12 +19,17 @@ import { createCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { registerUser } from "@api/registerUser";
 import useUsers from "@hooks/useUsers";
+import ToastNotification from "@components/ToastNotification";
 
 export default function RegisterUser({ open, onClose }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   //   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
 
   const queryClient = useQueryClient();
 
@@ -36,6 +41,11 @@ export default function RegisterUser({ open, onClose }) {
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
+
+      setToastMessage("New user created successfully!");
+      setToastType("success");
+      setToastTrigger((prev) => prev + 1);
+
       setUsername("");
       setPassword("");
       onClose();
@@ -104,13 +114,7 @@ export default function RegisterUser({ open, onClose }) {
             Note: This is for initial login only. We suggest the user requests
             for a password change after their credentials are given.
           </Typography>
-          {error && (
-            <Alert severity="error">
-              {/* <span className="p-2 bg-red-100 border-2 border-red-300 text-red-500 text-center w-full mx-2"> */}
-              {error}
-              {/* </span> */}
-            </Alert>
-          )}
+          {error && <Alert severity="error">{error}</Alert>}
           <form onSubmit={handleSubmit} className="space-y-2 mt-2">
             <TextField
               label="Username"
@@ -146,11 +150,16 @@ export default function RegisterUser({ open, onClose }) {
                 paddingY: 1.5,
               }}
             >
-              Register User
+              Create New User
             </Button>
           </form>
         </DialogContent>
       </Dialog>
+      <ToastNotification
+        message={toastMessage}
+        trigger={toastTrigger}
+        type={toastType}
+      />
     </>
   );
 }

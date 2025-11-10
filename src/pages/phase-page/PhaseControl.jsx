@@ -15,6 +15,7 @@ import ErrorContent from "@components/ErrorContent";
 import { PHASES, STEPS } from "./components/phaseConstants";
 import { getPhase, updatePhase } from "./components/phaseApi";
 import ToastNotification from "@components/ToastNotification";
+import PhaseControlSkeleton from "@components/loader/PhaseControlSkeleton";
 
 export default function PhaseControl() {
   const queryClient = useQueryClient();
@@ -131,12 +132,15 @@ export default function PhaseControl() {
 
   if (isLoading) {
     return (
-      <div className="h-full flex flex-col bg-white rounded-md items-center justify-center">
-        <LoadingContent
-          loadingTitle="Loading Phase Page"
-          loadingDesc="Loading phase control..."
-        />
-      </div>
+      // <div className="h-full flex flex-col bg-white rounded-md items-center justify-center">
+      //   <LoadingContent
+      //     loadingTitle="Loading Phase Page"
+      //     loadingDesc="Loading phase control..."
+      //   />
+      // </div>
+      <>
+        <PhaseControlSkeleton />
+      </>
     );
   }
 

@@ -18,7 +18,7 @@ export default function NavigationCards({
 
   const currUserRole = user.role;
 
-  console.log(collegeId);
+  console.log(college);
 
   const {
     data: phases,
@@ -109,11 +109,11 @@ export default function NavigationCards({
         <div className="flex items-center gap-2 mb-4">
           <Chip
             color="primary"
-            label={`Current Phase: ${currentYear} Year, ${currentSemester} Semester`}
+            label={`Current Phase: Year ${currentYear}, Semester ${currentSemester}`}
           />
           <Chip
             color="secondary"
-            label={`Supervisor: ${currentSupervisor.replace("_", " ")}`}
+            label={`Role in-charge: ${currentSupervisor.replace("_", " ")}`}
           />
         </div>
 

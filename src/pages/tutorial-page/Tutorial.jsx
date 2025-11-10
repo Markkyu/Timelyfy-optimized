@@ -39,17 +39,17 @@ export default function Tutorial() {
           
           <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
             <h4 class="font-bold text-purple-900 mb-2">🔑 Master Scheduler</h4>
-            <p class="text-gray-700 text-sm">Comes <b>first</b> in the scheduling process. Full system access with the ability to manage the backbone schedules.</p>
+            <p class="text-gray-700 text-sm">Comes <b>first</b> in the scheduling process. Full system access with the ability to manage the backbone schedules. Has the ability to create college programs, teachers, and rooms.</p>
           </div>
 
           <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
             <h4 class="font-bold text-indigo-900 mb-2">⚡ Super User</h4>
-            <p class="text-gray-700 text-sm">Comes <b>second</b> in the scheduling process. Can manage schedules globally.  Caution: Has the ability to add teachers and rooms globally.</p>
+            <p class="text-gray-700 text-sm">Comes <b>second</b> in the scheduling process. Can manage schedules globally. If you believe that your room or teacher is missing, contact a master scheduler or admin.</p>
           </div>
 
           <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
             <h4 class="font-bold text-blue-900 mb-2">👤 Regular User</h4>
-            <p class="text-gray-700 text-sm">Comes <b>last</b> in the scheduling process. Can manage schedules within their assigned college or department. Caution: Has the ability to add teachers and rooms globally.</p>
+            <p class="text-gray-700 text-sm">Comes <b>last</b> in the scheduling process. Can manage schedules within their assigned college department. If you believe that your room or teacher is missing, contact a master scheduler or admin.</p>
           </div>
 
           <div class="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
@@ -83,7 +83,7 @@ export default function Tutorial() {
               <div class="flex-shrink-0 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold">2</div>
               <div>
                 <h4 class="font-semibold text-gray-800">Add Course</h4>
-                <p class="text-sm text-gray-600">Click "Add Course/ Subject" to create new courses for that college program. Select the course, assign a teacher and room, and set the time slots.</p>
+                <p class="text-sm text-gray-600">Click "Add Course/ Subject" to create new courses for that college program. Assign a teacher and a room and go to schedules tab. (If available)</p>
               </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function Tutorial() {
 
           <div class="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
             <p class="text-sm text-green-800">
-              <strong>✅ Pro Tip:</strong> The user can adjust their schedule to their liking within the scheduling process.
+              <strong>✅ Pro Tip:</strong> The user can adjust the schedules to their liking even after the auto-allocation process.
             </p>
           </div>
         </div>
@@ -132,7 +132,7 @@ export default function Tutorial() {
           <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h4 class="font-bold text-gray-900 mb-2">👤 Profile Information</h4>
             <ul class="text-sm text-gray-700 space-y-1 list-disc list-inside">
-              <li>Update your name and contact details</li>
+              <li>Editing profile is not available</li>
             </ul>
           </div>
 
@@ -164,7 +164,7 @@ export default function Tutorial() {
             <ul class="list-disc list-inside text-gray-600 space-y-1 ml-2">
               <li>Active semester (1st or 2nd)</li>
               <li>Current year level (1st through 4th year)</li>
-              <li>Assigned supervisor role</li>
+              <li>Assigned role to create schedule</li>
             </ul>
           </div>
 
@@ -176,41 +176,6 @@ export default function Tutorial() {
           <div class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
             <p class="text-sm text-red-800">
               <strong>🚨 Important:</strong> Only Master Schedulers can perform phase transitions. All previous schedules after transition are wiped out after the transition.
-            </p>
-          </div>
-        </div>
-      `,
-    },
-    {
-      title: "Reports & Analytics",
-      description:
-        "Generate reports and view analytics about schedules and utilization.",
-      icon: "📊",
-      color: "from-cyan-500 to-cyan-600",
-      content: `
-        <div class="space-y-4">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Analytics Dashboard</h3>
-          
-          <div class="grid grid-cols-1 gap-3">
-            <div class="bg-gradient-to-r from-cyan-50 to-cyan-100 p-4 rounded-lg border border-cyan-200">
-              <h4 class="font-bold text-cyan-900 mb-2">📈 Schedule Utilization</h4>
-              <p class="text-gray-700 text-sm">View classroom occupancy rates, peak hours, and resource allocation efficiency.</p>
-            </div>
-
-            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-              <h4 class="font-bold text-blue-900 mb-2">👨‍🏫 Faculty Load</h4>
-              <p class="text-gray-700 text-sm">Monitor teaching hours per instructor and ensure balanced workload distribution.</p>
-            </div>
-
-            <div class="bg-gradient-to-r from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
-              <h4 class="font-bold text-indigo-900 mb-2">📋 Export Options</h4>
-              <p class="text-gray-700 text-sm">Download schedules in PDF or Excel format for printing or external sharing.</p>
-            </div>
-          </div>
-
-          <div class="mt-4 p-3 bg-purple-50 border border-purple-200 rounded-lg">
-            <p class="text-sm text-purple-800">
-              <strong>💡 Insight:</strong> Regular analytics reviews help identify scheduling inefficiencies and optimize resource usage.
             </p>
           </div>
         </div>
@@ -287,7 +252,7 @@ export default function Tutorial() {
               Everything you need to know about scheduling, managing users, and
               optimizing your academic timetables. Click any card to learn more.
             </p>
-            <Alert severity="warning" className="w-[50%] mx-auto">
+            <Alert severity="warning" className="md:w-[50%] mx-auto">
               Disclaimer: Timelyfy scheduler is not perfect and does not fully
               replicate the process of scheduling in Enverga Candelaria.
               Timelyfy does not replace the actual process of scheduling. It
@@ -318,7 +283,7 @@ export default function Tutorial() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Quick Tips
+                  Quick Heads Up
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start gap-2">
@@ -391,6 +356,7 @@ export default function Tutorial() {
             variant="contained"
             className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800"
             size="large"
+            sx={{ fontWeight: 600 }}
           >
             Got it, thanks!
           </Button>

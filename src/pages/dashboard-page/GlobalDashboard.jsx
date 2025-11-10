@@ -29,6 +29,7 @@ import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
 import { PHASES, STEPS } from "@pages/phase-page/components/phaseConstants";
 import StatCard from "./StatCard";
 import useAuthStore from "@stores/useAuthStore";
+import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
 
 export default function GlobalDashboard({ role }) {
   const [openCollege, setOpenCollege] = useState(false);
@@ -63,11 +64,6 @@ export default function GlobalDashboard({ role }) {
     isPending: colleges_loading,
     error: colleges_error,
   } = useQuery(createCollegeQueryOptions());
-
-  // const colleges_error = null;
-  // const colleges_error = { message: "Error" };
-  // const colleges_loading = false;
-  // const colleges = [];
 
   const {
     data: phases,
@@ -133,12 +129,15 @@ export default function GlobalDashboard({ role }) {
   // Loading state
   if (colleges_loading)
     return (
-      <div className="p-6 h-full flex items-center justify-center">
-        <LoadingContent
-          loadingTitle="Loading Academic Programs"
-          loadingDesc="Fetching your colleges and programs..."
-        />
-      </div>
+      // <div className="p-6 h-full flex items-center justify-center">
+      //   <LoadingContent
+      //     loadingTitle="Loading Academic Programs"
+      //     loadingDesc="Fetching your colleges and programs..."
+      //   />
+      // </div>
+      <>
+        <SkeletonLoaderManage />
+      </>
     );
 
   // Empty state
@@ -210,9 +209,9 @@ export default function GlobalDashboard({ role }) {
         {/* Header Section */}
         <header className="space-y-4">
           {/* Title and Action Button */}
-          <div className="flex  justify-between items-start sm:items-center gap-4">
+          <div className="flex justify-between items-start sm:items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Academic Programs
               </h1>
               <p className="text-gray-600">

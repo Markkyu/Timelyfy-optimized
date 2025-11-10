@@ -26,12 +26,16 @@ import RenderOnUser from "@components/RenderOnUser";
 import MergeCourse from "./MergeCourseForm";
 import MergeCourseDialog from "./MergeCourseDialog";
 import RenderWhenRole from "@components/RenderWhenRole";
+import ToastNotification from "@components/ToastNotification";
 
 export default function CourseCard({
   course,
   collegeName,
   collegeMajor,
   openMerge,
+  // onEdit,
+  // onAssign,
+  // onDelete,
 }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -64,9 +68,18 @@ export default function CourseCard({
     },
   });
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+
   const handleDelete = () => {
-    // deleteCourseMutation.mutate(course.course_id);
     courseDeleteMutation(course.course_id);
+  };
+
+  const handleToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastTrigger((prev) => prev + 1);
   };
 
   if (!course) {
@@ -157,6 +170,7 @@ export default function CourseCard({
             <span>
               <IconButton
                 onClick={() => !isPlotted && setEditOpen(true)}
+                // onClick={() => !isPlotted && onEdit(course)}
                 disabled={isPlotted}
               >
                 <EditSquareIcon color={isPlotted ? "disabled" : "info"} />
@@ -169,6 +183,7 @@ export default function CourseCard({
             <span>
               <IconButton
                 onClick={() => !isPlotted && setTeacherAssign(true)}
+                // onClick={() => !isPlotted && onAssign(course)}
                 disabled={isPlotted}
               >
                 <AssignmentIndIcon color={isPlotted ? "disabled" : "success"} />
@@ -181,6 +196,7 @@ export default function CourseCard({
             <span>
               <IconButton
                 onClick={() => !isPlotted && setDeleteOpen(true)}
+                // onClick={() => !isPlotted && onDelete(course)}
                 disabled={isPlotted}
               >
                 <DeleteIcon color={isPlotted ? "disabled" : "error"} />
@@ -211,6 +227,13 @@ export default function CourseCard({
         open={teacherAssign}
         onClose={() => setTeacherAssign(false)}
         courseId={course.course_id}
+        onToast={handleToast}
+      />
+
+      <ToastNotification
+        message={toastMessage}
+        type={toastType}
+        trigger={toastTrigger}
       />
     </div>
   );

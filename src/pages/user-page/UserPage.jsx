@@ -1,7 +1,7 @@
 // UserPage.jsx
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button, Pagination } from "@mui/material";
+import { Alert, Button, Pagination } from "@mui/material";
 import {
   Grid,
   List,
@@ -25,6 +25,7 @@ import { createUserQueryOptions } from "@hooks/createUserQueryOptionsById";
 
 import { useQuery } from "@tanstack/react-query";
 import RenderWhenRole from "@components/RenderWhenRole";
+import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
 
 export default function UserPage() {
   const [open, setOpen] = useState(false);
@@ -103,19 +104,22 @@ export default function UserPage() {
 
   if (users_loading)
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <LoadingContent
-          loadingTitle="Loading Users"
-          loadingDesc="Getting user information..."
-        />
-      </div>
+      // <div className="flex flex-col items-center justify-center h-full">
+      //   <LoadingContent
+      //     loadingTitle="Loading Users"
+      //     loadingDesc="Getting user information..."
+      //   />
+      // </div>
+      <>
+        <SkeletonLoaderManage />
+      </>
     );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header Section */}
-        <header className="space-y-4">
+        <header className="space-y-5">
           {/* Top Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <Button
@@ -145,7 +149,7 @@ export default function UserPage() {
                   px: 3,
                 }}
               >
-                Register User
+                Create New User
               </Button>
             </RenderWhenRole>
           </div>
@@ -157,9 +161,12 @@ export default function UserPage() {
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   User Management
                 </h1>
-                <p className="text-gray-600">
+                <p className="text-gray-600 mb-2">
                   Manage users, roles, and permissions in the system
                 </p>
+                <Alert severity="info">
+                  User promotion and college program assignment is also here
+                </Alert>
               </div>
 
               {/* Stats Cards */}

@@ -11,9 +11,9 @@ import PageNotFound from "@pages/page-not-found/PageNotFound";
 import UnauthorizedPage from "@pages/unauthorized/UnauthorizedPage";
 import ProtectedRoute from "@context/ProtectedRoute";
 import GlobalDashboard from "@pages/dashboard-page/GlobalDashboard";
+import CourseList from "@pages/course-page/CourseList";
 
 const SchedulerApp = lazy(() => import("@pages/scheduler/App"));
-const CourseList = lazy(() => import("@pages/course-page/CourseList"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));
 const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
 const RoomSchedule = lazy(() => import("@pages/room-page/RoomSchedule"));

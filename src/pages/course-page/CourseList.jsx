@@ -1,6 +1,6 @@
 // React Dom Hooks
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 // Custom Hooks
 import ErrorContent from "@components/ErrorContent";
@@ -17,6 +17,9 @@ import createCollegeQueryOptions, {
   useCollegeQueryById,
 } from "@hooks/createCollegeQueryOptions";
 import LoadingContent from "@components/LoadingContent";
+import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
+import EditCourseForm from "./components/EditCourseForm";
+import AssignTeacherForm from "./components/AssignTeacherForm";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -33,7 +36,38 @@ export default function CourseList() {
     error: courses_error,
   } = useQuery(createCourseQueryById(college_id));
 
-  // console.log(courses);
+  // const groupedCourses = useMemo(() => {
+  //   const groups = {};
+  //   if (!courses) return groups;
+
+  //   for (const course of courses) {
+  //     const key = `${course?.course_year}-${course?.semester}`;
+  //     if (!groups[key]) groups[key] = [];
+  //     groups[key].push(course);
+  //   }
+
+  //   return groups;
+  // }, [courses]);
+
+  // const [selectedCourse, setSelectedCourse] = useState(null);
+  // const [editOpen, setEditOpen] = useState(false);
+  // const [assignOpen, setAssignOpen] = useState(false);
+  // const [deleteOpen, setDeleteOpen] = useState(false);
+
+  // const handleEdit = (course) => {
+  //   setSelectedCourse(course);
+  //   setEditOpen(true);
+  // };
+
+  // const handleAssign = (course) => {
+  //   setSelectedCourse(course);
+  //   setAssignOpen(true);
+  // };
+
+  // const handleDelete = (course) => {
+  //   setSelectedCourse(course);
+  //   setDeleteOpen(true);
+  // };
 
   // Error Content Display
   if (courses_error)
@@ -86,24 +120,26 @@ export default function CourseList() {
       </header>
 
       {uniqueYears.map((year) => (
-        // Chopped up by year level
         <div
           key={year}
           className="mb-6 border border-gray-300 rounded-lg bg-gray-50 p-4 shadow-md"
         >
           <h2 className="text-3xl font-bold text-center mb-2">Year {year}</h2>
           <div className="flex gap-4 justify-center">
-            {uniqueSemesters.map((sem) => (
-              // List by semester
+            {uniqueSemesters?.map((sem) => (
               <SemesterSection
                 key={sem}
                 sem={sem}
                 year={year}
                 college_id={college_id}
+                // courses={groupedCourses[`${year}-${sem}`] || []}
                 courses={courses}
                 loading={courses_loading}
                 collegeName={collegeId?.college_name}
                 collegeMajor={collegeId?.college_major}
+                // onEdit={handleEdit}
+                // onAssign={handleAssign}
+                // onDelete={handleDelete}
               />
             ))}
           </div>

@@ -23,12 +23,27 @@ import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import { useParams } from "react-router-dom";
 
-export default function AssignTeacherForm({ open, onClose, courseId }) {
+export default function AssignTeacherForm({
+  open,
+  onClose,
+  courseId,
+  // toastMessage,
+  // toastType,
+  // toastTrigger,
+  onToast,
+  // setMessageToast,
+  // setTypeToast,
+  // setTriggerToast,
+}) {
   const [courseCode, setCourseCode] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedRoom, setSelectedRoom] = useState(null);
+
+  // const [toastMessage, setToastMessage] = useState("");
+  // const [toastType, setToastType] = useState("");
+  // const [toastTrigger, setToastTrigger] = useState(null);
 
   const { college_id } = useParams();
 
@@ -57,21 +72,42 @@ export default function AssignTeacherForm({ open, onClose, courseId }) {
 
     try {
       setLoading(true);
+
       await assignTeacherCourse({
         course_id: courseId,
         teacher_id: selectedTeacher.value,
         room_id: selectedRoom.value,
       });
-      queryClient.invalidateQueries({
-        queryKey: ["course", college_id],
+      const updated = {
+        first_name: selectedTeacher.label,
+        room_name: selectedRoom.label,
+      };
+
+      queryClient.setQueryData(["course", college_id], (old) => {
+        return old.map((course) =>
+          course.course_id === courseId
+            ? {
+                ...course,
+                first_name: selectedTeacher.label,
+                last_name: "",
+                room_name: selectedRoom.label,
+              }
+            : course
+        );
       });
 
-      // queryClient.setQueryData(["course", college_id], (old) =>
-      // console.log(old, courseId, selectedTeacher.label, selectedRoom.label)
-      // );
+      // toastMessage("Teacher and room successfully assigned");
+      // toastType("success");
+      // toastTrigger((prev) => prev + 1);
+
+      onToast?.("Teacher and room successfully assigned!", "success");
+
+      // console.log(`This still executes even with the return `);
+
       setError("");
       onClose();
     } catch (err) {
+      onToast?.(`Error ${err.message}`, "error");
       setError(`Error: ${err.message}`);
     } finally {
       setLoading(false);

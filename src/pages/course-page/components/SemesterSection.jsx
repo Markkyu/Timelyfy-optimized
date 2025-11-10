@@ -77,7 +77,7 @@
 //   );
 // }
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Fab } from "@mui/material";
 import AssignmentAddIcon from "@mui/icons-material/AssignmentAdd";
@@ -88,6 +88,9 @@ import { CalendarIcon } from "lucide-react";
 import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
 import { getCollegeById } from "@api/collegesAPI";
 import MergeCourseDialog from "./MergeCourseDialog";
+import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
+import EditCourseForm from "./EditCourseForm";
+import AssignTeacherForm from "./AssignTeacherForm";
 
 export default function SemesterSection({
   sem,
@@ -97,17 +100,40 @@ export default function SemesterSection({
   loading,
   collegeName,
   collegeMajor,
+  // onEdit,
+  // onAssign,
+  // onDelete,
 }) {
   const [addOpen, setAddOpen] = useState(false);
   const [mergeOpen, setMergeOpen] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [assignOpen, setAssignOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
+
+  const handleEdit = (course) => {
+    setSelectedCourse(course);
+    setEditOpen(true);
+  };
+
+  const handleAssign = (course) => {
+    setSelectedCourse(course);
+    setAssignOpen(true);
+  };
+
+  const handleDelete = useCallback((course) => {
+    setSelectedCourse(course);
+    setDeleteOpen(true);
+  }, []);
 
   const navigate = useNavigate();
 
-  const handleOpenMerge = (course) => {
+  // console.log(`semester render`);
+
+  const handleOpenMerge = useCallback((course) => {
     setSelectedCourse(course);
     setMergeOpen(true);
-  };
+  }, []);
 
   // Memoize filtered courses to avoid re-filtering every render
   const filteredCourses = useMemo(() => {
@@ -141,6 +167,9 @@ export default function SemesterSection({
         collegeName={collegeName}
         collegeMajor={collegeMajor}
         openMerge={() => handleOpenMerge(course)}
+        // onEdit={() => handleEdit(course)}
+        // onAssign={() => handleAssign(course)}
+        // onDelete={() => handleDelete(course)}
       />
     ));
   };
@@ -187,6 +216,30 @@ export default function SemesterSection({
         course={selectedCourse}
         courseCollege={selectedCourse?.course_college}
       />
+
+      {/* <EditCourseForm
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        course={selectedCourse}
+        collegeName={collegeName}
+        collegeMajor={collegeMajor}
+      /> */}
+
+      {/* <AssignTeacherForm
+        open={assignOpen}
+        onClose={() => setAssignOpen(false)}
+        courseId={selectedCourse?.course_id}
+      /> */}
+
+      {/* <DeleteConfirmDialog
+        onClose={() => setDeleteOpen(false)}
+        open={deleteOpen}
+        handleDelete={() =>
+          selectedCourse && deleteCourse(selectedCourse.course_id)
+        }
+        title="Delete Course"
+        desc="Are you sure you want to delete this course?"
+      /> */}
     </section>
   );
 }

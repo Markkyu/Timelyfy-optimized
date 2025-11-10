@@ -8,8 +8,6 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/login" replace />;
   }
 
-  console.log(user);
-
   if (allowedRoles.includes("*")) {
     return children;
   }

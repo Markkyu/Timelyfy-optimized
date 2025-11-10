@@ -22,6 +22,7 @@ import RenderWhenRole from "@components/RenderWhenRole";
 import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import { useQuery } from "@tanstack/react-query";
 import AddRoomForm from "./components/AddRoomForm";
+import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
 // import AddRoomForm from "./components/AddRoomForm";
 // import useRooms from "./useRooms";
 
@@ -33,17 +34,6 @@ export default function RoomPage() {
   const rowsPerPage = viewMode === "list" ? 12 : 8;
 
   const navigate = useNavigate();
-
-  // const {
-  //   data: rooms,
-  //   isPending: rooms_loading,
-  //   error: rooms_error,
-  // } = useRooms();
-
-  // const rooms = [{ room_id: 1, room_name: "test" }];
-  // const rooms = [];
-  // const rooms_loading = false;
-  // const rooms_error = null;
 
   const {
     data: rooms,
@@ -87,19 +77,22 @@ export default function RoomPage() {
 
   if (rooms_loading)
     return (
-      <div className="flex flex-col items-center justify-center h-full">
-        <LoadingContent
-          loadingTitle="Loading Rooms"
-          loadingDesc="Getting room information..."
-        />
-      </div>
+      // <div className="flex flex-col items-center justify-center h-full">
+      //   <LoadingContent
+      //     loadingTitle="Loading Rooms"
+      //     loadingDesc="Getting room information..."
+      //   />
+      // </div>
+      <>
+        <SkeletonLoaderManage />
+      </>
     );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto space-y-6">
         {/* Header Section */}
-        <header className="space-y-4">
+        <header className="space-y-5">
           {/* Top Bar */}
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <Button

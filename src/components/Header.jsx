@@ -68,9 +68,9 @@ const Header = ({ user_name, user_role }) => {
             <MenuItem onClick={() => handleNavigate("/account")}>
               Account
             </MenuItem>
-            <MenuItem onClick={() => handleNavigate("/settings")}>
+            {/* <MenuItem onClick={() => handleNavigate("/settings")}>
               Settings
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem
               onClick={() => {
                 handleCloseMenu();

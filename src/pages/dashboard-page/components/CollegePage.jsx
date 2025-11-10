@@ -31,16 +31,16 @@ export default function CollegePage() {
   } = useQuery(useCollegeQueryById(college_id));
 
   // Loading state
-  if (isLoading) {
-    return (
-      <div className="h-full bg-white flex flex-col items-center justify-center">
-        <LoadingContent
-          loadingTitle="Loading College"
-          loadingDesc="Loading college details..."
-        />
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <div className="h-full bg-white flex flex-col items-center justify-center">
+  //       <LoadingContent
+  //         loadingTitle="Loading College"
+  //         loadingDesc="Loading college details..."
+  //       />
+  //     </div>
+  //   );
+  // }
 
   // Error state
   if (error) {

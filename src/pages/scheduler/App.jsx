@@ -37,7 +37,6 @@ import useAuthStore from "@stores/useAuthStore";
 import checkSchedulesJS from "./api/checkSchedulesJS";
 import DisplayConflict from "./displayConflict";
 import UploadConfirm from "./UploadConfirm";
-import ScheduleDetailsDialog from "./ScheduleDetailDialog";
 import RenderWhenPhase from "@components/RenderWhenPhase";
 import createPhaseQueryOptions from "@hooks/createPhaseQueryOptions";
 import API from "@api/axios";
