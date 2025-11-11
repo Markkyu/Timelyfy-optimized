@@ -27,15 +27,7 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  logout: async () => {
-    try {
-      // Call backend to clear cookie + DB token
-      await API.post("/api/login/logout", {}, { withCredentials: true });
-    } catch (err) {
-      console.warn("Logout request failed:", err.message);
-    }
-
-    // Clear frontend session
+  logout: () => {
     set({ user: null, token: null });
     localStorage.removeItem("user");
     localStorage.removeItem("token");

@@ -111,7 +111,7 @@ export default function GlobalDashboard({ role }) {
     return {
       total: colleges.length,
       programs: colleges.length,
-      departments: new Set(colleges.map((c) => c.college_major)).size,
+      departments: new Set(colleges.map((c) => c.college_name)).size,
     };
   }, [colleges]);
 
@@ -127,18 +127,7 @@ export default function GlobalDashboard({ role }) {
     );
 
   // Loading state
-  if (colleges_loading)
-    return (
-      // <div className="p-6 h-full flex items-center justify-center">
-      //   <LoadingContent
-      //     loadingTitle="Loading Academic Programs"
-      //     loadingDesc="Fetching your colleges and programs..."
-      //   />
-      // </div>
-      <>
-        <SkeletonLoaderManage />
-      </>
-    );
+  if (colleges_loading) return <SkeletonLoaderManage />;
 
   // Empty state
   if (colleges?.length === 0)
@@ -244,14 +233,14 @@ export default function GlobalDashboard({ role }) {
               color="blue"
               Icon={School}
               stats={stats.total}
-              description="College Departments"
+              description="College Departments w/ Majors"
             />
 
             <StatCard
               color="purple"
               Icon={GraduationCap}
               stats={stats.departments}
-              description="Departments"
+              description="College Departments"
             />
 
             <StatCard

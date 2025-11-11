@@ -19,7 +19,6 @@ export default function AccountPage() {
     <div className="bg-gradient-to-r from-gray-200 to-gray-300 p-4 md:p-6 lg:p-8">
       <div className="min-h-screen max-w-7xl 2xl:max-w-[1600px] mx-auto ">
         <div className="mx-auto">
-          {/* Page Title */}
           <div className="mb-6">
             <h1 className="text-3xl font-bold text-gray-800 mb-2">
               Account Settings
@@ -38,9 +37,7 @@ export default function AccountPage() {
 
           {/* Main Content Grid */}
           <div className="grid grid-cols-1 gap-6 mb-6">
-            {/* Left Column */}
             <div className="space-y-6">
-              {/* Change Password Card */}
               <ChangePasswordCard
                 changePasswordStatus={user?.change_password}
                 userId={user?.id}

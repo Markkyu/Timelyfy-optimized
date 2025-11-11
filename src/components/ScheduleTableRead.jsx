@@ -4,6 +4,7 @@
 import generateTimeSlots from "./generateTimeSlots";
 import { colorPalette } from "./colorPalette";
 import CloseIcon from "@mui/icons-material/Close";
+import RoomSchedule from "@pages/room-page/RoomSchedule";
 
 export default function ScheduleTableRead({ schedules, onCellClick }) {
   const timeSlots = generateTimeSlots();
@@ -102,8 +103,9 @@ export default function ScheduleTableRead({ schedules, onCellClick }) {
                   >
                     {course && (
                       <div className="relative">
-                        <span className="text-white font-semibold">
-                          {course.slot_course}
+                        <span className="text-white font-semibold text-xl">
+                          {course.course_code}
+                          {/* {course.slot_course} */}
                         </span>
                       </div>
                     )}

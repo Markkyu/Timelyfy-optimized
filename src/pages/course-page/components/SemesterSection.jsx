@@ -100,6 +100,7 @@ export default function SemesterSection({
   loading,
   collegeName,
   collegeMajor,
+  collegeCode,
   // onEdit,
   // onAssign,
   // onDelete,
@@ -111,20 +112,20 @@ export default function SemesterSection({
   const [assignOpen, setAssignOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
-  const handleEdit = (course) => {
-    setSelectedCourse(course);
-    setEditOpen(true);
-  };
+  // const handleEdit = (course) => {
+  //   setSelectedCourse(course);
+  //   setEditOpen(true);
+  // };
 
-  const handleAssign = (course) => {
-    setSelectedCourse(course);
-    setAssignOpen(true);
-  };
+  // const handleAssign = (course) => {
+  //   setSelectedCourse(course);
+  //   setAssignOpen(true);
+  // };
 
-  const handleDelete = useCallback((course) => {
-    setSelectedCourse(course);
-    setDeleteOpen(true);
-  }, []);
+  // const handleDelete = useCallback((course) => {
+  //   setSelectedCourse(course);
+  //   setDeleteOpen(true);
+  // }, []);
 
   const navigate = useNavigate();
 
@@ -167,6 +168,7 @@ export default function SemesterSection({
         collegeName={collegeName}
         collegeMajor={collegeMajor}
         openMerge={() => handleOpenMerge(course)}
+        collegeCode={collegeCode}
         // onEdit={() => handleEdit(course)}
         // onAssign={() => handleAssign(course)}
         // onDelete={() => handleDelete(course)}
@@ -208,6 +210,7 @@ export default function SemesterSection({
         year={year}
         collegeName={collegeName}
         collegeMajor={collegeMajor}
+        collegeCode={collegeCode}
       />
 
       <MergeCourseDialog

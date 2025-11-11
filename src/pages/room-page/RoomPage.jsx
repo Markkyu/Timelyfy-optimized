@@ -83,9 +83,8 @@ export default function RoomPage() {
       //     loadingDesc="Getting room information..."
       //   />
       // </div>
-      <>
-        <SkeletonLoaderManage />
-      </>
+
+      <SkeletonLoaderManage />
     );
 
   return (

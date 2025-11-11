@@ -64,7 +64,9 @@ export default function SchedulerApp() {
   );
 
   const isCurrentPhase =
-    phase?.phase_year == college_year && phase?.phase_sem == college_sem;
+    phase?.phase_year == college_year &&
+    phase?.phase_sem == college_sem &&
+    phase?.phase_supervisor == user?.role;
 
   // to display the current college
   const currCollege = collegeList?.find((c) => c.college_id == college_group);
@@ -110,8 +112,6 @@ export default function SchedulerApp() {
     isPending: schedules_loading,
     error: schedules_error,
   } = useQuery(classGroupSchedQuery(class_group));
-
-  console.log(newSchedules);
 
   const allSchedules = useMemo(() => {
     return [...existingSchedules, ...newSchedules];
@@ -186,13 +186,10 @@ export default function SchedulerApp() {
     let slotsNeeded = duration === 1 ? 2 : duration === 1.5 ? 3 : 1;
 
     const newEntries = Array.from({ length: slotsNeeded }, (_, i) => ({
-      // course_id = not in the original course
-      course_id: selectedCourse.course_id, // not in the original course
+      course_id: selectedCourse.course_id,
       class_id: class_group,
       slot_course: selectedCourse.course_id,
-      // teacher_id: selectedCourse.assigned_teacher, // original
       teacher_id: selectedCourse.assigned_teacher,
-      // room_ID: selectedCourse.assigned_room, // original
       room_id: selectedCourse.assigned_room,
       slot_day: dayIndex,
       slot_time: timeIndex + i,
@@ -268,13 +265,17 @@ export default function SchedulerApp() {
 
   const handleAutoAllocate = async () => {
     // Filter the subjects based on the user
+
+    // console.log(queueSubjects);
+
     const slots = queueSubjects
       .filter(
         (s) =>
           s.hours_week > 0 &&
           s.is_plotted !== 1 &&
           (Number(s.assigned_teacher) > 0 || Number(s.assigned_room) > 0) &&
-          s.created_by == user.id
+          s.created_by == user.id &&
+          s.merge_colleges == null
       )
       .map((s) => ({
         course_ID: s.course_id,
@@ -301,7 +302,7 @@ export default function SchedulerApp() {
 
       setAllocatingStatus("success");
 
-      // success — animate insertion
+      // success - animate insertion
       for (let i = 0; i < assigningSchedules.length; i++) {
         setNewSchedules((prev) => [...prev, assigningSchedules[i]]);
         await sleep(38);
@@ -330,61 +331,25 @@ export default function SchedulerApp() {
     }
   };
 
-  // Mutation of uploading schedules
-  // const { mutate: uploadScheduleMutate, isPending: postScheduleLoading } =
-  //   useMutation({
-  //     mutationFn: (newSchedules) => uploadSchedule(newSchedules),
-
-  //     onSuccess: () => {
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["courses"],
-  //       });
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["schedules"],
-  //       });
-  //       queryClient.invalidateQueries({
-  //         queryKey: ["course", college],
-  //       });
-
-  //       setSelectedCourse(null);
-  //       setNewSchedules([]);
-
-  //       setToastMessage("New schedules successfully saved!");
-  //       setToastType("success");
-  //       setToastTrigger((prev) => prev + 1);
-  //     },
-
-  //     onError: (error) => {
-  //       console.error(error?.message);
-  //       setToastMessage(`Error saving schedules: ${error?.message}`);
-  //       setToastType("error");
-  //       setToastTrigger((prev) => prev + 1);
-  //     },
-  //   });
-
   const { mutate: uploadScheduleMutation, isPending: pendingScheduleCheck } =
     useMutation({
       mutationFn: (newSchedules) => uploadSchedule(newSchedules),
 
       onSuccess: () => {
         queryClient.invalidateQueries({
-          queryKey: ["courses"],
+          queryKey: ["courses", college, college_year, college_sem],
         });
-
         // queryClient.invalidateQueries({
         //   queryKey: ["schedules"],
         // });
-        // queryClient.invalidateQueries({
-        //   queryKey: ["class-schedules"],
-        // });
-
-        // queryClient.setQueryData(["class-schedules"], () => {
-        //   return [...existingSchedules, ...newSchedules];
-        // });
+        queryClient.invalidateQueries({
+          queryKey: ["course", college],
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["class-schedules"],
+        });
 
         existingSchedules.push(...newSchedules);
-
-        console.log("Succesful Schedule!");
 
         setSelectedCourse(null);
         setNewSchedules([]);
@@ -410,8 +375,6 @@ export default function SchedulerApp() {
         setConflictDetails(result?.conflicts);
         setShowConflictState(true);
       } else {
-        // setUploadConfirmOpen(true);
-        // console.log(mergedSchedule);
         uploadScheduleMutation(mergedSchedule);
       }
     } catch (error) {
@@ -419,9 +382,7 @@ export default function SchedulerApp() {
     }
   };
 
-  // Create an upload to take the newSchedules and pass it to a check then the database
   const uploadScheduleToDatabase = async () => {
-    // conflictCheckB4Sched(newSchedules);
     try {
       const mergeResponse = await API.get(
         `${import.meta.env.VITE_API_URL}/api/schedules/merge-courses`
@@ -440,19 +401,16 @@ export default function SchedulerApp() {
       const expandedSchedules = [];
 
       for (const schedule of newSchedules) {
-        // Always add the original schedule
         expandedSchedules.push(schedule);
 
-        // Check if this course has merged versions
         const mergedColleges = mergeMap.get(schedule.course_id);
 
         if (mergedColleges && mergedColleges.length > 0) {
-          // Create a copy for each merged college
           mergedColleges.forEach((mergeCollege) => {
             const mergedSchedule = {
-              ...schedule, // Copy everything
-              class_id: mergeCollege, // Just use merge_college directly (e.g., "BSCoE1")
-              slot_course: `${schedule.course_id}`, // Update slot_course
+              ...schedule,
+              class_id: mergeCollege,
+              slot_course: `${schedule.course_id}`,
             };
 
             expandedSchedules.push(mergedSchedule);
@@ -468,16 +426,8 @@ export default function SchedulerApp() {
       setToastMessage("Error uploading schedules");
       setToastType("error");
     }
-    // Now pass to conflict checker or upload
-    // conflictCheckB4Sched(expandedSchedules);
-    // for each new schedules, kung may 6 na schedules,
-    // hahanapin yung same course_id dun sa db tapos icocopy papaltan lang ang
-    // class id
-
-    // if may katulad sa new schedules -> use the same sequence pero sa ibang class_id
   };
 
-  // upload for real
   const uploadForReal = () => {
     uploadScheduleMutation(expandedSchedules);
   };
@@ -509,48 +459,6 @@ export default function SchedulerApp() {
     setToastTrigger((prev) => prev + 1);
   };
 
-  const handleRemoveCourseSchedules = (courseId) => {
-    // Find all plotted schedules for this course
-    const courseSchedules = newSchedules.filter(
-      (sched) => sched.slot_course === courseId
-    );
-
-    if (courseSchedules.length === 0) {
-      console.log(`No plotted schedules found for course ${courseId}`);
-      return;
-    }
-
-    // Compute total hours to restore (0.5 hr per cell)
-    const hoursToRestore = courseSchedules.length * 0.5;
-
-    // Remove the course's schedules
-    setNewSchedules((prev) =>
-      prev.filter((sched) => sched.slot_course !== courseId)
-    );
-
-    // Restore hours in queueSubjects
-    setQueueSubjects((prevSubjects) =>
-      prevSubjects.map((subject) =>
-        subject.course_id === courseId
-          ? { ...subject, hours_week: subject.hours_week + hoursToRestore }
-          : subject
-      )
-    );
-
-    // If selected course is the same one, restore its hours too
-    setSelectedCourse((prev) =>
-      prev?.course_id === courseId
-        ? { ...prev, hours_week: prev.hours_week + hoursToRestore }
-        : prev
-    );
-
-    setSelectedCourse(selectedCourseOriginalHours);
-
-    console.log(
-      `Removed ${courseSchedules.length} plotted schedules for course ${courseId}. Restored ${hoursToRestore} hrs.`
-    );
-  };
-
   // Tracks incomplete hours if changed
   const getLockButtonTooltip = () => {
     if (newSchedules.length === 0) {
@@ -577,10 +485,19 @@ export default function SchedulerApp() {
     return "Lock schedules to database";
   };
 
+  // const { data: phase, isPending: loadingPhase } = useQuery(
+  //   createPhaseQueryOptions()
+  // );
   return (
     <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto p-5">
       <header className="flex items-center justify-between">
         {/* Back Button */}
+        {/* <RenderWhenPhase
+          currYear={college_year}
+          currSem={college_sem}
+          phaseYear={phase?.phase_year}
+          phaseSem={phase?.phase_sem}
+        > */}
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
@@ -596,6 +513,7 @@ export default function SchedulerApp() {
         >
           Back to Courses
         </Button>
+        {/* </RenderWhenPhase> */}
 
         {/* Title */}
         <div className="text-center flex flex-col">
@@ -735,7 +653,7 @@ export default function SchedulerApp() {
         </div>
 
         <hr className="my-6 border-gray-400" />
-
+        {/* {console.log(college_year, college_sem)} */}
         {/* <RenderWhenPhase year={college_year} sem={college_sem}> */}
         <div className="w-full flex justify-center">
           <RemoveLockSchedules

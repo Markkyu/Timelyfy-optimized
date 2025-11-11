@@ -43,8 +43,6 @@ export default function UserPage() {
     error: users_error,
   } = useQuery(createUserQueryOptions());
 
-  console.log(users);
-
   // Search and Filter Function
   const filteredData = useMemo(() => {
     if (!users) return [];
@@ -110,9 +108,8 @@ export default function UserPage() {
       //     loadingDesc="Getting user information..."
       //   />
       // </div>
-      <>
-        <SkeletonLoaderManage />
-      </>
+
+      <SkeletonLoaderManage />
     );
 
   return (

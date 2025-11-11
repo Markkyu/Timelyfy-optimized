@@ -138,9 +138,8 @@ export default function PhaseControl() {
       //     loadingDesc="Loading phase control..."
       //   />
       // </div>
-      <>
-        <PhaseControlSkeleton />
-      </>
+
+      <PhaseControlSkeleton />
     );
   }
 

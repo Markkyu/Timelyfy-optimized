@@ -19,7 +19,7 @@ import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import recentCourseQuery from "@hooks/recentCourseQuery";
 // import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
-import { formatCode } from "./formatCode";
+import { formatCode, formatCode2 } from "./formatCode";
 
 export default function AddCourseForm({
   open,
@@ -29,13 +29,13 @@ export default function AddCourseForm({
   year,
   collegeMajor,
   collegeName,
+  collegeCode,
 }) {
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
   const [hoursWeek, setHoursWeek] = useState(3);
   const [error, setError] = useState(null);
 
-  // useref
   const firstInputRef = useRef(null);
 
   const { user } = useAuthStore();
@@ -47,10 +47,6 @@ export default function AddCourseForm({
 
     onSuccess: (data, newCourse, context) => {
       queryClient.setQueryData(["course", college_id], (old) => {
-        console.log(old);
-        console.log(newCourse);
-        console.log(context);
-
         if (!old) return [newCourse];
         return [...old, newCourse];
       });
@@ -69,15 +65,13 @@ export default function AddCourseForm({
 
   const { data: currSubjects } = useQuery(recentCourseQuery());
 
-  // console.log(currSubjects);
-
-  // const { data: currSubjects } = useQuery(createCourseQueryOptions());
   const recentCourses = currSubjects?.reverse();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const formattedCourseId = formatCode(collegeName, collegeMajor, courseCode);
+    // const formattedCourseId = formatCode(collegeName, collegeMajor, courseCode);
+    const formattedCourseId = formatCode2(collegeCode, courseCode);
 
     const courseData = {
       course_id: formattedCourseId,
@@ -90,8 +84,6 @@ export default function AddCourseForm({
       created_by: user.id,
       assigned_teacher: null,
     };
-
-    // console.log(courseData);
 
     mutate(courseData);
   };

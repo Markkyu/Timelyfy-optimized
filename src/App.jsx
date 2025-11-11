@@ -74,10 +74,6 @@ import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
 import PhaseControlSkeleton from "@components/loader/PhaseControlSkeleton";
 import AccountPage from "@pages/account-page/AccountPage";
 import CourseList from "@pages/course-page/CourseList";
-// import UserPage from "@pages/user-page/UserPage";
-// import PhaseControl from "@pages/phase-page/PhaseControl";
-// import RoomPage from "@pages/room-page/RoomPage";
-// import AllTeachersPage from "@pages/all-teacher-page/AllTeachersPage";
 
 const UserPage = lazy(() => import("@pages/user-page/UserPage"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));

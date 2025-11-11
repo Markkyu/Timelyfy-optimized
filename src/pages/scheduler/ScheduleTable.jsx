@@ -167,7 +167,7 @@ export default function ScheduleTable({
                           </button>
                           <div>
                             <p className="text-wrap text-base font-semibold text-gray-50">
-                              {course.slot_course}
+                              {course.course_code || course.course_id}
                             </p>
                             <p className="text-wrap text-base font-semibold">
                               {/* {course.course_name} */}

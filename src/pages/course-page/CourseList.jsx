@@ -137,6 +137,7 @@ export default function CourseList() {
                 loading={courses_loading}
                 collegeName={collegeId?.college_name}
                 collegeMajor={collegeId?.college_major}
+                collegeCode={collegeId?.college_code}
                 // onEdit={handleEdit}
                 // onAssign={handleAssign}
                 // onDelete={handleDelete}

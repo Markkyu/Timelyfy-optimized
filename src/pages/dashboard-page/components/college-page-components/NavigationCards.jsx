@@ -18,8 +18,6 @@ export default function NavigationCards({
 
   const currUserRole = user.role;
 
-  console.log(college);
-
   const {
     data: phases,
     isPending: phase_loading,
