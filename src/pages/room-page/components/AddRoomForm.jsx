@@ -24,7 +24,7 @@ export default function AddRoomForm({ open, onClose }) {
   const [toastTrigger, setToastTrigger] = useState(0);
   const [toastType, setToastType] = useState("error");
 
-  const roomRef = useRef(null); // ✅ create ref
+  const roomRef = useRef(null);
 
   const queryClient = useQueryClient();
 

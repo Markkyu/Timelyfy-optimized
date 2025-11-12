@@ -18,7 +18,7 @@ export default function DeleteAccountCard() {
   const [confirmText, setConfirmText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState("");
-  
+
   const { user, logout } = useAuthStore();
 
   const handleRequestDelete = () => {
@@ -45,7 +45,7 @@ export default function DeleteAccountCard() {
 
       // Log out user after successful deletion
       logout();
-      
+
       // Redirect to login or home page
       window.location.href = "/login";
     } catch (err) {
@@ -78,7 +78,10 @@ export default function DeleteAccountCard() {
 
           <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg mb-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="text-red-600 mt-1 flex-shrink-0" size={20} />
+              <AlertTriangle
+                className="text-red-600 mt-1 flex-shrink-0"
+                size={20}
+              />
               <div>
                 <h3 className="font-semibold text-red-800 mb-2">
                   Warning: This action cannot be undone

@@ -21,6 +21,7 @@ import createUserQueryOptionsById from "@hooks/createUserQueryOptionsById";
 import { useQuery } from "@tanstack/react-query";
 import { getUserById } from "@api/usersAPI";
 import ApprovePasswordRequest from "./components/ApprovePasswordRequest";
+import LoadingComponent from "@components/LoadingComponent";
 
 export default function UserDetails() {
   const { userId } = useParams();
@@ -51,12 +52,15 @@ export default function UserDetails() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="h-full flex flex-col justify-center items-center">
-        <LoadingContent
-          loadingTitle="Loading User Details"
-          loadingDesc="Loading user details..."
-        />
-      </div>
+      // <div className="h-full flex flex-col justify-center items-center">
+      //   <LoadingContent
+      //     loadingTitle="Loading User Details"
+      //     loadingDesc="Loading user details..."
+      //   />
+      // </div>
+      <>
+        <LoadingComponent />
+      </>
     );
   }
 

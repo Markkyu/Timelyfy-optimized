@@ -69,7 +69,8 @@ export default function ConfirmDialog({
       </DialogTitle>
 
       <DialogContent className="pt-6 space-y-4">
-        <p className="text-gray-700">{message}</p>
+        {/* <p className="text-gray-700">{message}</p> */}
+        <p className="text-gray-700">Holabels</p>
 
         {severity === "warning" ? (
           <Alert severity="warning" className="mt-4">

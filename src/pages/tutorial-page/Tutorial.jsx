@@ -31,7 +31,6 @@ export default function Tutorial() {
       title: "User Privileges",
       description:
         "Understand the roles of Master Scheduler, Super User, and Regular User.",
-      icon: "👥",
       color: "from-blue-500 to-blue-600",
       content: `
         <div class="space-y-4">
@@ -64,12 +63,11 @@ export default function Tutorial() {
       title: "How to Use the Scheduler",
       description:
         "Learn how to add courses, assign teachers, and generate timetables.",
-      icon: "📅",
+
       color: "from-red-500 to-red-600",
       content: `
         <div class="space-y-4">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Scheduling Guide</h3>
-          
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Scheduling Guide</h3
           <div class="space-y-3">
             <div class="flex gap-3">
               <div class="flex-shrink-0 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold">1</div>
@@ -90,7 +88,7 @@ export default function Tutorial() {
             <div class="flex gap-3">
               <div class="flex-shrink-0 w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center font-bold">3</div>
               <div>
-                <h4 class="font-semibold text-gray-800">The Auto Allocate Button</h4>
+                <h4 class="font-semibold text-gray-800">Click Auto Allocate Button</h4>
                 <p class="text-sm text-gray-600">The queued schedule is detected by the system. By clicking the auto-allocate button it automagically plots the schedules for you in a "greedy" manner.</p>
               </div>
             </div>
@@ -113,10 +111,34 @@ export default function Tutorial() {
       `,
     },
     {
+      title: "Conflict Checker",
+      description: "About the built-in conflict checker.",
+      color: "from-yellow-500 to-yellow-600",
+      content: `
+        <div class="space-y-4">
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">What is it? What it checks?</h3>
+          
+          <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
+            <h4 class="font-bold text-yellow-900 mb-2">🔒 Locking in your Schedule</h4>
+            <p class="text-gray-700 text-sm">When you create a schedule manually and decided to lock it, it will run the conflict checker to see if the system has this slot already filled somewhere else.</p>
+          </div>
+
+          <div class="bg-gradient-to-r from-amber-50 to-amber-100 p-4 rounded-lg border border-amber-200">
+            <h4 class="font-bold text-amber-900 mb-2">🎯 Scans Duplicates</h4>
+            <p class="text-gray-700 text-sm">The conflict checker sees if a spot is occupied by any of these 3 elements: Teacher, Room, and Class Group (e.g. <span class="underline">BSCS 1st Yr, 1st Sem</span>)</p>
+          </div>
+
+          <div class="bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-lg border border-orange-200">
+            <h4 class="font-bold text-orange-900 mb-2">🔍 Scheduler</h4>
+            <p class="text-gray-700 text-sm">The scheduler filters out the merged subjects as this feature is an afterthought to consider the schedules of different college programs in one class.</p>
+          </div>
+        </div>
+      `,
+    },
+    {
       title: "Account Management",
       description:
         "Manage your account settings, update details, and handle access.",
-      icon: "⚙️",
       color: "from-green-500 to-green-600",
       content: `
         <div class="space-y-4">
@@ -148,7 +170,7 @@ export default function Tutorial() {
       title: "Phase Management",
       description:
         "Learn how to transition between academic phases and semesters.",
-      icon: "🔄",
+
       color: "from-purple-500 to-purple-600",
       content: `
         <div class="space-y-4">
@@ -185,12 +207,11 @@ export default function Tutorial() {
       title: "Troubleshooting",
       description:
         "Common issues and solutions to help you resolve problems quickly.",
-      icon: "🔧",
+
       color: "from-orange-500 to-orange-600",
       content: `
         <div class="space-y-4">
-          <h3 class="text-lg font-semibold text-gray-800 mb-3">Common Issues & Solutions</h3>
-          
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">Common Issues & Solutions</h3>      
           <div class="space-y-3">
             <div class="bg-white p-4 rounded-lg border-l-4 border-orange-500 shadow-sm">
               <h4 class="font-bold text-gray-900 mb-1">❌ Schedule Conflicts Not Resolving</h4>
@@ -220,12 +241,6 @@ export default function Tutorial() {
                 <li>Look for error messages in red</li>
               </ul>
             </div>
-          </div>
-
-          <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-            <p class="text-sm text-blue-800">
-              <strong>📞 Still Need Help?</strong> Contact technical support or your system administrator for assistance.
-            </p>
           </div>
         </div>
       `,
@@ -283,7 +298,7 @@ export default function Tutorial() {
               </div>
               <div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Quick Heads Up
+                  Quick Tips
                 </h3>
                 <ul className="space-y-2 text-gray-700">
                   <li className="flex items-start gap-2">
@@ -334,7 +349,7 @@ export default function Tutorial() {
         <DialogTitle className="border-b border-gray-200 pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{selected?.icon}</span>
+              {/* <span className="text-3xl">{selected?.icon}</span> */}
               <span className="text-2xl font-bold text-gray-900">
                 {selected?.title}
               </span>

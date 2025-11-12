@@ -7,20 +7,29 @@ import { useQueryClient } from "@tanstack/react-query";
 import { deleteRoom } from "@api/roomsAPI";
 import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import RenderWhenRole from "@components/RenderWhenRole";
-import DeleteConfirmDialog from "@components/DeleteConfirmDialog"; // ✅ import dialog
+import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 
-export default function RoomListView({ room }) {
+export default function RoomListView({ room, deleteToast }) {
   const [openEdit, setOpenEdit] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false); // ✅ dialog state
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const handleDeleteRoom = async () => {
-    await deleteRoom(room.room_id);
-    queryClient.invalidateQueries({
-      queryKey: allRoomsQuery().queryKey,
-    });
-    setOpenDeleteDialog(false);
+    try {
+      await deleteRoom(room?.room_id);
+
+      queryClient.invalidateQueries({
+        queryKey: allRoomsQuery().queryKey,
+      });
+
+      deleteToast("Room Deleted Successfully", "success");
+
+      setOpenDeleteDialog(false);
+    } catch (error) {
+      console.error(error.message);
+      deleteToast("Room Deleted Successfully", "success");
+    }
   };
 
   const handleViewSchedule = () => {
@@ -86,19 +95,9 @@ export default function RoomListView({ room }) {
 
             <RenderWhenRole role={["master_scheduler", "admin"]}>
               <IconButton
-                onClick={() => setOpenEdit(true)}
-                sx={{ color: "gray" }}
-              >
-                <Edit size={20} />
-              </IconButton>
-
-              <IconButton
-                onClick={() => setOpenDeleteDialog(true)} // ✅ open dialog
+                onClick={() => setOpenDeleteDialog(true)}
                 sx={{
                   color: "error.main",
-                  "&:hover": {
-                    bgcolor: "error.lighter",
-                  },
                 }}
               >
                 <Trash2 size={20} />

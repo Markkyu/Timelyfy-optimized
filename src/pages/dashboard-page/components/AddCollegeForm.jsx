@@ -18,7 +18,7 @@ import { createCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ToastNotification from "@components/ToastNotification";
 
-export default function AddCollegeForm({ open, onClose }) {
+export default function AddCollegeForm({ open, onClose, addToast }) {
   const [collegeName, setCollegeName] = useState("");
   const [collegeCode, setCollegeCode] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
@@ -40,7 +40,10 @@ export default function AddCollegeForm({ open, onClose }) {
 
   // Mutation function
   const { mutate, isPending: loading } = useMutation({
-    mutationFn: (collegeData) => createCollege(collegeData),
+    mutationFn: (collegeData) => {
+      // throw new Error("Error test"); // simulate error inside mutation
+      createCollege(collegeData);
+    },
 
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -51,9 +54,10 @@ export default function AddCollegeForm({ open, onClose }) {
       setCollegeCode("");
       onClose();
 
-      setToastMessage("College Program Successfully Added!");
-      setToastType("success");
-      setToastTrigger((prev) => prev + 1);
+      // setToastMessage("College Program Successfully Added!");
+      // setToastType("success");
+      // setToastTrigger((prev) => prev + 1);
+      addToast("College Program Successfully Added!", "success");
     },
 
     onError: (error) => {
@@ -86,11 +90,11 @@ export default function AddCollegeForm({ open, onClose }) {
         TransitionComponent={Grow}
         keepMounted
         onClose={() => {
-          onClose();
           setCollegeName("");
           setCollegeMajor("");
           setCollegeCode("");
           setError(null);
+          onClose();
         }}
         fullWidth
         maxWidth="xs"
@@ -118,9 +122,8 @@ export default function AddCollegeForm({ open, onClose }) {
           </Typography>
         </DialogTitle>
 
-        {error && <Alert severity="error">{error}</Alert>}
-
         <DialogContent>
+          {error && <Alert severity="error">{error}</Alert>}
           <form onSubmit={handleSubmit} className="space-y-2">
             <TextField
               label="College Code"
@@ -197,11 +200,11 @@ export default function AddCollegeForm({ open, onClose }) {
           </form>
         </DialogContent>
       </Dialog>
-      <ToastNotification
+      {/* <ToastNotification
         message={toastMessage}
         trigger={toastTrigger}
         type={toastType}
-      />
+      /> */}
     </>
   );
 }

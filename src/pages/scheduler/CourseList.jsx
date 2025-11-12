@@ -33,7 +33,7 @@ export default function CourseList({
 
   if (courses_error) {
     return (
-      <section className="w-full h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
+      <section className="w-[90%] mx-auto h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
         <h2 className="text-2xl font-semibold text-red-800 mb-4">
           Available Courses
         </h2>
@@ -54,7 +54,7 @@ export default function CourseList({
     const repeatCards = Array.from({ length: 6 }, (x, i) => i);
 
     return (
-      <section className="w-full h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
+      <section className="w-[90%] mx-auto h-full border-t-6 border-t-red-800 p-6 bg-white shadow-md rounded-xl">
         <h2 className="text-2xl font-semibold text-red-800 mb-4">
           Available Courses
         </h2>
@@ -70,7 +70,7 @@ export default function CourseList({
 
   if (courses?.length === 0)
     return (
-      <section className="h-full p-6 bg-white shadow-md rounded-xl">
+      <section className="w-[90%] mx-auto h-full p-6 bg-white shadow-md rounded-xl">
         <h2 className="text-2xl font-semibold text-red-800 mb-4">
           Available Courses
         </h2>
@@ -83,14 +83,12 @@ export default function CourseList({
     );
 
   return (
-    <section className="h-full p-6 bg-white shadow-md rounded-xl">
+    <section className="w-[90%] mx-auto h-full p-6 bg-white shadow-md rounded-xl">
       <h2 className="text-2xl font-semibold text-red-800 mb-4">
         Available Courses
       </h2>
 
-      <div className="py-4">{children}</div>
-
-      <div className="grid grid-cols-4 2xl:flex 2xl:flex-col gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {courses?.map((course) => {
           const isSelected = selectedCourse?.course_id === course.course_id;
           const isPlotted = course.is_plotted;
@@ -117,6 +115,8 @@ export default function CourseList({
           );
         })}
       </div>
+
+      <div className="py-4">{children}</div>
     </section>
   );
 }

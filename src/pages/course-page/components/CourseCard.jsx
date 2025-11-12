@@ -33,6 +33,7 @@ export default function CourseCard({
   collegeName,
   collegeMajor,
   openMerge,
+  collegeCode,
   // onEdit,
   // onAssign,
   // onDelete,
@@ -221,6 +222,7 @@ export default function CourseCard({
         course={course}
         collegeName={collegeName}
         collegeMajor={collegeMajor}
+        collegeCode={collegeCode}
       />
 
       <AssignTeacherForm

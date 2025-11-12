@@ -76,6 +76,7 @@ export default function SchedulerApp() {
 
   // Allocating error message
   const [allocatingError, setAllocatingError] = useState(null);
+  const [lockSchedulesLoading, setLockSchedulesLoading] = useState(false);
 
   // Toast notification
   const [toastMessage, setToastMessage] = useState("");
@@ -265,13 +266,10 @@ export default function SchedulerApp() {
 
   const handleAutoAllocate = async () => {
     // Filter the subjects based on the user
-
-    // console.log(queueSubjects);
-
     const slots = queueSubjects
       .filter(
         (s) =>
-          s.hours_week > 0 &&
+          s.hours_week > 2 &&
           s.is_plotted !== 1 &&
           (Number(s.assigned_teacher) > 0 || Number(s.assigned_room) > 0) &&
           s.created_by == user.id &&
@@ -288,10 +286,11 @@ export default function SchedulerApp() {
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
     try {
+      setLockSchedulesLoading(true); // disable the button
       setAllocating(true);
       setAllocatingStatus("loading");
 
-      await sleep(500); // “thinking”
+      // “thinking”
 
       const assigningSchedules = await autoAllocate(slots);
 
@@ -305,7 +304,7 @@ export default function SchedulerApp() {
       // success - animate insertion
       for (let i = 0; i < assigningSchedules.length; i++) {
         setNewSchedules((prev) => [...prev, assigningSchedules[i]]);
-        await sleep(38);
+        await sleep(30);
       }
 
       // update hours
@@ -325,9 +324,10 @@ export default function SchedulerApp() {
       setAllocatingError(err.message);
       setAllocatingStatus("error");
     } finally {
-      await sleep(1000);
+      await sleep(500);
       setAllocating(false);
       setSelectedCourse(null);
+      setLockSchedulesLoading(false);
     }
   };
 
@@ -357,6 +357,8 @@ export default function SchedulerApp() {
         setToastMessage("Schedules successfully saved!");
         setToastType("success");
         setToastTrigger((prev) => prev + 1);
+
+        setLockSchedulesLoading(false);
       },
 
       onError: (error) => {
@@ -364,26 +366,34 @@ export default function SchedulerApp() {
         setToastMessage(`Error saving schedules: ${error?.message}`);
         setToastType("error");
         setToastTrigger((prev) => prev + 1);
+        setLockSchedulesLoading(false);
       },
     });
 
   const conflictCheckB4Sched = async (mergedSchedule) => {
     try {
+      setLockSchedulesLoading(true);
       const result = await checkSchedulesJS(mergedSchedule);
 
       if (result.status === 409) {
         setConflictDetails(result?.conflicts);
         setShowConflictState(true);
       } else {
-        uploadScheduleMutation(mergedSchedule);
+        await uploadScheduleMutation(mergedSchedule);
       }
     } catch (error) {
       console.error("Unexpected error:", error.message);
+      setToastMessage("An error has occurred");
+      setToastType("error");
+      setToastTrigger((prev) => prev + 1);
+    } finally {
+      setLockSchedulesLoading(false);
     }
   };
 
   const uploadScheduleToDatabase = async () => {
     try {
+      setLockSchedulesLoading(true);
       const mergeResponse = await API.get(
         `${import.meta.env.VITE_API_URL}/api/schedules/merge-courses`
       );
@@ -429,6 +439,7 @@ export default function SchedulerApp() {
   };
 
   const uploadForReal = () => {
+    setLockSchedulesLoading(true);
     uploadScheduleMutation(expandedSchedules);
   };
 
@@ -459,6 +470,8 @@ export default function SchedulerApp() {
     setToastTrigger((prev) => prev + 1);
   };
 
+  console.log(lockSchedulesLoading);
+
   // Tracks incomplete hours if changed
   const getLockButtonTooltip = () => {
     if (newSchedules.length === 0) {
@@ -485,19 +498,10 @@ export default function SchedulerApp() {
     return "Lock schedules to database";
   };
 
-  // const { data: phase, isPending: loadingPhase } = useQuery(
-  //   createPhaseQueryOptions()
-  // );
   return (
     <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto p-5">
       <header className="flex items-center justify-between">
         {/* Back Button */}
-        {/* <RenderWhenPhase
-          currYear={college_year}
-          currSem={college_sem}
-          phaseYear={phase?.phase_year}
-          phaseSem={phase?.phase_sem}
-        > */}
         <Button
           variant="outlined"
           startIcon={<ArrowLeft size={18} />}
@@ -513,7 +517,6 @@ export default function SchedulerApp() {
         >
           Back to Courses
         </Button>
-        {/* </RenderWhenPhase> */}
 
         {/* Title */}
         <div className="text-center flex flex-col">
@@ -573,9 +576,9 @@ export default function SchedulerApp() {
         </div>
       </header>
       <main className="flex flex-col gap-4 p-6">
-        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col 2xl:flex-row gap-4">
+        <div className="max-w-7xl 2xl:max-w-[1600px] mx-auto w-full flex flex-col gap-4">
           {/* <RenderWhenPhase year={college_year} sem={college_sem}> */}
-          <section className="flex-1">
+          <section>
             <CourseList
               courses={queueSubjects}
               courses_error={queue_error}
@@ -612,10 +615,10 @@ export default function SchedulerApp() {
               {/* Auto Allocate */}
               <button
                 onClick={handleAutoAllocate}
-                disabled={disableFillButton}
+                disabled={disableFillButton || lockSchedulesLoading}
                 className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200
               ${
-                disableFillButton
+                disableFillButton || lockSchedulesLoading
                   ? "bg-gray-700 text-gray-500 cursor-not-allowed"
                   : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-900/30"
               }`}
@@ -626,8 +629,11 @@ export default function SchedulerApp() {
 
               {/* Reset Table */}
               <button
+                disabled={lockSchedulesLoading}
                 onClick={handleResetTable}
-                className="flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm bg-gray-500 hover:bg-gray-400 text-gray-50 shadow-md shadow-gray-900/40"
+                className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold 
+                       ${lockSchedulesLoading ? "bg-gray-900 text-gray-700 cursor-not-allowed" : ""}
+                  text-sm bg-gray-500 hover:bg-gray-400 text-gray-50 shadow-md shadow-gray-900/40`}
               >
                 <RotateLeftIcon fontSize="small" />
                 <span>Reset Non-locked Schedules</span>
@@ -637,10 +643,10 @@ export default function SchedulerApp() {
               <button
                 onClick={uploadScheduleToDatabase}
                 title={getLockButtonTooltip()}
-                disabled={disabledLockButton}
+                disabled={disabledLockButton || lockSchedulesLoading}
                 className={`flex cursor-pointer items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200
               ${
-                disabledLockButton
+                disabledLockButton || lockSchedulesLoading
                   ? "bg-gray-700 text-gray-500 cursor-not-allowed"
                   : "bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-900/40"
               }`}

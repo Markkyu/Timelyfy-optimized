@@ -30,11 +30,16 @@ import { PHASES, STEPS } from "@pages/phase-page/components/phaseConstants";
 import StatCard from "./StatCard";
 import useAuthStore from "@stores/useAuthStore";
 import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
+import ToastNotification from "@components/ToastNotification";
 
 export default function GlobalDashboard({ role }) {
   const [openCollege, setOpenCollege] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
 
   const viewModeFromUrl = searchParams.get("view-mode") || "grid";
   const [viewMode, setViewMode] = useState(viewModeFromUrl);
@@ -84,7 +89,7 @@ export default function GlobalDashboard({ role }) {
     if (!colleges) return [];
 
     const lower = searchTerm.toLowerCase();
-    return colleges.filter((college) => {
+    return colleges?.filter((college) => {
       const name = college.college_name?.toLowerCase() || "";
       const major = college.college_major?.toLowerCase() || "";
       return name.includes(lower) || major.includes(lower);
@@ -102,6 +107,12 @@ export default function GlobalDashboard({ role }) {
     setPage(value);
     setSearchParams({ page: value, "view-mode": viewMode });
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastTrigger((prev) => prev + 1);
   };
 
   // Stats calculation
@@ -326,7 +337,11 @@ export default function GlobalDashboard({ role }) {
                 {viewMode === "grid" && (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {paginatedColleges.map((college) => (
-                      <CollegeCard key={college.college_id} college={college} />
+                      <CollegeCard
+                        key={college.college_id}
+                        college={college}
+                        deleteToast={handleToast}
+                      />
                     ))}
                   </div>
                 )}
@@ -381,6 +396,13 @@ export default function GlobalDashboard({ role }) {
       <AddCollegeForm
         open={openCollege}
         onClose={() => setOpenCollege(false)}
+        addToast={handleToast}
+      />
+
+      <ToastNotification
+        message={toastMessage}
+        type={toastType}
+        trigger={toastTrigger}
       />
     </div>
   );

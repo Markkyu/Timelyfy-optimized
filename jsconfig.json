@@ -13,5 +13,5 @@
       "@api/*": ["api/*"],
     }
   },
-  "include": ["src"]
+  "include": ["src", "src/stores/useAuthStore.js"]
 }

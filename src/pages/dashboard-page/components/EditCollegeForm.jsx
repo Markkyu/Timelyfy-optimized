@@ -19,7 +19,7 @@ import { updateCollege } from "@api/collegesAPI";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import ToastNotification from "@components/ToastNotification";
 
-export default function EditCollegeForm({ open, onClose, college }) {
+export default function EditCollegeForm({ open, onClose, college, onToast }) {
   const [collegeCode, setCollegeCode] = useState("");
   const [collegeName, setCollegeName] = useState("");
   const [collegeMajor, setCollegeMajor] = useState("");
@@ -80,25 +80,23 @@ export default function EditCollegeForm({ open, onClose, college }) {
 
     try {
       setLoading(true);
+
+      // throw new Error("error");
       await updateCollege(collegeId, updates);
       await queryClient.invalidateQueries({
         queryKey: createCollegeQueryOptions().queryKey,
       });
 
-      setToastMessage("College Program Successfully Added!");
-      setToastType("success");
-      setToastTrigger((prev) => prev + 1);
+      // setToastMessage("College Edited Succesfully!");
+      // setToastType("success");
+      // setToastTrigger((prev) => prev + 1);
+
+      onToast("College Edited Successfully", "success");
 
       onClose();
     } catch (err) {
-      console.log(err);
-      setError(
-        error.response?.data?.message ||
-          error.message ||
-          "Something went wrong."
-      );
-      setToastType("error");
-      setToastTrigger((prev) => prev + 1);
+      console.log(err.response?.data?.message || err.message);
+      setError("An error has occurred.");
     } finally {
       setLoading(false);
     }

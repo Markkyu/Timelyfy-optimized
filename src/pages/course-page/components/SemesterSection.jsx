@@ -189,7 +189,6 @@ export default function SemesterSection({
             sx={{
               background: "#800000",
               borderRadius: "12px",
-              textTransform: "none",
               fontWeight: 600,
             }}
             startIcon={<AssignmentAddIcon />}

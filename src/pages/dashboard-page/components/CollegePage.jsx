@@ -51,6 +51,16 @@ export default function CollegePage() {
     );
   }
 
+  const renderContent = () => {
+    if (isLoading)
+      return (
+        <LoadingContent
+          loadingTitle="Loading College"
+          loadingDesc="Loading college details..."
+        />
+      );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-200 to-gray-300 py-8">
       <Container maxWidth="xl">

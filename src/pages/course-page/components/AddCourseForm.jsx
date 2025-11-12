@@ -19,7 +19,7 @@ import createCourseQueryOptions from "@hooks/createCourseQueryOptions";
 import createCourseQueryById from "@hooks/createCourseQueryById";
 import recentCourseQuery from "@hooks/recentCourseQuery";
 // import { useCollegeQueryById } from "@hooks/createCollegeQueryOptions";
-import { formatCode, formatCode2 } from "./formatCode";
+import { formatCode2 } from "./formatCode";
 
 export default function AddCourseForm({
   open,
@@ -51,6 +51,8 @@ export default function AddCourseForm({
         return [...old, newCourse];
       });
 
+      //data has the surrogate_id
+
       setCourseCode("");
       setCourseName("");
       setHoursWeek(3);
@@ -73,6 +75,7 @@ export default function AddCourseForm({
     // const formattedCourseId = formatCode(collegeName, collegeMajor, courseCode);
     const formattedCourseId = formatCode2(collegeCode, courseCode);
 
+    // console.log(formattedCourseId);
     const courseData = {
       course_id: formattedCourseId,
       course_code: courseCode,

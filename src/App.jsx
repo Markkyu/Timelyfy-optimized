@@ -53,16 +53,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Suspense, lazy } from "react";
 
 // Layouts
-import Layout from "@layout/Layout";
+// import Layout from "@layout/Layout";
 
 // Pages
 import Login from "@pages/login-page/Login";
 import LoadingComponent from "@components/LoadingComponent";
 import SessionExpiredDialog from "@components/SessionExpiredDialog";
 
+// Loader
+import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
+import PhaseControlSkeleton from "@components/loader/PhaseControlSkeleton";
+import CollegeScheduleSkeleton from "@components/loader/CollegeScheduleSkeleton";
+
 // Route Components
 import { ROLES } from "@routes/roles";
-import ProtectedRoute from "@context/ProtectedRoute";
+// import ProtectedRoute from "@context/ProtectedRoute";
 import GlobalDashboard from "@pages/dashboard-page/GlobalDashboard";
 import CollegePage from "@pages/dashboard-page/components/CollegePage";
 import UserDetails from "@pages/user-page/UserDetails";
@@ -70,11 +75,12 @@ import AboutPage from "@pages/about-page/AboutPage";
 import Tutorial from "@pages/tutorial-page/Tutorial";
 import UnauthorizedPage from "@pages/unauthorized/UnauthorizedPage";
 import PageNotFound from "@pages/page-not-found/PageNotFound";
-import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
-import PhaseControlSkeleton from "@components/loader/PhaseControlSkeleton";
-import AccountPage from "@pages/account-page/AccountPage";
+// import AccountPage from "@pages/account-page/AccountPage";
 import CourseList from "@pages/course-page/CourseList";
 
+const AccountPage = lazy(() => import("@pages/account-page/AccountPage"));
+const Layout = lazy(() => import("@layout/Layout"));
+const ProtectedRoute = lazy(() => import("@context/ProtectedRoute"));
 const UserPage = lazy(() => import("@pages/user-page/UserPage"));
 const PhaseControl = lazy(() => import("@pages/phase-page/PhaseControl"));
 const RoomPage = lazy(() => import("@pages/room-page/RoomPage"));
@@ -125,7 +131,7 @@ export default function App() {
             <Route
               path="/:class_group/schedule/:college"
               element={
-                <Suspense fallback={<LoadingComponent />}>
+                <Suspense fallback={<CollegeScheduleSkeleton />}>
                   <ProtectedRoute allowedRoles={[ROLES.ALL]}>
                     <SchedulerApp />
                   </ProtectedRoute>
@@ -155,7 +161,7 @@ export default function App() {
             <Route
               path="/rooms/:room_id/schedule"
               element={
-                <Suspense fallback={<LoadingComponent />}>
+                <Suspense fallback={<CollegeScheduleSkeleton />}>
                   <ProtectedRoute allowedRoles={[ROLES.ALL]}>
                     <RoomSchedule />
                   </ProtectedRoute>
@@ -175,7 +181,7 @@ export default function App() {
             <Route
               path="/teachers/:teacher_id/schedule"
               element={
-                <Suspense fallback={<LoadingComponent />}>
+                <Suspense fallback={<CollegeScheduleSkeleton />}>
                   <ProtectedRoute allowedRoles={[ROLES.ALL]}>
                     <TeacherSchedule />
                   </ProtectedRoute>
@@ -225,11 +231,9 @@ export default function App() {
             <Route
               path="/tutorial"
               element={
-                <Suspense fallback={<LoadingComponent />}>
-                  <ProtectedRoute allowedRoles={[ROLES.ALL]}>
-                    <Tutorial />
-                  </ProtectedRoute>
-                </Suspense>
+                <ProtectedRoute allowedRoles={[ROLES.ALL]}>
+                  <Tutorial />
+                </ProtectedRoute>
               }
             />
             <Route

@@ -44,7 +44,7 @@ export default function TutorialCard({
       </div>
 
       {/* Hover Effect Line */}
-      <div className="h-1 bg-gradient-to-r from-red-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+      {/* <div className="h-1 bg-gradient-to-r from-red-500 to-orange-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" /> */}
 
       {/* Animation Keyframes */}
       <style jsx>{`

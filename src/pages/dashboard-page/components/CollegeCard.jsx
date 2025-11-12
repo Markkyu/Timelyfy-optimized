@@ -13,25 +13,67 @@ import {
   ArrowRight,
   TrendingUp,
 } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCollege } from "@api/collegesAPI";
 import createCollegeQueryOptions from "@hooks/createCollegeQueryOptions";
 import RenderWhenRole from "@components/RenderWhenRole";
 import EditCollegeForm from "./EditCollegeForm";
 import ConfirmDialog from "@components/ConfirmDialog";
+import ToastNotification from "@components/ToastNotification";
 
-export default function CollegeCard({ college }) {
+export default function CollegeCard({ college, deleteToast }) {
   const [open, setOpen] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(0);
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
+  // const { mutate: deleteCollegeMutation, isPending } = useMutation({
+  //   mutationFn: (collegeId) => {
+  //     // throw new Error("error"); // simulate error
+  //     handleDeleteCollege(collegeId);
+  //   },
+
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({
+  //       queryKey: createCollegeQueryOptions().queryKey,
+  //     });
+
+  //     setToastMessage("College Program Delete Successfully!");
+  //     setToastType("success");
+  //     setToastTrigger((prev) => prev + 1);
+  //   },
+
+  //   onError: () => {
+  //     setToastMessage("Error Deleting College Program");
+  //     setToastType("error");
+  //     setToastTrigger((prev) => prev + 1);
+  //   },
+  // });
+
   const handleDeleteCollege = async () => {
-    await deleteCollege(college?.college_id);
-    queryClient.invalidateQueries({
-      queryKey: createCollegeQueryOptions().queryKey,
-    });
+    try {
+      const { data } = await deleteCollege(college?.college_id);
+      // console.log(data);
+      deleteToast("College Program Deleted Successfully!", "success");
+      queryClient.invalidateQueries({
+        queryKey: createCollegeQueryOptions().queryKey,
+      });
+      // setToastTrigger((prev) => prev + 1);
+      // setToastMessage("College Program Deleted Successfully!");
+      // setToastType("success");
+    } catch (error) {
+      console.error(error.message);
+      deleteToast("Cannot Delete College Program!", "error");
+      // setToastTrigger((prev) => prev + 1);
+      // setToastMessage("Error Deleting College Program");
+      // setToastType("error");
+    }
   };
 
   const handleDeleteClick = () => {
@@ -42,6 +84,12 @@ export default function CollegeCard({ college }) {
   const handleEditCollege = () => {
     setOpen(true);
     setAnchorEl(null);
+  };
+
+  const handleEditToast = (message, type) => {
+    setToastMessage(message);
+    setToastType(type);
+    setToastTrigger((prev) => prev + 1);
   };
 
   const goToCollege = () => {
@@ -187,6 +235,7 @@ export default function CollegeCard({ college }) {
           open={open}
           onClose={() => setOpen(false)}
           college={college}
+          onToast={handleEditToast}
         />
       </div>
 
@@ -200,6 +249,12 @@ export default function CollegeCard({ college }) {
         confirmText="delete college"
         confirmButtonText="Delete Program"
         cancelButtonText="Cancel"
+      />
+
+      <ToastNotification
+        message={toastMessage}
+        type={toastType}
+        trigger={toastTrigger}
       />
     </>
   );

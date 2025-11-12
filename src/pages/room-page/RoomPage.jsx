@@ -23,6 +23,7 @@ import { allRoomsQuery } from "@hooks/createRoomQueryOptions";
 import { useQuery } from "@tanstack/react-query";
 import AddRoomForm from "./components/AddRoomForm";
 import SkeletonLoaderManage from "@components/loader/SkeletonLoaderManage";
+import ToastNotification from "@components/ToastNotification";
 // import AddRoomForm from "./components/AddRoomForm";
 // import useRooms from "./useRooms";
 
@@ -67,6 +68,17 @@ export default function RoomPage() {
       total: rooms.length,
     };
   }, [rooms]);
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+
+  const handleToast = (message, type) => {
+    console.log(message, type);
+    setToastMessage(message);
+    setToastType(type);
+    setToastTrigger((prev) => prev + 1);
+  };
 
   if (rooms_error)
     return (
@@ -230,7 +242,11 @@ export default function RoomPage() {
                   {viewMode === "list" && (
                     <div className="space-y-4">
                       {paginatedData.map((room) => (
-                        <RoomListView key={room.room_id} room={room} />
+                        <RoomListView
+                          key={room.room_id}
+                          room={room}
+                          deleteToast={handleToast}
+                        />
                       ))}
                     </div>
                   )}
@@ -273,6 +289,12 @@ export default function RoomPage() {
       </div>
 
       <AddRoomForm open={openAddRoom} onClose={() => setOpenAddRoom(false)} />
+
+      <ToastNotification
+        message={toastMessage}
+        type={toastType}
+        trigger={toastTrigger}
+      />
     </div>
   );
 }

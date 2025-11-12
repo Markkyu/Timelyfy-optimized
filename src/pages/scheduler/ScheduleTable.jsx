@@ -2,7 +2,7 @@ import generateTimeSlots from "./generateTimeSlots";
 import { colorPalette } from "./components/colorPalette";
 import BackspaceIcon from "@mui/icons-material/Backspace";
 import { IconButton, Tooltip } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import BlockIcon from "@mui/icons-material/Block";
 
 export default function ScheduleTable({
   schedules_loading,
@@ -128,6 +128,7 @@ export default function ScheduleTable({
                       onClick={() => {
                         if (!selectedCourse && course) {
                           console.log(course, time);
+                          // passScheduleDialog(course)
                           return;
                         }
 
@@ -143,7 +144,7 @@ export default function ScheduleTable({
                       {course ? (
                         <div className="flex flex-col items-center justify-center">
                           <button
-                            className="absolute top-2 right-2 group-hover:block hover:text-red-900 hidden cursor-pointer text-red-700 font-bold bg-red- rounded-full shadow-md"
+                            className="absolute top-2 right-2 group-hover:block hidden cursor-pointer font-bold rounded-full shadow-md"
                             onClick={(e) => {
                               e.stopPropagation(); // prevent cell click event
                               onRemoveSchedule(
@@ -152,25 +153,18 @@ export default function ScheduleTable({
                               );
                             }}
                             sx={{
-                              // display: "none",
                               display: "block",
                               position: "absolute",
                               top: 0,
                               right: 0,
-                              "&:hover": {
-                                display: "block",
-                              },
                             }}
                             title={`Remove ${course?.slot_course} ${header} - ${time.time_slot}?`}
                           >
-                            <CloseIcon fontSize="medium" />
+                            <BlockIcon color="error" fontSize="medium" />
                           </button>
                           <div>
-                            <p className="text-wrap text-base font-semibold text-gray-50">
+                            <p className="text-wrap text-xl font-semibold text-gray-50">
                               {course.course_code || course.course_id}
-                            </p>
-                            <p className="text-wrap text-base font-semibold">
-                              {/* {course.course_name} */}
                             </p>
                           </div>
                         </div>

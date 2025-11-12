@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import axios from "axios";
 import API from "@api/axios";
 
 const useAuthStore = create((set) => ({
@@ -7,38 +8,39 @@ const useAuthStore = create((set) => ({
 
   login: async (username, password) => {
     try {
-      const res = await API.post("/api/login", { username, password });
+      console.log(`login inside zustand`);
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/login`,
+        {
+          username,
+          password,
+        }
+      );
 
+      // Expect backend returns: { message: "Login successful", user, token }
       if (res.data.message === "Login successful") {
-        const { user, token } = res.data;
+        set({
+          user: res.data.user,
+          token: res.data.token,
+        });
 
-        set({ user, token });
+        // persist user and token
+        localStorage.setItem("user", JSON.stringify(res.data.user));
+        localStorage.setItem("token", res.data.token);
 
-        localStorage.setItem("user", JSON.stringify(user));
-        localStorage.setItem("token", token);
+        // attach token to axios for future requests
+        axios.defaults.headers.common["Authorization"] =
+          `Bearer ${res.data.token}`;
 
-        return user;
+        return res.data.user;
       } else {
+        console.log(res.data);
         throw new Error(res.data.message);
       }
     } catch (err) {
-      console.error("Login error:", err);
+      console.log(err);
       throw err;
     }
-  },
-
-  logout: async () => {
-    try {
-      // Call backend to clear cookie + DB token
-      await API.post("/api/login/logout", {}, { withCredentials: true });
-    } catch (err) {
-      console.warn("Logout request failed:", err.message);
-    }
-
-    // Clear frontend session
-    set({ user: null, token: null });
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
   },
 
   refreshUser: async () => {
@@ -52,12 +54,20 @@ const useAuthStore = create((set) => ({
       throw new Error(err.response?.data?.message || err.message);
     }
   },
+
+  logout: () => {
+    set({ user: null, token: null });
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+
+    delete axios.defaults.headers.common["Authorization"];
+  },
 }));
 
 export default useAuthStore;
 
 // import { create } from "zustand";
-// import axios from "axios";
+// import API from "@api/axios";
 
 // const useAuthStore = create((set) => ({
 //   user: JSON.parse(localStorage.getItem("user")) || null,
@@ -65,36 +75,22 @@ export default useAuthStore;
 
 //   login: async (username, password) => {
 //     try {
-//       const res = await axios.post(
-//         `${import.meta.env.VITE_API_URL}/api/login`,
-//         {
-//           username,
-//           password,
-//         }
-//       );
+//       const res = await API.post("/api/login", { username, password });
 
-//       // Expect backend returns: { message: "Login successful", user, token }
 //       if (res.data.message === "Login successful") {
-//         set({
-//           user: res.data.user,
-//           token: res.data.token,
-//         });
+//         const { user, token } = res.data;
 
-//         // persist user and token
-//         localStorage.setItem("user", JSON.stringify(res.data.user));
-//         localStorage.setItem("token", res.data.token);
+//         set({ user, token });
 
-//         // attach token to axios for future requests
-//         axios.defaults.headers.common["Authorization"] =
-//           `Bearer ${res.data.token}`;
+//         localStorage.setItem("user", JSON.stringify(user));
+//         localStorage.setItem("token", token);
 
-//         return res.data.user;
+//         return user;
 //       } else {
-//         console.log(res.data);
 //         throw new Error(res.data.message);
 //       }
 //     } catch (err) {
-//       console.log(err);
+//       console.error("Login error:", err);
 //       throw err;
 //     }
 //   },
@@ -103,8 +99,18 @@ export default useAuthStore;
 //     set({ user: null, token: null });
 //     localStorage.removeItem("user");
 //     localStorage.removeItem("token");
+//   },
 
-//     delete axios.defaults.headers.common["Authorization"];
+//   refreshUser: async () => {
+//     try {
+//       const res = await API.get("/api/me"); // endpoint that returns current user
+//       const { user } = res.data;
+
+//       set({ user });
+//       localStorage.setItem("user", JSON.stringify(user));
+//     } catch (err) {
+//       throw new Error(err.response?.data?.message || err.message);
+//     }
 //   },
 // }));
 

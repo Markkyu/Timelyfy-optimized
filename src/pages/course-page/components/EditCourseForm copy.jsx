@@ -25,7 +25,6 @@ export default function EditCourseForm({
   course,
   collegeName,
   collegeMajor,
-  collegeCode,
 }) {
   const [courseCode, setCourseCode] = useState(course?.course_code || "");
   const [courseName, setCourseName] = useState(course?.course_name || "");
@@ -34,9 +33,13 @@ export default function EditCourseForm({
   const [error, setError] = useState(null);
   const [errorType, setErrorType] = useState("error");
 
+  // const [toastMessage, setToastMessage] =
+
   const { college_id } = useParams();
 
-  const newCourseId = formatCode2(collegeCode, courseCode);
+  console.log(college_id);
+
+  const newCourseId = formatCode(collegeName, collegeMajor, courseCode);
 
   const queryClient = useQueryClient();
 
@@ -73,12 +76,20 @@ export default function EditCourseForm({
   const handleEdit = (e) => {
     e.preventDefault();
 
+    // console.log("Course: ", course);
+    // console.log(newCourseId);
+
     updateCourseMutation({
-      courseId: course?.course_id,
+      // courseId: course.course_surrogate_id,
+      courseId: newCourseId,
       updates: {
+        // course_id: newCourseId,
         course_code: courseCode,
         course_name: courseName,
         hours_week: hoursWeek,
+        course_year: course?.course_year,
+        semester: course?.semester,
+        course_college: course?.course_college,
       },
     });
   };
@@ -132,7 +143,6 @@ export default function EditCourseForm({
               margin="normal"
               required
               disabled
-              helperText="cannot edit"
             />
 
             <TextField

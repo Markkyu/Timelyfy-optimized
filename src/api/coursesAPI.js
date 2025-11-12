@@ -89,7 +89,21 @@ export const addCourse = async (details) => {
 };
 
 // UPDATE COURSE
+// export const updateCourse = async ({ oldCourseId, updates }) => {
+//   console.log(oldCourseId, updates);
+//   try {
+//     const { data } = await API.put(
+//       `${API_URL}/api/courses/${oldCourseId}`,
+//       updates
+//     );
+//     return data;
+//   } catch (error) {
+//     throw new Error(error.response?.data?.message || error.message);
+//   }
+// };
+
 export const updateCourse = async ({ courseId, updates }) => {
+  console.log(courseId, updates);
   try {
     const { data } = await API.put(
       `${API_URL}/api/courses/${courseId}`,

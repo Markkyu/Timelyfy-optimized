@@ -4,13 +4,13 @@ import {
   DialogTitle,
   DialogContent,
   Button,
-  IconButton,
-  Checkbox,
-  FormControlLabel,
-  Typography,
-  Zoom,
+  // IconButton,
+  // Checkbox,
+  // FormControlLabel,
+  // Typography,
+  // Zoom,
   Grow,
-  TextField,
+  // TextField,
   Alert,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -55,15 +55,19 @@ export default function LoginForm({ showLogin, setShowLogin }) {
       setAlertType("success");
       setAlertMessage("Login Successful");
 
-      setTimeout(() => {
-        setShowLogin(false);
-        setUsername("");
-        setPassword("");
-        navigate("/");
-        setLoading(false);
-      }, 700);
+      navigate("/");
+
+      console.log(`Login`);
+      // setTimeout(() => {
+      //   setShowLogin(false);
+      //   setUsername("");
+      //   setPassword("");
+      //   navigate("/");
+      //   setLoading(false);
+      // }, 200);
     } catch (err) {
       setAlertMessage(err.response?.data?.message || err.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -82,7 +86,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
       maxWidth="xs"
     >
       {/* Close button */}
-      <IconButton
+      {/* <IconButton
         onClick={() => setShowLogin(false)}
         sx={{
           position: "absolute",
@@ -91,7 +95,11 @@ export default function LoginForm({ showLogin, setShowLogin }) {
         }}
       >
         <CloseIcon />
-      </IconButton>
+      </IconButton> */}
+      <CloseIcon
+        onClick={() => setShowLogin(false)}
+        className="absolute right-3 top-3 cursor-pointer"
+      />
       <DialogTitle sx={{ pb: 1 }}>
         <p className="text-2xl font-semibold text-center">Login to Timelyfy</p>
       </DialogTitle>
@@ -103,16 +111,19 @@ export default function LoginForm({ showLogin, setShowLogin }) {
         )}
         <form onSubmit={handleLoginSubmit} className="space-y-4 mt-2">
           {/* Username */}
-          {/* <label htmlFor="usernameInput">Username</label>
+          <label htmlFor="usernameInput">Username</label>
           <input
             id="usernameInput"
             ref={usernameRef}
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => {
+              setAlertMessage(null);
+              setUsername(e.target.value);
+            }}
             className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-800"
             required
-          /> */}
-          <TextField
+          />
+          {/* <TextField
             label="Username"
             fullWidth
             margin="normal"
@@ -121,10 +132,10 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
-          />
+          /> */}
 
           {/* Password */}
-          {/* <label htmlFor="passwordInput">Password</label>
+          <label htmlFor="passwordInput">Password</label>
           <input
             id="passwordInput"
             value={password}
@@ -133,9 +144,9 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-red-800"
             autoComplete="off"
             required
-          /> */}
+          />
 
-          <TextField
+          {/* <TextField
             label="Password"
             fullWidth
             margin="normal"
@@ -144,7 +155,7 @@ export default function LoginForm({ showLogin, setShowLogin }) {
             onChange={(e) => setPassword(e.target.value)}
             type={showPassword ? "text" : "password"}
             required
-          />
+          /> */}
 
           <div>
             <input

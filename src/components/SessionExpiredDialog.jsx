@@ -5,30 +5,38 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
+import useAuthStore from "@stores/useAuthStore";
 import useSessionStore from "@stores/useSessionStore";
 import { useNavigate } from "react-router-dom";
 
 export default function SessionExpiredDialog() {
+  const { logout } = useAuthStore();
   const { sessionExpired, setSessionExpired } = useSessionStore();
   const navigate = useNavigate();
 
-  const handleClose = () => {
-    setSessionExpired(false);
-    navigate("/login");
-  };
+  // const handleClose = () => {
+  //   logout();
+  //   setSessionExpired(false);
+  //   navigate("/login");
+  // };
 
   return (
-    <Dialog open={sessionExpired} onClose={handleClose}>
-      <DialogTitle>Session Expired</DialogTitle>
+    <Dialog open={sessionExpired}>
+      <DialogTitle>Token Expired</DialogTitle>
       <DialogContent>
-        Your session has expired. Please log in again to continue.
+        Your token has expired. Please log in again to continue.
       </DialogContent>
       <DialogActions>
         <Button
           sx={{ borderRadius: "10px", fontWeight: 600 }}
           disableElevation
           fullWidth
-          onClick={handleClose}
+          // onClick={handleClose}
+          onClick={() => {
+            logout();
+            setSessionExpired(false);
+            navigate("/login");
+          }}
           color="error"
           variant="contained"
         >
