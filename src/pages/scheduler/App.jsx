@@ -470,8 +470,6 @@ export default function SchedulerApp() {
     setToastTrigger((prev) => prev + 1);
   };
 
-  console.log(lockSchedulesLoading);
-
   // Tracks incomplete hours if changed
   const getLockButtonTooltip = () => {
     if (newSchedules.length === 0) {

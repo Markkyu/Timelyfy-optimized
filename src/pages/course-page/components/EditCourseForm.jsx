@@ -26,6 +26,7 @@ export default function EditCourseForm({
   collegeName,
   collegeMajor,
   collegeCode,
+  editToast,
 }) {
   const [courseCode, setCourseCode] = useState(course?.course_code || "");
   const [courseName, setCourseName] = useState(course?.course_name || "");
@@ -41,7 +42,9 @@ export default function EditCourseForm({
   const queryClient = useQueryClient();
 
   const { mutate: updateCourseMutation, isPending: loading } = useMutation({
-    mutationFn: updateCourse,
+    mutationFn: () => {
+      updateCourse;
+    },
 
     onSuccess: () => {
       queryClient.setQueryData(["course", college_id], (oldData) => {
@@ -56,16 +59,17 @@ export default function EditCourseForm({
         );
       });
 
-      setError("Updated successfully!");
-      setErrorType("success");
+      // console.log(course.course_id, newCourseId)
+
+      editToast("Updated Successfully!", "success");
 
       onClose();
     },
 
     onError: (error) => {
       console.error(error.message);
-      setErrorType("error");
       setError(error.message);
+      setErrorType("error");
     },
   });
 
@@ -79,6 +83,9 @@ export default function EditCourseForm({
         course_code: courseCode,
         course_name: courseName,
         hours_week: hoursWeek,
+        course_year: course?.course_year,
+        semester: course?.semester,
+        course_college: course?.course_college,
       },
     });
   };
@@ -121,7 +128,7 @@ export default function EditCourseForm({
         </DialogTitle>
 
         <DialogContent>
-          {error && <Alert severity="success">{error}</Alert>}
+          {error && <Alert severity={errorType}>{error}</Alert>}
 
           <form onSubmit={handleEdit}>
             <TextField
@@ -138,7 +145,10 @@ export default function EditCourseForm({
             <TextField
               label="Course Name"
               value={courseName}
-              onChange={(e) => setCourseName(e.target.value)}
+              onChange={(e) => {
+                setCourseName(e.target.value);
+                setError(null);
+              }}
               fullWidth
               margin="normal"
               required

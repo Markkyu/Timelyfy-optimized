@@ -20,6 +20,7 @@ import LoadingContent from "@components/LoadingContent";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 import EditCourseForm from "./components/EditCourseForm";
 import AssignTeacherForm from "./components/AssignTeacherForm";
+import ToastNotification from "@components/ToastNotification";
 
 const uniqueYears = [1, 2, 3, 4];
 const uniqueSemesters = [1, 2];
@@ -35,6 +36,10 @@ export default function CourseList() {
     isFetching: courses_loading,
     error: courses_error,
   } = useQuery(createCourseQueryById(college_id));
+
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
 
   // const groupedCourses = useMemo(() => {
   //   const groups = {};
@@ -79,6 +84,10 @@ export default function CourseList() {
         />
       </div>
     );
+
+  const handleToast = (message, type) => {
+    console.log(`Top level`, message, type);
+  };
 
   return (
     <main className="h-full flex flex-col p-5 font-sans max-w-7xl 2xl:max-w-[1600px]  mx-auto">

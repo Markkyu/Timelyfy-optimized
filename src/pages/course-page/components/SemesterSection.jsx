@@ -91,6 +91,7 @@ import MergeCourseDialog from "./MergeCourseDialog";
 import DeleteConfirmDialog from "@components/DeleteConfirmDialog";
 import EditCourseForm from "./EditCourseForm";
 import AssignTeacherForm from "./AssignTeacherForm";
+import ToastNotification from "@components/ToastNotification";
 
 export default function SemesterSection({
   sem,
@@ -112,6 +113,10 @@ export default function SemesterSection({
   const [assignOpen, setAssignOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+
   // const handleEdit = (course) => {
   //   setSelectedCourse(course);
   //   setEditOpen(true);
@@ -126,6 +131,13 @@ export default function SemesterSection({
   //   setSelectedCourse(course);
   //   setDeleteOpen(true);
   // }, []);
+
+  const handleAddToast = (message, type) => {
+    console.log(message, type);
+    setToastMessage(message);
+    setToastType(type);
+    setToastTrigger((prev) => prev + 1);
+  };
 
   const navigate = useNavigate();
 
@@ -210,6 +222,7 @@ export default function SemesterSection({
         collegeName={collegeName}
         collegeMajor={collegeMajor}
         collegeCode={collegeCode}
+        onAdd={handleAddToast}
       />
 
       <MergeCourseDialog
@@ -242,6 +255,12 @@ export default function SemesterSection({
         title="Delete Course"
         desc="Are you sure you want to delete this course?"
       /> */}
+
+      <ToastNotification
+        message={toastMessage}
+        trigger={toastTrigger}
+        type={toastType}
+      />
     </section>
   );
 }

@@ -30,6 +30,7 @@ export default function AddCourseForm({
   collegeMajor,
   collegeName,
   collegeCode,
+  onAdd,
 }) {
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
@@ -52,6 +53,7 @@ export default function AddCourseForm({
       });
 
       //data has the surrogate_id
+      onAdd("Subject successfully added", "success");
 
       setCourseCode("");
       setCourseName("");

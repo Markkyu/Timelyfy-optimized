@@ -8,7 +8,6 @@ const useAuthStore = create((set) => ({
 
   login: async (username, password) => {
     try {
-      console.log(`login inside zustand`);
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}/api/login`,
         {

@@ -54,7 +54,6 @@ export default function RegisterUser({ open, onClose }) {
     onError: (error, variables, context) => {
       console.error(error.message);
       console.log(error);
-      console.log(variables);
       setError(error?.message);
     },
   });

@@ -36,7 +36,7 @@ export default function CourseCard({
   collegeCode,
   // onEdit,
   // onAssign,
-  // onDelete,
+  onDelete,
 }) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -50,6 +50,10 @@ export default function CourseCard({
 
   const queryClient = useQueryClient();
 
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState("");
+  const [toastTrigger, setToastTrigger] = useState(null);
+
   const { mutate: courseDeleteMutation, isPending: loading } = useMutation({
     mutationFn: (courseId) => deleteCourse(courseId),
 
@@ -60,18 +64,20 @@ export default function CourseCard({
         return old.filter((c) => c.course_id != data.id);
       });
 
+      setToastMessage("Subject Deleted");
+      setToastType("success");
+      setToastTrigger((prev) => prev + 1);
+
       setDeleteOpen(false);
     },
 
     onError: (error) => {
+      setToastMessage("Error deleting subject");
+      setToastType("error");
+      setToastTrigger((prev) => prev + 1);
       console.error(error.message);
-      // setError(error.message);
     },
   });
-
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState("");
-  const [toastTrigger, setToastTrigger] = useState(null);
 
   const handleDelete = () => {
     courseDeleteMutation(course.course_id);
@@ -223,6 +229,7 @@ export default function CourseCard({
         collegeName={collegeName}
         collegeMajor={collegeMajor}
         collegeCode={collegeCode}
+        editToast={handleToast}
       />
 
       <AssignTeacherForm
